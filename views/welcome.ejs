@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Utthan</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <main>
+    <p class="brand">Utthan</p>
+    <h1><%= message %></h1>
+    <p class="status">
+      <% if (dbConnected) { %>
+        Database connected
+      <% } else { %>
+        Database unavailable<%= typeof error !== 'undefined' ? ': ' + error : '' %>
+      <% } %>
+    </p>
+  </main>
+</body>
+</html>
