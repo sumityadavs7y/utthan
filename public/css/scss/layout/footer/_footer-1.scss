@@ -1,0 +1,113 @@
+// ft-clients
+.site-footer{
+	&.style-1{
+		--title: rgba(255,255,255,0.7);
+		position:relative;
+		z-index:0;
+		overflow: hidden;
+		
+		p,
+		a,
+		span,
+		small,
+		li{
+			color: rgba(255 ,255 ,255 , 0.5);
+		}
+		.dz-social-icon{
+			position: relative;
+		}
+		.footer-bottom{
+			position:relative;
+		}
+		.footer-top{
+			padding-top: 100px;
+			padding-bottom: 40px;
+			@include custommq ($max:1200px){
+				padding-top: 80px;
+				padding-bottom: 30px;
+			}
+			@include respond ('phone-land'){
+				padding-top: 60px;
+				padding-bottom: 10px;
+			}
+		}
+		.footer-title{
+			position:relative;
+			padding-bottom: 0px;
+			margin-bottom: 30px;
+			color: #fff;
+			@include respond ('phone'){
+				margin-bottom: 20px;			
+			}
+		}
+		.widget_services{
+			&>ul{
+				margin-top:-.5rem;
+			}
+		}
+		.recent-posts-entry .widget-post-bx .widget-post{
+			.dz-meta ul li{
+				color:var(--title);
+			}
+			.title a{
+				color:rgba(255,255,255,1);
+			}
+		}
+		.footer-bottom{
+			background-color:#121E31;
+			border-top: 1px solid #ffffff21;
+			.copyright-text a{
+				color: rgba(255 ,255 ,255 , 0.5);
+			}
+		}
+		.footer-link li{
+			color:rgba(255,255,255,.7);
+		}
+		
+		.shape-1,
+		.shape-2,
+		.shape-3{
+			position:absolute;
+		}
+		.shape-1{
+			left: -60px;
+			top: -50px;
+		}
+		.shape-2{
+			right: 20px;
+			bottom: 100px;
+			width: 150px;
+		}
+		.shape-3{
+			top: -20px;
+			right: -60px;
+		}
+		@include respond ('tab-land'){
+			.shape-1{
+				left: -20px;
+				top: -20px;
+				width: 120px;
+			}
+			.shape-2{
+				width: 120px;
+			}
+			.shape-3{
+				right: -10px;
+				width: 300px;
+			}
+		}
+		@include respond ('tab-land'){
+			.shape-1{
+				width: 100px;
+			}
+			.shape-2{
+				width: 80px;
+			}
+			.shape-3{
+				right: -20px;
+				width: 200px;
+				top: -10px;
+			}
+		}
+	}
+}

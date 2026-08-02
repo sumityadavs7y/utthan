@@ -1,0 +1,368 @@
+// Banner One
+.main-bnr-one{
+	position:relative;
+  	align-items: center;
+	z-index:1;
+	overflow: hidden;
+	padding-bottom: 120px;
+	
+	@include respond('tab-land'){
+		padding-bottom: 0;
+	}
+	
+	.banner-content{
+		display: flex;
+		flex-wrap: wrap;
+		height: 100%;
+		position: relative;
+		z-index: 2;
+		padding-left: 210px;
+		padding-right: 30px;
+		align-items: center;
+		
+		.sub-title{
+			font-family: var(--font-sub-title);
+			font-size: 35px;
+			font-weight: 700;
+			letter-spacing: 5px;
+			
+			@include respond('tab-land'){
+				font-size: 24px;
+			}
+			@media only screen and (max-width: 1191px){
+				font-size: 20px;
+			}
+		}
+		.title{
+			line-height: 1.2;
+			font-size: 60px;
+			font-weight:700;
+			position: relative;
+			margin-bottom: 20px;
+			color: #fff;
+			
+			@include respond('laptop'){
+				font-size:52px;
+			}
+			@include respond('tab-land'){
+				font-size:42px;
+			}
+			@media only screen and (max-width: 1191px){
+				font-size:36px;
+			}
+			@include respond('tab-port'){
+				font-size:32px;
+				margin-bottom: 15px;
+			}
+		}
+		p{
+			font-size:16px;	
+			margin-bottom: 35px;
+			color: #D7D7D7;
+			@include respond('tab-land'){
+				font-size:15px;
+				margin-bottom:30px;
+			}
+			@media only screen and (max-width: 1191px){
+				font-size: 14px;
+			}
+			@include respond('phone'){
+				font-size:14px;
+				margin-bottom: 20px;
+			}
+		}
+		.btn {
+			margin-right:20px;
+			@include respond('tab-port'){
+				margin-right: 15px;
+			}
+		}
+		@include respond('wide-desktop'){
+			padding-left: 150px;
+			padding-right: 0;
+		}
+		@include respond('tab-land'){
+			padding-left: 0;
+		}
+		@include respond('tab-port'){
+			padding-top: 30px;
+		}
+		@include respond('phone-land'){
+			padding-bottom: 0;
+			padding-left: 0;
+		}
+		@include respond('phone'){
+			font-size: 28px;
+		}
+	}
+	.banner-media{
+		z-index: 1;
+		position: relative;
+		display: flex;
+	    padding-top: 40px;
+	    padding-bottom: 30px;
+		
+		.main-img1{
+			margin-bottom: 1.5rem;
+			transform: translate(-30px, -30px);
+			@include transitionMedium;
+			img{
+				border-radius: 100px 0 0 0;
+				height: 365px;
+				object-fit: cover;
+				width: 100%;
+			}
+		}
+		.main-img2{
+			padding-left: 50px;
+			transform: translate(-30px, 30px);
+			@include transitionMedium;
+			img{
+				border-radius: 0 0 0 100px;
+				width: 100%;
+				height: 336px;
+				object-fit: cover;
+			}
+		}
+		.main-img3{
+			transform: translate(30px, -30px);
+			@include transitionMedium;
+			img{
+				border-radius: 0 0 100px 0;
+			}
+		}
+		@include respond('laptop'){
+			.main-img1{
+				img{
+					height: 300px;
+				}
+			}
+			.main-img2{
+				img{
+					height: 250px;
+				}
+			}
+		}		
+		@include respond('tab-land'){
+			.main-img1{
+				img{
+					height: 240px;
+				}
+			}
+			.main-img2{
+				padding-left: 30px;
+				img{
+					height: 200px;
+				}
+			}
+		}
+		@include respond('tab-port'){
+			margin: 0 15px;
+			.main-img1 img {
+				height: 200px;
+				border-radius: 50px 0 0 0;
+			}
+			.main-img2 img {
+				height: 150px;
+				border-radius: 0 0 0 50px;
+			}
+			.main-img3 img {
+				border-radius: 0 0 50px 0;
+				height: 300px;
+				width: 100%;
+				object-fit: cover;
+			}
+		}
+		
+		@include respond('phone-land'){
+			margin: 0 -10px;
+		}
+		@include respond('phone'){
+			padding-top: 30px;
+			padding-bottom: 30px;
+			
+			.main-img1 img {
+				height: 100px;
+				border-radius: 30px 0 0 0;
+			}
+			.main-img2{
+				padding-left: 15px;
+				img {
+					height: 120px;
+					border-radius: 0 0 0 30px;
+				}
+			}
+			.main-img3 img {
+				border-radius: 0 0 30px 0;
+				height: 180px;
+			}
+		}
+	}
+	.bottom-wrapper{
+		display: flex;
+		align-items: center;
+		position: absolute;
+		right: 40px;
+		bottom: 40px;
+		z-index: 1;
+		
+		.social-list{
+			li{
+				display: inline-block;
+				position: relative;
+				padding-left: 17px;
+				margin-left: 12px;
+				a{
+					color: #fff;
+				}
+				&:after{
+					content: "";
+					height: 5px;
+					width: 5px;
+					background-color: var(--secondary);
+					position: absolute;
+					left: 0;
+					top: 50%;
+					border-radius: 50%;
+					transform: translateY(-50%);
+				}
+				&:first-child{
+					margin-left: 0;
+					padding-left: 0;
+					
+					&:after{
+						content: none;
+					}
+				}
+			}
+		}
+		@include respond('tab-land'){
+			right: 20px;
+			bottom: 20px;
+			.social-list{
+				display: none;
+			}
+		}
+		@include respond('phone'){
+			right: 15px;
+			bottom: 30px;
+		}
+	}
+	.btn-wrapper{
+		display: flex;
+		margin-left: 30px;
+		
+		.main-btn{
+			height: 60px;
+			width: 60px;
+			text-align: center;
+			line-height: 60px;	
+			color: #fff;
+			z-index: 1;
+			border-radius: var(--border-radius-base);
+			background-color: var(--primary);
+			@include transitionMedium;
+			margin: 0 8px;
+			&:hover{
+				color: var(--title);
+				background-color: var(--secondary);
+			}
+		}
+		@include respond('tab-land'){
+			.main-btn {
+				height: 40px;
+				width: 40px;
+				line-height: 40px;
+			}
+		}
+	}
+	.main-slider{
+		overflow: unset;
+		position: relative;
+	}
+	.banner-inner{
+		position: relative;
+		min-height: 800px;
+		background-repeat: no-repeat;
+		background-size: cover;
+		display: flex;
+		background-position: bottom left;
+		background-color: #003B4A;
+		background-blend-mode: luminosity;
+		
+		&:before{
+			content: "";
+			position: absolute;
+			opacity: 0.8;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: #003B4A;
+		}
+		
+		.shape1,
+		.shape2,
+		.shape3,
+		.shape4{
+			position: absolute;
+		}
+		.shape1{
+			left: 0;
+			bottom: -100px;
+		}
+		.shape2{
+			left: 0;
+			bottom: -150px;
+		}
+		.shape3,
+		.shape4{
+			right: -10px;
+			top: -10px;
+		}
+		
+		@include respond('laptop'){
+			min-height: 650px;
+		}
+		@include respond('tab-land'){
+			min-height: 550px;
+			
+			.shape1 {
+				left: -40px;
+				bottom: -80px;
+				width: 100px;
+			}
+			.shape2 {
+				left: -50px;
+				bottom: -140px;
+				width: 100px;
+			}
+			.shape3{
+				width: 200px;
+			}
+			.shape4{
+				width: 300px;
+			}
+		}
+		@include respond('tab-port'){
+			min-height: 720px;
+		}
+		@include respond('phone'){
+			min-height: 650px;
+			.shape3 {
+				width: 150px;
+			}
+			.shape4 {
+				width: 200px;
+			}
+		}
+	}
+	
+	.swiper-slide{
+		.main-img1,
+		.main-img2,
+		.main-img3{
+			transform: translate(0)!important;
+		}
+	}
+}

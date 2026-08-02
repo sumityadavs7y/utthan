@@ -1,0 +1,125 @@
+// Progress Bar
+.progress-bx{
+	overflow: hidden;
+	
+	// Progress Info
+	.progress-info{
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 15px;
+		.title{
+			margin-bottom: 0;
+		}
+		.progress-value{
+			margin-bottom: 0;
+		}
+	}
+	
+	// Progress
+	.progress{
+		overflow: unset;		
+		.progress-bar{
+			position: relative;
+			overflow: unset;
+		}
+	}
+	
+	// Style 1
+	&.style-1{
+		.progress{
+			height: 12px;
+			background-color: #e9ecef;
+			border: 1px solid #D7D7D7;
+			border-radius: 12px;
+			overflow: hidden;
+	
+			.progress-bar{
+				background-color: transparent;
+				&.progress-bar-primary{
+					background-color: var(--primary);
+				}
+				&.progress-bar-secondary{
+					background-color: var(--secondary);
+				}
+			}
+		}
+		.progress-tag{
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-top: 5px;
+			
+			li{
+				font-size: 14px;
+				font-weight: 500;
+				i{
+					transform: scale(1.5);
+					display: inline-block;
+					margin-right: 5px;
+					color: var(--primary);
+				}
+				p{
+					margin-bottom: 0;
+				}
+			}
+		}
+	}
+	
+	// Style 2
+	&.style-2{
+		overflow: unset;
+		padding-top: 40px;
+		
+		.progress{
+			height: 7px;
+			border-radius: 20px;
+			border: 0;
+			
+			.progress-bar {
+				background-color: var(--primary);
+				.progress-value {
+					position: absolute;
+					right: -20px;
+					top: -35px;
+					font-size: 13px;
+					background: #F7CF47;
+					color: var(--title);
+					min-width: 40px;
+					min-height: 25px;
+					line-height: 25px;
+					z-index: 1;
+					font-weight: 600;
+					
+					&:after{
+						content: "";
+						width: 10px;
+						height: 10px;
+						background: inherit;
+						position: absolute;
+						bottom: -30%;
+						left: 50%;
+						transform: translate(-50%, -50%) rotate(45deg);
+						z-index: -1;
+					}
+				}
+			}
+		}
+		.progress-tag{
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			
+			li{
+				font-size: 13px;
+				font-weight: 500;
+			}
+		}
+	}
+}
+
+@keyframes myanimation {
+	0% {
+		width: 0;
+	}
+}

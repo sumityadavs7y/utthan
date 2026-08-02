@@ -1,0 +1,202 @@
+.dz-team{
+	
+	// Style 1
+	&.style-1{
+		position:relative;
+		border-radius:var(--border-radius-base);
+		
+		
+		.dz-media{
+			position: relative;
+			overflow: hidden;
+			img{
+				border-radius:var(--border-radius-base);
+				height: 100%;
+				object-fit: cover;
+			}
+			.overlay-content{
+				position:absolute;
+			}
+			&:after{
+				content: "";
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				background-color: var(--rgba-primary-7);
+				border-radius:var(--border-radius-base);
+				top: -460px;
+				left: 0;
+				@include transitionSlow;		
+			}
+		}
+		.team-social{
+			position: absolute;
+			left: 0;
+			bottom: 20px;
+			z-index: 1;
+			width: 100%;
+			text-align: center;
+			
+			li{
+				display:inline-block;
+				position: relative;
+				opacity:0;
+				transform: translateY(80px);
+				@for $i from 1 to 4 {
+				   &:nth-child(#{$i}) { transition: $i * 0.2s; }
+				}
+				a{
+					display:inline-block;
+					margin: 0 5px;
+					height:35px;
+					line-height:35px;
+					width:35px;
+					border-radius:var(--border-radius-base);
+					text-align:center;
+					color:#fff;
+					background-color:var(--secondary);
+					&:hover{
+						background-color: #fff;
+						color: var(--secondary);
+					}
+				}
+			}
+		}
+		.dz-position{
+			margin-bottom:0;
+			font-weight: 400;
+			font-family:var(--font-family-base);
+			font-size: 15px;
+		}
+		.dz-name{
+			margin-bottom:2px;
+		}
+		.dz-content{
+			text-align:center;
+			padding-top: 15px;
+			padding-bottom: 15px;
+		}
+		&:hover,
+		&.active{
+			box-shadow: 0 0rem 1.5rem rgba(0,0,0,0.07) !important;
+			background-color:#fff;
+			.team-social{
+				li{
+					transform: translateY(0px);
+					opacity:1;
+				}
+			}
+			.dz-content{
+				background-color:#fff;
+			}
+			.dz-media{
+				&:after{
+					top: 0;
+				}
+			}
+		}
+		@include respond('phone'){
+		
+		}
+	}
+	
+	// Style 2
+	&.style-2{
+		position:relative;
+		border-top: 6px solid var(--primary);
+		
+		.dz-media{
+			position: relative;
+			overflow: hidden;
+			
+			img{
+				height: 100%;
+				object-fit: cover;
+			}
+			.overlay-content{
+				position:absolute;
+			}
+			&:after{
+				content: "";
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				background-color: var(--rgba-primary-7);
+				border-radius:var(--border-radius-base);
+				top: -460px;
+				left: 0;
+				@include transitionSlow;		
+			}
+		}
+		.dz-footer{
+			background-color: var(--secondary);
+			text-align: center;
+			padding: 8px;
+		}
+		.team-social{
+			li{
+				display:inline-block;
+				position: relative;
+				
+				a{
+					display:inline-block;
+					margin: 0 5px;
+					height:25px;
+					line-height:25px;
+					width:25px;
+					border-radius:var(--border-radius-base);
+					text-align:center;
+					color:#fff;
+					background-color:var(--secondary);
+					
+					&:hover{
+						background-color: #fff;
+						color: var(--secondary);
+					}
+				}
+			}
+		}
+		.dz-position{
+			margin-bottom:0;
+			font-weight: 400;
+			font-family:var(--font-family-base);
+		}
+		.dz-name{
+			margin-bottom:3px;
+		}
+		.dz-content{
+			text-align:center;
+			padding-top:15px;
+			padding-bottom:15px;
+		}
+		&:hover,
+		&.active{
+			box-shadow: 0 0rem 1.5rem rgba(0,0,0,0.07) !important;
+			background-color:#fff;
+			.team-social{
+				li{
+					transform: translateY(0px);
+					opacity:1;
+				}
+			}
+			.dz-content{
+				background-color:#fff;
+			}
+			.dz-media{
+				&:after{
+					top: 0;
+				}
+			}
+		}
+		@include respond('phone'){
+			padding:0;
+		}
+	}
+
+}
+.team-slider {
+	margin: 0 -15px;
+	.dz-team {
+		margin: 0 15px;
+	}
+}

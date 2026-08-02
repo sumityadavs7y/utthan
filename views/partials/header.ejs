@@ -1,0 +1,103 @@
+<header class="site-header mo-left header style-1">
+	<div class="top-bar">
+		<div class="container">
+			<div class="dz-topbar-inner d-flex justify-content-between align-items-center">
+				<div class="dz-topbar-left">
+					<ul>
+						<li>We Are Always Available For The Ones In Need - Utthan Foundation</li>
+						<li>
+							<a href="/donate">
+								<i class="flaticon-logout me-2"></i>Donate Now
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="dz-topbar-right">
+					<ul>
+						<li>
+							<a href="tel:+917052701010">
+								<i class="fas fa-map-marker-alt"></i> +91-7052701010
+							</a>
+						</li>
+						<li>
+							<i class="fas fa-envelope"></i>
+							<a href="mailto:help@utthanfoundation.in">help@utthanfoundation.in</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="sticky-header main-bar-wraper navbar-expand-lg">
+		<div class="main-bar clearfix">
+			<div class="container clearfix">
+				<div class="logo-header mostion logo-dark">
+					<a href="/"><img src="/images/logo.png" alt="Utthan Foundation"></a>
+				</div>
+
+				<button class="navbar-toggler collapsed navicon justify-content-end" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+					<span></span>
+					<span></span>
+					<span></span>
+				</button>
+
+				<div class="extra-nav">
+					<div class="extra-cell">
+						<a href="/contact" class="btn btn-outline-secondary btnhover1">
+							<i class="fa-solid fa-user"></i>
+							<span class="m-l10">My Account</span>
+						</a>
+					</div>
+				</div>
+
+				<div class="header-nav navbar-collapse collapse justify-content-end" id="navbarNavDropdown">
+					<div class="logo-header logo-dark">
+						<a href="/"><img src="/images/logo.png" alt="Utthan Foundation"></a>
+					</div>
+					<ul class="nav navbar-nav navbar navbar-left">
+						<li class="<%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'active' : '' %>">
+							<a href="/">Home</a>
+						</li>
+						<li class="sub-menu-down <%= typeof currentPage !== 'undefined' && ['about-us','team','campaigns','member','certificates','fundraiser'].includes(currentPage) ? 'active' : '' %>">
+							<a href="javascript:void(0);">About Us</a>
+							<ul class="sub-menu">
+								<li><a href="/about-us">About Us</a></li>
+								<li><a href="/team">Our Team</a></li>
+								<li><a href="/campaigns">Our Campaigns</a></li>
+								<li><a href="/member">Become A Member</a></li>
+								<li><a href="/certificates">Our Certificates</a></li>
+								<li><a href="/fundraiser">Fundraiser</a></li>
+							</ul>
+						</li>
+						<li class="<%= typeof currentPage !== 'undefined' && currentPage === 'donate' ? 'active' : '' %>">
+							<a href="/donate">Donate Us</a>
+						</li>
+						<li class="<%= typeof currentPage !== 'undefined' && currentPage === 'gallery' ? 'active' : '' %>">
+							<a href="/gallery">Gallery</a>
+						</li>
+						<li class="<%= typeof currentPage !== 'undefined' && currentPage === 'blog' ? 'active' : '' %>">
+							<a href="/blog">Blogs & Media</a>
+						</li>
+						<li class="<%= typeof currentPage !== 'undefined' && currentPage === 'contact' ? 'active' : '' %>">
+							<a href="/contact">Contact Us</a>
+						</li>
+					</ul>
+					<div class="header-bottom">
+						<a href="#" class="btn btn-light btn-login btn-sm" data-bs-toggle="modal" data-bs-target="#modalLogin">
+							<i class="flaticon-logout me-3"></i>Login / Sign Up
+						</a>
+						<div class="dz-social-icon">
+							<ul>
+								<li><a class="fab fa-facebook-f" href="https://www.facebook.com/theutthanfoundation"></a></li>
+								<li><a class="fab fa-twitter" href="https://twitter.com/theutthan"></a></li>
+								<li><a class="fab fa-linkedin-in" href="https://www.linkedin.com/in/theutthanfoundation"></a></li>
+								<li><a class="fab fa-instagram" href="https://www.instagram.com/theutthanfoundation/"></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</header>

@@ -1,0 +1,172 @@
+/* Error Page */
+.under-construction{
+	overflow: hidden;
+    padding: 100px;
+    height: 100vh;
+    vertical-align: middle;
+    width: 100vw;
+    position: relative;
+    text-align: center;
+    background-color: #fff;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	
+	.dz-head{
+		color:$dark;
+		margin-bottom: 15px;
+		line-height:1.1;
+		font-size: 65px;
+		font-weight: 700;
+		z-index: 1;
+		position: relative;
+	}
+	.logo-header {
+		width:100%;
+		height:auto;
+		margin-bottom: 25px;
+		z-index: 2;
+		position: relative;
+	}
+	p {
+		font-size:30px;
+		color:black;
+		line-height: 1.4;
+		z-index: 1;
+		position: relative;
+	}
+	.construction-img {
+		height:auto;
+		width:40%;
+		right:7%;
+		top:45%;
+		z-index:-1;
+		position:absolute;
+		transform: translatey(-50%);
+	}
+	.under-progress{
+		background-color: #fff;
+		border: 1px solid rgba(0,0,0,0.1);
+		border-radius: 5px;
+		overflow: hidden;
+		max-width: 700px;
+		margin-top: 40px;
+		margin-left: auto;
+		margin-right: auto;
+		z-index: 1;
+		position: relative;
+		
+		.progress-bar{
+			height: 25px;
+			font-size: 14px;
+			background-color: var(--primary);
+		}
+	}
+	
+	.shape-1,
+	.shape-2,
+	.shape-3,
+	.shape-4,
+	.shape-5,
+	.shape-6,
+	.shape-7,
+	.shape-8{
+		position: absolute;
+	}
+	.shape-1{
+		width: 80px;
+		left: 0;
+		top: 0;
+	}
+	.shape-2{
+		width: 80px;
+		left: 50px;
+		bottom: 50px;
+	}
+	.shape-3{
+		right: -4px;
+		top: -3px;
+		width: 350px;
+	}
+	
+	.shape-4{
+		left: 50%;
+		top: 50px;
+		width: 60px;
+	}
+	.shape-5{
+		bottom: 10%;
+		right: 10%;
+	}
+	.shape-6{
+	    right: 20%;
+		bottom: 60%
+	}
+	.shape-7{
+		bottom: 50px;
+		right: 50%;
+	}
+	.shape-8{
+		left: 10%;
+		top: 50%;
+	}
+	.shape-10{
+		width: 60px;
+		position: absolute;
+		left: 25%;
+		top: 10%;
+	}
+	.shape-9{
+		width: 60px;
+		position: absolute;
+		right: -3px;
+		bottom: 30px;
+	}
+	.shape-11{
+		width: 15%;
+		position: absolute;
+		left: -6px;
+		bottom: -3px;	
+	}
+	
+	@include respond ('tab-port'){
+		.dz-head{
+			font-size: 42px;
+		}
+		p{
+			font-size: 18px;
+		}
+	}
+	@include respond ('phone'){
+		padding: 30px;
+		.dz-head{
+			font-size: 32px;
+		}
+		p{
+			font-size: 16px;
+		}
+		.under-progress{
+			margin-top: 20px;
+			.progress-bar{
+				height: 20px;
+			}
+		}
+		.shape-1,
+		.shape-2,
+		.shape-4,
+		.shape-5,
+		.shape-7,
+		.shape-8,
+		.shape-10{
+			width: 40px;
+		}
+		.shape-3{
+			width: 120px;
+		}
+		.shape-9{
+			width: 30px;
+		}
+
+	}
+}

@@ -1,0 +1,39 @@
+.dz-box.style-1{
+	border-radius:var(--border-radius-base);
+	overflow:hidden;
+	text-align:center;
+	.dz-info{
+		position:absolute;
+		top:50%;
+		left:50%;
+		z-index:1;
+		opacity:0;
+		transform:translate(-50%,-50%)scale(1.2);
+		width: 100%;
+		padding: 0 20px;
+		@include transitionMedium;
+		.title,
+		.title a{
+			color:#fff;
+		}
+	}
+	.tags-list{
+		li{
+			margin-bottom: 8px;
+			display:inline-block;			
+			a{
+				display:inline-block;
+				color:#fff;
+				background-color:rgba(255,255,255,.2);
+				border-radius:var(--border-radius-base);
+				padding: 10px 18px;
+			}
+		}
+	}
+	&:hover{
+		.dz-info{
+			opacity:1;
+			transform:translate(-50%,-50%)scale(1);
+		}
+	}
+}

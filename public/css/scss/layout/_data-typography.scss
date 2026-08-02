@@ -1,0 +1,153 @@
+.data-typography-1{
+	
+	// Google Fonts
+	@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Playfair+Display:wght@400;500;600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+	
+	// Font Variable
+	--font-family-base: 'Poppins', sans-serif;
+	--font-family-title: 'Playfair Display', serif;
+	--font-sub-title: 'Amatic SC', cursive;
+	
+	.section-head{
+		h2{
+			font-size: 55px;
+			font-weight: 800;
+		}
+		.sub-title {
+			font-family: var(--font-sub-title);
+			font-size: 25px;
+			letter-spacing: 2px;
+		}
+		@include respond('tab-land'){
+			h2{
+				font-size: 42px;
+			}
+			.sub-title {
+				font-size: 20px;
+			}
+		}
+		@include respond('phone-land'){
+			h2{
+				font-size: 36px;
+			}
+		}
+		@include respond('phone'){
+			h2{
+				font-size: 32px;
+			}
+			.sub-title {
+				font-size: 18px;
+			}
+		}
+	}
+	.bg-dark{
+		background-color: #086077!important;
+	}
+	.btn-dark{
+		background-color: #086077!important;
+		border-color: #086077!important;
+	}
+	
+	.icon-bx-wraper{
+		&.style-4{
+			[class*="icon-bx"]{
+				svg{
+					path{
+						fill: var(--title);
+					}
+					.secondary{
+						fill: var(--secondary);						
+					}
+				}
+			}
+			&:hover{
+				[class*="icon-bx"]{
+					svg{
+						.secondary{
+							fill: transparent;						
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+.data-typography-2{
+	
+	// Google Fonts
+	@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+	// Font Variable
+	--font-family-base: 'Poppins', sans-serif;
+	--font-family-title: 'Poppins', sans-serif;
+	--border-radius-base: 8px;
+	
+	.section-head{
+		h2{
+			font-size: 50px;
+		}		
+		.sub-title {
+			text-transform: unset;
+			font-weight: 400;
+			font-size: 18px;
+		}
+		@include respond('tab-land'){
+			h2{
+				font-size: 42px;
+			}
+		}
+		@include respond('phone-land'){
+			h2{
+				font-size: 36px;
+			}
+		}
+		@include respond('phone'){
+			h2{
+				font-size: 30px;
+			}
+			.sub-title{
+				font-size: 16px;
+			}
+		}
+	}
+	
+	.site-header.style-2 .header-nav .nav > li.active:after,
+	.site-header.style-2 .header-nav .nav > li:hover:after {
+		background-color: var(--primary);
+	}
+	
+	.icon-bx-wraper .style-4 .separator{
+		background-color: #fff;
+	}
+	
+	
+	.overlay-black-light:before,
+	.overlay-black-middle:before,
+	.overlay-black-dark:before{
+		background: #141818;
+	}
+	.btn-secondary{
+		color: #141818;
+	}
+	.bg-dark,
+	.btn-dark{
+		background-color: var(--dark)!important;
+	}
+	.dz-social-icon.style-1 ul li a:after{
+		background-color: var(--primary);
+	}
+	
+	.container-fluid{
+		padding-left:80px;
+		padding-right:80px;
+		@include respond('wide-desktop'){
+			padding-left:50px;
+			padding-right:50px;
+		}
+		@include respond('tab-land'){
+			padding-left:15px;
+			padding-right:15px;
+		}
+	}
+}

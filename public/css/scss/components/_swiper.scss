@@ -1,0 +1,146 @@
+.btn-next, 
+.btn-prev{
+	@include transitionMedium;
+	
+	&:after{
+		content:none;
+		@include transitionMedium;
+	}
+	
+	// Style 1
+	&.style-1{
+		box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.05);
+		position: relative;
+		top: auto;
+		left: auto;
+		right: auto;
+		bottom: auto;
+		width: 60px;
+		height: 60px;
+		color: var(--primary);
+		background: #fff;
+		font-size: 15px;
+		letter-spacing: 2px;
+		z-index: 1;
+		text-align: center;
+		line-height: 60px;
+		border-radius: 60px;
+		margin: 0 10px;
+		display: inline-block;
+		
+		@include respond('tab-port'){
+			width: 45px;
+			height: 45px;
+			line-height: 45px;
+		}
+		&:hover{
+			background:var(--primary);
+			color:#fff;
+			box-shadow: 0px 12px 20px 0px var(--rgba-primary-3);
+		}
+		i{
+			font-size: 20px;
+			line-height: inherit;
+			@include respond('phone-land'){
+				font-size: 18px;
+			}
+		}
+	}
+	
+	
+	&.style-2{
+		font-size: 45px;
+		color: #C5C5C5;
+		
+		&:hover{
+			color: var(--primary);
+		}
+		@include respond('tab-port'){
+			background-color: #fff;
+			font-size: 20px;
+			padding: 5px 5px;
+			
+			&:hover{
+				background-color: var(--primary);
+				color: #fff;
+			}
+		}
+	}
+}
+
+.swiper-pagination.style-1{
+	position:relative;
+	bottom: 0;
+	
+	.swiper-pagination-bullet{
+		height:6px;
+		width:35px;
+		border-radius: var(--border-radius-base);
+		margin:0 5px;
+		background-color: #b7b2b2;
+		@include transitionSlow;
+		&.swiper-pagination-bullet-active{
+			background-color:var(--secondary);
+			width: 75px;
+		}
+	}
+	@include respond('phone'){
+		.swiper-pagination-bullet{
+			width:20px;
+			&.swiper-pagination-bullet-active{
+				width: 45px;
+			}
+		}
+	}
+}
+.progress-pagination{
+	color: #fff;
+    display: flex;
+    align-items: center;
+	
+	.swiper-pagination-progressbar{
+		height: 3px;
+		width: 100px;
+		overflow: hidden;
+		position: unset;
+		margin: 0 10px;
+		
+		.swiper-pagination-progressbar-fill{
+			background-color: #fff;
+		}
+	}
+}
+.swiper-btn-center-lr{
+	.btn-prev,
+	.btn-next{
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		z-index: 99;
+	}
+	.btn-prev{
+		left: -80px;
+	}
+	.btn-next{
+		right: -80px;
+	}
+	@include respond('laptop'){
+		.btn-prev{
+			left: -30px;
+		}
+		.btn-next{
+			right: -30px;
+		}
+	}
+	@include respond('tab-land'){
+		.btn-prev{
+			left: 0;
+		}
+		.btn-next{
+			right: 0;
+		}
+	}
+}

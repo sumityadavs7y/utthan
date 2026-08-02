@@ -1,0 +1,161 @@
+.dz-card{
+	&.style-2{
+		margin: 0;
+		border: 1px solid var(--bs-gray-300);
+		border-radius: 14px;
+		overflow:hidden;
+		background-color: #fff;
+		
+		.dz-media{
+			border-radius: unset;
+			.dz-badge-list{
+				position:absolute;
+				bottom:25px;
+				left:20px;
+				@include respond('tab-port'){
+					bottom:15px;
+				}
+			}
+			.dz-badge{
+				background-color:var(--primary);
+				color:#fff;
+				border-radius:3px;
+				padding: 6px 15px;
+				font-size: 12px;
+				text-transform:uppercase;
+			}
+		}
+		.dz-info{
+			padding:25px 30px;
+			.dz-category{
+				display: inline-flex;
+				li{
+					margin-right: 10px;
+				}
+			}
+			.dz-user-rate,
+			.dz-meta{
+				ul{
+					display:flex;
+					align-items:center;
+					justify-content:space-between;
+					.dz-price{
+						i{
+							color: var(--primary);
+							font-size: 16px!important;
+						}
+						span{
+							font-size: 14px;
+							color: var(--title);
+							font-weight: 400;
+						}
+					}
+					.dz-date{
+						i{
+							color: var(--primary);
+							font-size: 16px!important;
+						}
+						span{
+							font-size: 14px;
+							color: var(--title);
+							font-weight: 400;
+						}
+					}
+				}
+			}
+			p{
+				margin-bottom: 20px;
+			}
+			.dz-user {
+				display:flex;
+				align-items:center;
+				
+				img {
+					height:45px;
+					width:45px;
+					margin-right:10px;
+					border:3px solid white;
+					box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15);
+					border-radius:100%;
+					object-fit:cover;
+				}
+			}
+			.dz-ratings {
+				i {
+					color:#ffc107;
+					margin-right:5px;
+					font-size:18px;
+				}
+			}
+			.dz-price h4{
+				color:var(--primary);
+				margin:0;
+			}
+			.separator {
+				height: 1px;
+				width: 100%;
+				background: lightgrey;
+			}
+			.dz-view i{
+			    color: limegreen;
+				margin-right:5px;
+				background: #90ee904f;
+				padding: 7px;
+				border-radius: 100%;
+				
+			}
+			.dz-category{
+				li{
+					a{
+						font-weight: 700;
+						font-size: 15px;
+					}
+				}
+			}
+			.footer-bottom{
+				margin-top: 20px;
+				a{
+					i{
+						font-size: 14px;
+					}
+				}
+			}
+			@include respond('tab-port'){
+				padding: 20px 20px;
+			}
+		}
+		
+		// Card List
+		&.card-list{
+			display: flex;
+			.dz-media{
+				width: 350px;
+				min-width: 350px;
+				img{
+					height: 100%;
+					object-fit: cover;
+				}
+			}
+			@media screen and (min-width: 991px) and (max-width: 1191px){
+				display: block;
+				.dz-media{
+					width: 100%;
+					min-width: 100%;
+				}
+			}
+			@include respond('tab-port'){
+				.dz-media{
+					width: 300px;
+					min-width: 300px;
+				}
+			}
+			@include respond('phone-land'){
+				display: block;
+				.dz-media{
+					width: 100%;
+					min-width: 100%;
+				}
+			}
+		}
+	}
+}

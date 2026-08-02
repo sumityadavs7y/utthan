@@ -1,0 +1,117 @@
+.dz-bnr-inr{
+	&.style-1 {
+		h1 {
+			color:#fff;
+			margin-bottom: 10px;
+		}
+		.dz-bnr-inr-entry{
+			padding-top: 70px;
+			padding-bottom: 70px;			
+			
+			@include respond('tab-port'){
+				padding-top: 20px;
+				padding-bottom: 20px;
+			}
+		}
+		.bnr-shapes {
+			li {
+				position:absolute;
+			}
+			li:nth-child(1) {
+				bottom: 130px;
+				left: 20%;
+				@include respond('tab-port'){
+					bottom: 70px;
+					img {
+						height: 60px;
+					}
+				}
+				@include respond('phone'){
+					bottom: 40px;
+					left: 15%;
+					img {
+						height: 45px;
+					}
+				}
+			}
+			li:nth-child(2) {
+				bottom:200px;
+				left:60px;
+				@include respond('tab-land'){
+					img {
+						height: 85px;
+					}
+				}
+				@include respond('tab-port'){
+					bottom: 175px;
+					left: 60px;
+					img {
+						height: 70px;
+					}
+				}
+				@include respond('phone'){
+					bottom: 135px;
+					left: 30px;
+					img {
+						height: 45px;
+					}
+				}
+			}
+			li:nth-child(3) {
+				bottom: 0px;
+				right: -75px;
+				img {
+					transform: rotate(180deg) rotatex(180deg) scale(0.7);
+				}
+				@include respond('tab-land'){
+					bottom: -15px;
+					right: -150px;
+					img {
+						transform: rotate(200deg) rotatex(180deg) scale(0.7);
+					}
+				}
+				@include respond('tab-port'){
+					bottom: 10px;
+					right: -160px;
+					img {
+						transform: rotate(200deg) rotatex(180deg) scale(0.5);
+					}
+				}
+				@include respond('phone'){
+					bottom: -20px;
+					right: -190px;
+					img {
+						transform: rotate(200deg) rotatex(180deg) scale(0.35);
+					}
+				}
+			}
+			li:nth-child(4) {
+			    right: 27%;
+				bottom: 65px;
+				@include respond('tab-port'){
+					right: 15%;
+					bottom: 45px;
+					img {
+						height: 70px;
+					}
+				}
+				@include respond('phone'){
+					right: 60px;
+					bottom: 40px;
+					img {
+						height: 55px;
+					}
+				}
+			}
+		}
+	}
+}
+.header-transparent + .page-content .dz-bnr-inr{
+	padding-top: 120px;
+	@include respond('tab-port'){
+		padding-top: 70px;		
+	}
+	@include respond('phone'){
+		padding-top: 60px;		
+	}
+}

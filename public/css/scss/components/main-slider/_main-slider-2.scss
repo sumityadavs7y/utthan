@@ -1,0 +1,282 @@
+// Banner One
+:root{
+	--spacing-bnr-two: 60px;
+	--spacing-bnr-two-sub: -60px;
+	
+	@include respond('tab-port'){
+		--spacing-bnr-two: 0;
+		--spacing-bnr-two-sub: 0;
+	}
+}
+
+.main-bnr-two{
+	position:relative;
+  	align-items: center;
+	z-index:1;
+	overflow: hidden;
+	padding-bottom: var(--spacing-bnr-two);
+	
+	&:after{
+		content: "";
+		height: var(--spacing-bnr-two);
+		width: 100%;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		background-color: var(--primary);
+	}
+	
+	.banner-content{
+		display: flex;
+		flex-wrap: wrap;
+		height: 100%;
+		position: relative;
+		z-index: 2;
+		align-items: center;
+		max-width: 650px;
+		padding-bottom: var(--spacing-bnr-two);
+		
+		
+		.sub-title{
+			font-family: var(--font-sub-title);
+			font-size: 20px;
+			font-weight: 400;
+			letter-spacing: 2px;
+			
+			@include respond('tab-port'){
+				font-size: 16px;
+			}
+		}
+		.title{
+			line-height: 1.2;
+			font-size: 60px;
+			font-weight:600;
+			position: relative;
+			margin-bottom: 20px;
+			color: #fff;
+			
+			@include respond('laptop'){
+				font-size:52px;
+			}
+			@include respond('tab-land'){
+				font-size:42px;
+			}
+			@include respond('tab-port'){
+				font-size:32px;
+				margin-bottom: 15px;
+			}
+			@include respond('phone'){
+				font-size: 28px;
+			}
+		}
+		p{
+			font-size:16px;	
+			margin-bottom: 35px;
+			color: #D7D7D7;
+			@include respond('tab-land'){
+				font-size:15px;
+				margin-bottom:30px;
+			}
+			@include respond('tab-port'){
+				font-size: 14px;
+				margin-bottom: 20px;
+			}
+			@include respond('phone'){
+				font-size:14px;
+			}
+		}
+		.btn {
+			margin-right:20px;
+			@include respond('phone'){
+				margin-right:20px;
+			}
+		}
+		@include respond('tab-port'){
+			padding-top: 0px;
+			padding-bottom: 0;
+		}
+	}
+	.banner-media{
+		z-index: 1;
+		position: relative;
+		display: flex;
+		align-items: flex-end;
+		padding: 0 100px;
+		margin-top: 50px;
+		margin-bottom: var(--spacing-bnr-two-sub);
+		opacity: 0;
+		@include transitionSlow;
+		height: 100%;
+		
+		img{
+			width: 100%;
+		}
+		@include respond('wide-desktop'){
+			padding: 0 60px 0 30px;
+			
+		}
+		@media only screen and (max-width: 1191px){
+			padding: 0 20px;
+		}
+		@include respond('tab-port'){
+			margin-top: 0;
+			margin-bottom: 0;
+		}
+		@include respond('phone-land'){
+			padding: 30px 0 0;
+			max-width: 320px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		@include respond('phone'){
+			max-width: 250px;
+		}
+	}
+	.banner-media2{
+		position: relative;
+		opacity: 0;
+		height: 100%;
+		@include transitionSlow;
+		margin: 0 -10px 0 -50px;
+		display: flex;
+		align-items: flex-end;
+	
+		img{
+			width: 100%;
+		}
+		@include respond('phone-land'){
+			margin: 0;			
+		}
+	}
+	.swiper-slide.swiper-slide-visible.swiper-slide-active{
+		.banner-media,
+		.banner-media2{
+			opacity: 1;
+		}
+	}
+	.bottom-wrapper{
+		display: flex;
+		align-items: center;
+		position: absolute;
+		right: 0;
+		bottom: var(--spacing-bnr-two);
+		z-index: 1;
+		
+		.social-list{
+			li{
+				display: inline-block;
+				position: relative;
+				padding-left: 17px;
+				margin-left: 12px;
+				a{
+					color: #fff;
+				}
+				&:after{
+					content: "";
+					height: 5px;
+					width: 5px;
+					background-color: var(--secondary);
+					position: absolute;
+					left: 0;
+					top: 50%;
+					border-radius: 50%;
+					transform: translateY(-50%);
+				}
+				&:first-child{
+					margin-left: 0;
+					padding-left: 0;
+					
+					&:after{
+						content: none;
+					}
+				}
+			}
+		}
+	}
+	.btn-wrapper{
+		display: flex;
+		margin-left: 30px;
+		
+		.main-btn{
+			height: 60px;
+			width: 60px;
+			text-align: center;
+			line-height: 60px;	
+			color: #fff;
+			z-index: 1;
+			border-radius: 0;
+			background-color: var(--primary);
+			@include transitionMedium;
+			font-size: 18px;
+			
+			@include respond('tab-port'){
+				height: 45px;
+				width: 45px;
+				line-height: 45px;
+			}
+			
+			&:hover{
+				color: var(--title);
+				background-color: var(--secondary);
+			}
+		}
+		.main-btn-prev{
+			background-color: #fff;
+			color: var(--primary);
+			border-radius: var(--border-radius-base) 0 0 0;
+		}
+	}
+	.main-slider{
+		overflow: unset;
+		position: relative;
+	}
+	.banner-inner{
+		position: relative;
+		height: 880px;
+		background-repeat: no-repeat;
+		background-size: cover;
+		display: flex;
+		background-position: bottom left;
+		background-color: #141818;
+		background-blend-mode: luminosity;
+		padding-top: 100px;
+		
+		.row{
+			height: 100%;
+		}
+		&:before{
+			content: "";
+			position: absolute;
+			opacity: 0.8;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background-color: #141818;
+		}
+		@include respond('wide-desktop'){
+			height: 800px;
+		}
+		@include respond('tab-land'){
+			height: 700px;
+		}
+		@media only screen and (max-width: 1191px){
+			height: 580px;
+		}
+		@include respond('tab-port'){
+			height: 500px;
+			padding-top: 120px;
+		}
+		@include respond('phone-land'){
+			height: 750px;
+			.row{
+				flex-direction: column-reverse;
+				height: auto;
+			}
+		}
+		@include respond('phone'){
+			padding-top: 100px;
+			height: 645px;
+		}
+	}
+}

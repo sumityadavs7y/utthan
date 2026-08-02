@@ -1,0 +1,54 @@
+// ft-clients
+.site-footer{
+	&.style-3{
+		--text-white: rgba(255,255,255,0.5);
+		
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: top left;
+		background-color: #141818;
+		color: rgba(255,255,255,0.5);
+		position:relative;
+		z-index:0;
+		font-size: 15px;
+		
+		.dz-social-icon{
+			position: relative;
+		}
+		.footer-top{
+			position: relative;
+			display: flex;
+			background-color: transparent;
+			padding-top: 100px;
+			padding-bottom: 40px;
+			@include custommq ($max:1200px){
+				padding-top: 80px;
+				padding-bottom: 30px;
+			}
+			@include respond ('phone-land'){
+				padding-top: 50px;
+				padding-bottom: 10px;
+			}
+		}
+		.footer-title{
+			position:relative;
+			padding-bottom: 0px;
+			margin-bottom: 30px;
+			&:before{
+				content: none;
+			}
+		}
+		.widget_about {
+			padding-right: 0;
+		}
+		.footer-bottom{
+			border-top: 1px solid #ffffff21;
+			position:relative;
+			background-color: transparent!important;
+		}
+		.copyright-text a{
+			color: var(--text-white);
+			font-weight: 400;
+		}
+	}
+}

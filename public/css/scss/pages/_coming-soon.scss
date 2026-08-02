@@ -1,0 +1,287 @@
+.coming-soon {
+	height: 100vh;
+    min-height: 700px;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--primary);
+	background-color: var(--primary);
+    background-blend-mode: luminosity;
+    z-index: 1;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+	padding: 60px;
+    flex-direction: column;
+    justify-content: space-between;
+	
+	&:before{
+		content: "";
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+		background-color: var(--primary);
+		opacity: 0.6;
+		z-index: -1;
+	}
+	.inner-content {
+		padding-bottom: 100px;
+	}
+	.dz-head {
+		font-size: 55px;
+		margin-bottom: 10px;
+		color: #fff;
+		display: block;
+		clear: both;
+		
+	}
+	svg {
+		position:absolute;
+		left:0;
+		width:100%;
+		bottom:0;
+		path {
+			fill:var(--primary);
+		}
+	}
+	p {
+		font-size: 18px;
+		max-width: 530px;
+		color: #fff;
+		margin-bottom: 30px;
+	}
+	.countdown {
+	    margin-bottom: 50px;
+    	margin-top: 30px;
+			
+		.date {
+			margin: 0 20px;
+			display:inline-block;
+			border-radius:0;
+			.skew {
+				position: relative;
+			}
+			span {
+				display:block;
+				font-weight: 500;
+				color: #fff;
+				border-radius: 6px;
+				padding: 2px;
+			}
+			.time {
+				margin:0;
+				font-weight: 700;
+				font-size: 100px;
+				color: #fff;
+			}
+		}
+	}
+	.logo-header {
+		width:100%;
+		height:auto;
+		margin-bottom: 30px;
+	}
+	&:after {
+		content: attr(data-text);
+		position: absolute;
+		font-weight: 700;
+		font-size: 250px;
+		line-height: 1;
+		right: 0px;
+		color: #fff;
+		opacity: 0.1;
+		bottom: 0;
+	}
+	@include respond ('tab-land'){
+		padding: 40px;
+	
+		&:after {
+			font-size: 120px;
+		}
+		
+	}
+	@include respond ('tab-port'){
+		.dz-head{
+			font-size: 36px;
+		}
+	}
+	@include respond ('phone-land'){
+		.countdown-timer .clock .val {
+			font-size: 32px;
+			line-height: 110px;
+		}
+		&:after {
+			font-size: 80px;
+		}
+		.inner-content {
+			text-align: center;
+		}
+	}
+	@include respond ('phone'){
+		padding: 20px;
+		justify-content: center;
+		
+		.inner-content {
+			padding-bottom: 50px;
+		}
+		.countdown-timer .clock{
+			.val{
+				font-size: 20px;
+				line-height: 68px;
+				margin-bottom: 10px;
+			}
+			.type-time{
+				font-size: 13px;
+			}
+		}
+		p{
+			font-size: 15px;
+		}
+		.logo-header{
+			margin-bottom: 20px;
+		}
+		.dz-head{
+			font-size: 32px;
+		}
+	}
+}
+
+.inquiry-modal{
+	padding: 0 15px;
+	
+	.modal-dialog {
+		max-width: 700px;
+		display: flex;
+		min-height: auto;
+		background-color: #fff;
+		align-items: stretch;
+		border-radius: var(--border-radius-base);
+		overflow: hidden;
+		
+		@include respond('phone'){
+			display: block;
+		}
+	}
+	.inquiry-adv{
+		flex: 0 0 50%;
+		max-width: 50%;
+		
+		img {
+			height: 100%;
+			object-fit: cover;
+			width: 100%;
+		}
+		@include respond('phone'){
+			display: none;
+		}
+	}
+	.modal-content{
+		border: 0;
+		border-radius: 0;
+		background: #fff;
+		padding: 30px;
+		flex: 0 0 50%;
+		max-width: 50%;
+		
+		.modal-body {
+			padding: 0;
+		}
+		@include respond('phone-land'){
+			padding: 25px;
+		}
+		@include respond('phone'){
+			flex: 0 0 100%;
+			max-width: 100%;
+		}
+	}
+	.modal-header {
+		border: 0;
+		padding: 0;
+		display: block;
+		text-align: center;
+		
+		.modal-title {
+			font-size: 24px;
+			margin-bottom: 25px;
+			line-height: 1.3;
+			font-family: var(--font-family-title);
+			text-align: center;
+			width: 100%;
+		}
+		i{
+			color: var(--primary);
+			font-size: 40px;
+			line-height: 1;
+			display: inline-block;
+		}
+	}
+	.btn-close {
+		margin: 0;
+		position: absolute;
+		right: 5px;
+		top: 0px;
+		color: #000;
+		font-weight: 100;
+		text-shadow: none;
+		opacity: 1;
+		font-size: 40px;
+		padding: 0;
+		height: 40px;
+		line-height: 40px;
+		width: 40px;
+		border: 0;
+		background: transparent;
+	}
+}
+.clock-item{
+	width: 155px;
+    position: relative;
+    margin: 0 10px;
+	
+	@include respond ('phone'){
+		margin: 0 5px;
+	}
+}
+.countdown-timer{
+	padding-bottom: 30px;
+	.clock{
+		display:flex;
+		.text{
+			position: absolute;
+			top: 0;
+			width: 100%;
+		}
+		.type-time{
+			text-transform: uppercase;
+			color: #fff;
+			font-size: 16px;
+			letter-spacing: 2px;
+			text-align: center;
+			margin-bottom: 0;
+		}
+		.kineticjs-content{
+			position:relative;
+		}
+		.kineticjs-content:after{
+			content: "";
+			position: absolute;
+			border: 1px solid rgba(255,255,255,0.3);
+			border-radius: 100%;
+			top: 2px;
+			bottom: 2px;
+			left: 2px;
+			right: 2px;
+			z-index: -1;
+		}
+		.val{
+			font-size: 70px;
+			color: #fff;
+			width: 100%;
+			line-height: 155px;
+			text-align: center;
+			margin-bottom: 15px;
+		}
+	}
+}

@@ -1,0 +1,86 @@
+.dz-card{
+	&.style-3 {
+		position: relative;
+		border-radius: var(--border-radius-base);
+		overflow: hidden;
+		background: #fff;
+		height: 100%;
+		.dz-media {
+			height: 100%;
+			&:after {
+				position: absolute;
+				content: "";
+				height: 100%;
+				width: 100%;
+				top: 0;
+				left: 0;
+				background: -moz-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.67) 100%);
+				background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.67) 100%);
+				background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.67) 100%);
+				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#ab000000',GradientType=0 );
+			}
+			img {
+				height: 100%;
+				object-fit: cover;
+				-webkit-transition: all 0.2s;
+				-ms-transition: all 0.2s;
+				transition: all 0.2s;
+			}
+		}
+		.dz-info {
+			padding: 30px;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			.dz-text{
+				color: #fff;
+			}
+		}
+		.dz-category {
+			margin-bottom: 15px;
+			li {
+				a {
+					display: inline-block;
+					background: rgba(255, 255, 255, 0.19);
+					color: #fff;
+					padding: 5px 10px;
+					text-transform: uppercase;
+					font-size: 13px;
+					font-weight: 600;
+					border-radius: var(--border-radius-base);
+					&:hover{
+						background: var(--primary);						
+					}
+				}
+			}
+		}
+		
+		&:hover {
+			.dz-media {
+				img {
+					transform: rotate(5deg) scale(1.2);
+				}
+			}
+		}
+		@include respond('phone'){
+			height: 300px;
+			.dz-info{
+				padding: 20px;
+				 .dz-text {
+					margin-bottom: 0;
+				}
+			}
+			.dz-title {
+				margin-bottom: 10px;
+			}
+			.dz-category {
+				margin-bottom: 20px;
+			}
+		}
+		&.overlay{
+			.dz-meta li .post-date {
+				color: rgba(255, 255, 255, 0.8);
+			}
+		}
+	}
+}

@@ -1,0 +1,233 @@
+// PRICING TABLE
+.pricingtable-features{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    li {
+		padding: 12px;
+		i{
+			margin: 0 3px;
+		}
+	}
+	
+}
+.no-col-gap .pricingtable-wrapper {
+    margin-left: -1px;
+}
+
+// Table =======
+.table-option{
+	border: 2px solid #adadad;
+	border-radius: 6px;
+	padding:50px 0px 30px 0;
+	
+	.pricingtable-footer{
+		border:0;
+		background-color: transparent;
+	}
+	.pricingtable-features{
+		border:0;
+		background-color: transparent;
+		li{
+			border:0;
+			background-color: transparent;
+			color:#919191;
+			font-size:18px;
+		}
+	}
+	.pricingtable-title{
+		border:0;
+		background-color: transparent;
+		padding: 0;
+		
+		*{
+			color:#000;
+		}
+		h2{
+			font-size: 28px;
+			line-height: 36px;
+		}
+	}
+	.pricingtable-price{
+		padding: 0;
+		border:0;
+		background-color: transparent;
+	}
+	.pricingtable-bx {
+		color: #000;
+		font-size: 63px;
+		font-weight: 800;
+		
+		strong, sup{
+			font-size: 30px;
+			font-weight: 700;
+		}
+	}
+	&:hover,
+	&.active{
+		background-color:#eeeeee;
+		border: 2px solid #eeeeee;
+	}
+	&.dark{
+		@include transitionMedium;
+		
+		&:hover,
+		&.active {
+			background-color: #404040;
+			border: 2px solid #404040;
+			box-shadow: 0 0 10px 5px rgba(0,0,0,0.3);
+			transition: all 0.5s;
+			.pricingtable-features li,
+			.pricingtable-title h2,
+			.pricingtable-price .pricingtable-bx{
+				color: #fff;
+				@include transitionMedium;
+			}
+			.pricingtable-footer .btn.black{
+				background-color: #fff;
+				border-color: rgba(0,0,0,0);
+				color: #000;
+			}
+		}
+	}
+}
+
+// pricingtable-toggle
+.pricingtable-toggle{
+	display: flex;
+    margin: auto;
+    justify-content: center;
+    padding: 0;
+    margin-bottom: 10px;
+	span{
+	    font-size: 18px;
+		margin-top: 5px;
+		font-weight: 500;
+	}
+	.custom-control-label{
+		margin: 0 35px 0 50px;
+	}
+}
+
+
+// Pricing Table
+.pricingtable-wrapper{
+	box-shadow: 1px 0 50px rgba(0, 0, 0, 0.1);
+	border-radius: var(--border-radius-base)!important;
+	overflow: hidden;
+	@include transitionMedium;
+	background-color: $white;
+	
+	&.style-1{
+		padding: 35px 40px;
+		position:relative;
+		z-index:1;
+		height:100%;
+		.pricingtable-inner{
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+		}
+		.pricingtable-footer{
+			margin-top:auto;
+		}
+		.pricingtable-price{
+			margin-bottom: 10px;
+			.pricingtable-bx{
+				font-size:42px;
+				small{
+					font-size:15px;
+				}
+			}
+			p {
+				margin:5px 0;
+				font-size:14px;
+			}
+			.pricingtable-type{
+				color:#071c35;
+				font-weight: 700;
+				font-size: 26px;
+				font-family:var(--font-family-title);				
+			}
+		}
+		.pricingtable-features{
+			border-top:1px solid;
+			border-color: #d5d5d9;
+			padding-top:25px;
+			padding-bottom:25px;
+			text-align: left;
+			li{
+				font-size:15px;
+				padding: 5px 0 5px 40px;
+				position:relative;
+				margin:10px 0;
+				&:after {
+					content: "\f00c";
+					font-family: 'Font Awesome 5 Free';
+					font-size: 12px;
+					font-weight: 600;
+					width: 26px;
+					height: 26px;
+					background: var(--rgba-secondary-1);
+					display: block;
+					position: absolute;
+					left: 0;
+					color: var(--secondary);
+					border-radius: 35px;
+					text-align: center;
+					top: 6px;
+					line-height: 26px;
+					-webkit-transition: all 1s;
+					-ms-transition: all 1s;
+					transition: all 1s;
+				}
+				@include respond('phone'){
+					margin:5px 0;
+				}
+			}
+			@include respond('phone'){
+				padding:15px 0;
+			}
+		}
+		.pricingtable-title{
+			position:absolute;
+			top:20px;
+			right:20px;
+			color:#fff;
+			padding: 2px 15px;
+			border-radius: 5px;
+			text-transform:uppercase;
+			font-family:var(--font-family-title);
+		}
+		@include custommq ($max:1200px){
+			padding: 30px 35px;
+		}
+		@include respond('phone'){
+			padding: 25px 30px;
+		}
+		
+		// Active
+		&.active{
+			background:var(--primary);
+			.btn-primary {
+				background:white;
+				color:var(--primary);
+			}
+			.pricingtable-type,
+			.pricingtable-price,
+			.pricingtable-bx {
+				color: #fff !important; 			
+			}
+			.pricingtable-features{
+				border-color: rgba(255,255,255,0.3);
+				li {
+					color:#fff;
+					&:after {
+						background: rgba(255,255,255,0.3);
+						color: #fff;
+					}
+				}
+			}
+		}
+	}	
+}

@@ -14,8 +14,8 @@ app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
-const indexRoutes = require('./routes/index');
-app.use('/', indexRoutes);
+const siteRoutes = require('./routes/index');
+app.use('/', siteRoutes);
 
 const startServer = async () => {
   try {

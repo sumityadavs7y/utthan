@@ -1,0 +1,159 @@
+// Counter 1
+.counter-style-1{
+	z-index: 1;
+	position: relative;
+	
+	.counter-num {
+		color: #fff;
+		font-size: 60px;
+		font-weight: 700;
+		line-height: 1.4;
+	}
+	p{
+		color: #fff;
+		font-weight: 400;
+		font-size: 18px;
+		margin-bottom: 0;
+	}
+	@include respond('phone'){
+		font-size: 1.875rem;
+		p {
+			font-size: 14px;
+		}
+		.counter-num {
+			font-size: 2.5rem;
+		}
+	}
+}
+.counter-wrapper-1{
+	.counter-inner{
+		margin: 0 -135px 0 -135px;
+		padding: 90px 80px 60px;
+		position: relative;
+		overflow: hidden;
+		border-radius: 14px;
+		
+		.pattren1,
+		.pattren2,
+		.pattren3,
+		.pattren4,
+		.pattren5,
+		.pattren6{
+			position: absolute;
+		}
+		.pattren1{
+			left: 25%;
+			bottom: 10%;
+		}
+		.pattren2{
+			bottom: 15%;
+			right: 20%;
+			width: 40px;
+		}
+		.pattren3{
+			bottom: -10%;
+			left: 10%;
+		}
+		.pattren4{
+			top: 0;
+			width: 16%;
+			right: 8px;
+		}
+		.pattren5{
+			top: 15%;
+			left: 11%;
+		}
+		.pattren6{
+			top: -5%;
+			left: 0;
+		}
+		@include respond('laptop'){
+			margin: 0 -50px 0 -50px;
+			padding: 60px 30px 30px;
+		}
+		@include respond('tab-land'){
+			.pattren6{
+				top: -5%;
+				left: -40px;
+			}
+			margin: 0;
+		}
+		@include respond('tab-port'){
+			padding: 40px 30px 10px;
+			.pattren6{
+				top: -5%;
+				left: -70px;
+			}
+			.pattren1{
+				left: 40%;
+			}
+			.pattren2{
+				bottom: 15%;
+				right: 30%;
+				width: 40px;
+			}
+		}
+		@include respond('phone'){
+			padding: 30px 40px 10px;
+			.pattren5{
+				top: 25%;
+				left: 40%;
+			}
+		}
+	}
+}
+// Counter 2
+.counter-style-2{
+	text-align: center;
+	.counter-num{
+		font-size: 80px;
+		line-height: 1.2;
+		font-weight: 700;
+		display: block;
+		
+		@include respond('tab-port'){
+			font-size: 60px;			
+		}
+		@include respond('phone-land'){
+			font-size: 42px;			
+		}
+	}
+}
+// Counter 3
+.counter-style-3{
+	.counter-num{
+		font-size: 65px;
+		line-height: 1.2;
+		font-weight: 700;
+		display: block;
+		
+		@include respond('phone'){
+			font-size: 45px;
+		}
+	}
+}
+.counter-style-4{
+	h4{
+		margin-bottom: 0;
+	}
+	.counter-num{
+		font-size: 35px;
+		color: var(--primary);
+		font-weight: 600;
+	}
+}
+
+//donate-wrapper
+.donate-wrapper{
+	.counter-style-2{
+		text-align: left!important;
+		.counter-num{
+			font-size: 80px;
+			line-height: 1.2;
+			font-weight: 700;
+			display: block;
+			margin-top: 10px;
+		}
+	}
+}
+

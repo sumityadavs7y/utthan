@@ -1,0 +1,285 @@
+footer{
+	--text-white: #fff;
+	--title: #fff;
+	
+	strong{
+		color: var(--text-white);
+	}	
+	.footer-logo{
+		margin-bottom:25px;
+		img{
+			max-width:100%;
+		}
+		@include respond('phone'){
+			width: 180px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+	}
+	.widget-logo ul{
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		
+		li{
+			display:inline-block;
+		    flex: 50%;	
+		    padding: 0 15px 15px 0px;	
+		}
+	}
+	.widget_about{
+		p{
+			margin-bottom: 30px;
+		}
+		@include custommq ($max:1200px){
+			padding:0;
+		}
+		@include custommq ($max:1191px){
+			max-width: 500px;
+			margin-left: auto;
+			margin-right: auto;
+			text-align: center;
+		}
+	}
+	
+	.footer-title{
+		margin: 0;
+		font-weight: 600;
+		padding-bottom: 15px;
+		margin-bottom: 30px;
+		position: relative;
+		color: var(--title);
+		line-height: 1.2;
+		
+		.dz-separator{
+			position:absolute;
+			bottom:0;
+			left:0;
+		}
+	}
+	.widget:hover{
+		.footer-title{
+			span{
+				&:after{
+					width: 5px;
+				}
+				&:before {
+					width: 55px;
+				}
+			}
+		}
+	}
+	.footer-top{
+		padding: 70px 0 30px;
+		background-color: #121E31;
+		@include respond('phone-land'){
+			padding: 50px 0 0;
+		}
+	}
+	.footer-bottom{
+		background-color: #121E31;
+		padding: 20px 0;
+		@include respond('tab-port'){
+			text-align: center!important;
+			.text-left,
+			.text-right{
+				text-align: center!important;
+			}
+			.text-right{
+				margin-top: 10px;
+			}
+		}
+	}
+	.widget-link{
+		li{
+			display: inline-block;
+			text-transform: uppercase;
+			margin-left: 20px;
+			@include respond('phone-land'){
+				margin-left: 8px;
+				margin-right: 7px;
+			}
+		}
+		a{
+			color: var(--text-white);
+		}
+	}
+	.widget_services{
+		ul{
+			li{
+				a{
+					color: var(--text-white);
+					display: block;
+					@include transitionMedium;
+					
+				}
+			}
+		}
+	}
+	.wp-block-latest-posts li, 
+	.wp-block-categories-list li, 
+	.wp-block-archives-list li, 
+	.widget_categories ul li, 
+	.widget_archive ul li, 
+	.widget_meta ul li, 
+	.widget_pages ul li, 
+	.widget_recent_comments ul li, 
+	.widget_nav_menu li, 
+	.widget_recent_entries ul li, 
+	.widget_services ul li{
+		@include transitionMedium;
+		left: 0;
+	}
+}
+
+.widget_getintuch{
+	ul{
+		li{
+			position: relative;
+			margin-bottom: 25px;
+			padding-left: 40px;
+			@include respond('tab-land'){	
+				margin-bottom: 20px;
+				padding-left: 40px;
+			}
+			h5{
+				font-size: 20px;
+				line-height: 1.33;
+				margin-bottom: 5px;
+				@include respond('tab-land'){	
+					font-size: 18px;
+					line-height: 1.2;
+				}
+			}
+			i{
+				position: absolute;
+				font-size: 18px;
+				line-height: 1;
+				left: 0;
+				top: 5px;
+				color: var(--secondary);
+			}
+		}
+	}
+}
+
+// contact ft
+.contact-ft{
+	text-align:center;
+	margin-bottom:40px;
+	i{
+		color:var(--primary);
+		font-size:50px;
+		line-height:1;
+		margin-bottom: 15px;
+		display: inline-block;
+	}
+	h4{
+		color: var(--text-white);
+		text-decoration: underline;
+	}
+	h5{
+		color: var(--text-white);
+		font-weight: 400;
+	}
+}
+
+// list column
+.list-column{
+	ul{
+		display: flex;
+		flex-wrap: wrap;
+		li{
+			flex: 0 0 50%;
+			max-width:50%;
+		}
+	}
+}
+
+// fb-link
+.fb-link{
+	list-style:none;
+	margin:0;
+	padding:0;
+	li{
+		display:inline-block;
+		
+		a{
+			color: var(--text-white);
+			position:relative;
+			&:after{
+				content:"";
+				background:var(--primary);
+				width:5px;
+				height:5px;
+			}
+		}
+	}
+}
+
+
+// footer-link
+.footer-link{
+	li{
+		display: inline-block;
+		position: relative;
+		padding: 0 25px 0 20px;
+
+		a{
+			color: inherit;
+		}
+		&:before{
+			content: "";
+			height: 8px;
+			width: 8px;
+			background-color: var(--primary);
+			position: absolute;
+			top: 50%;
+			left: 0;
+			border-radius: 8px;
+			transform: translateY(-50%);
+		}
+	}
+}
+
+.footer-subscribe-wrapper{
+	.wrapper-inner{
+		border-bottom: 1px solid rgba(255,255,255,0.2);
+		padding-top: 60px;
+		padding-bottom: 60px;
+	}
+	.btn{
+		border-radius: var(--border-radius-base) !important;
+		i{
+			display: none;
+		}
+	}
+	@include respond('tab-land'){
+		.wrapper-inner{
+			padding-top: 40px;
+			padding-bottom: 40px;
+		}
+		.title{
+			margin-bottom: 20px;
+		}
+	}
+	@include respond('phone'){
+		.title{
+			font-size: 24px;
+		}
+		.btn{
+			span{
+				display: none;
+			}
+			i{
+				display: block;
+			}
+		}
+	}
+}
+
+.footer-feature-wrapper{
+	margin-bottom: -90px;
+	position: relative;
+    z-index: 9;
+}
