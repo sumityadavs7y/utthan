@@ -44,9 +44,9 @@
 
 				<div class="extra-nav">
 					<div class="extra-cell">
-						<a href="/contact" class="btn btn-outline-secondary btnhover1">
+						<a href="<%= typeof currentUser !== 'undefined' && currentUser ? '/account' : '/login' %>" class="btn btn-outline-secondary btnhover1">
 							<i class="fa-solid fa-user"></i>
-							<span class="m-l10">My Account</span>
+							<span class="m-l10"><%= typeof currentUser !== 'undefined' && currentUser ? currentUser.name : 'My Account' %></span>
 						</a>
 					</div>
 				</div>
@@ -84,9 +84,22 @@
 						</li>
 					</ul>
 					<div class="header-bottom">
-						<a href="#" class="btn btn-light btn-login btn-sm" data-bs-toggle="modal" data-bs-target="#modalLogin">
-							<i class="flaticon-logout me-3"></i>Login / Sign Up
-						</a>
+						<% if (typeof currentUser !== 'undefined' && currentUser) { %>
+							<% if (currentUser.role === 'admin') { %>
+								<a href="/admin/users" class="btn btn-light btn-login btn-sm me-2">
+									<i class="fa-solid fa-users me-2"></i>Manage Users
+								</a>
+							<% } %>
+							<form method="POST" action="/logout" class="d-inline">
+								<button type="submit" class="btn btn-light btn-login btn-sm">
+									<i class="flaticon-logout me-3"></i>Logout
+								</button>
+							</form>
+						<% } else { %>
+							<a href="/login" class="btn btn-light btn-login btn-sm">
+								<i class="flaticon-logout me-3"></i>Login
+							</a>
+						<% } %>
 						<div class="dz-social-icon">
 							<ul>
 								<li><a class="fab fa-facebook-f" href="https://www.facebook.com/theutthanfoundation"></a></li>

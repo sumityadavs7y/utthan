@@ -1,6 +1,9 @@
 exports.envConfig = {
   port: process.env.PORT || '3000',
-  envMode: process.env.ENV_MODE || 'production'
+  envMode: process.env.ENV_MODE || 'production',
+  sessionSecret: process.env.SESSION_SECRET || 'change-me-in-production',
+  adminEmail: process.env.ADMIN_EMAIL || 'test@test.com',
+  adminPassword: process.env.ADMIN_PASSWORD || 'admin123'
 };
 
 exports.databaseConfig = {

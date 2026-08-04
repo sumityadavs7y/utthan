@@ -17,6 +17,17 @@
 
 				<div class="extra-nav">
 					<div class="extra-cell d-flex align-items-center">
+						<% if (typeof currentUser !== 'undefined' && currentUser) { %>
+							<a class="btn btn-outline-light btnhover1 me-2" href="/account">
+								<span><%= currentUser.name %></span>
+								<i class="fa-solid fa-user ms-3"></i>
+							</a>
+						<% } else { %>
+							<a class="btn btn-outline-light btnhover1 me-2" href="/login">
+								<span>Login</span>
+								<i class="fa-solid fa-user ms-3"></i>
+							</a>
+						<% } %>
 						<a class="btn btn-primary btnhover1" href="tel:+917052701010">
 							<span>+91-7052701010</span>
 							<i class="flaticon-phone-call-1 ms-3"></i>
@@ -60,6 +71,22 @@
 						<li><a href="/contact">Contact Us</a></li>
 					</ul>
 					<div class="header-bottom">
+						<% if (typeof currentUser !== 'undefined' && currentUser) { %>
+							<% if (currentUser.role === 'admin') { %>
+								<a href="/admin/users" class="btn btn-light btn-login btn-sm me-2 mb-2">
+									<i class="fa-solid fa-users me-2"></i>Manage Users
+								</a>
+							<% } %>
+							<form method="POST" action="/logout" class="d-inline">
+								<button type="submit" class="btn btn-light btn-login btn-sm mb-2">
+									<i class="flaticon-logout me-3"></i>Logout
+								</button>
+							</form>
+						<% } else { %>
+							<a href="/login" class="btn btn-light btn-login btn-sm mb-2">
+								<i class="flaticon-logout me-3"></i>Login
+							</a>
+						<% } %>
 						<div class="dz-social-icon">
 							<ul>
 								<li><a class="fab fa-facebook-f" href="https://www.facebook.com/theutthanfoundation"></a></li>

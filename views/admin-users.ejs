@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include('partials/head') %>
+	<style>
+		.admin-users-panel {
+			background: #fff;
+			border: 1px solid #e9eef2;
+			border-radius: 12px;
+			padding: 28px 28px 12px;
+			box-shadow: 0 8px 24px rgba(0, 59, 74, 0.06);
+		}
+		.admin-users-panel .panel-head {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: space-between;
+			gap: 16px;
+			margin-bottom: 24px;
+		}
+		.admin-users-panel .panel-head .title {
+			margin: 0;
+			font-size: 28px;
+		}
+		.admin-users-panel .panel-sub {
+			margin: 6px 0 0;
+			color: #6c7a80;
+		}
+		.admin-users-table {
+			margin-bottom: 0;
+		}
+		.admin-users-table thead th {
+			border-bottom-width: 1px;
+			color: #003b4a;
+			font-weight: 600;
+			white-space: nowrap;
+			background: #f6fafb;
+		}
+		.admin-users-table tbody td {
+			vertical-align: middle;
+			padding-top: 16px;
+			padding-bottom: 16px;
+		}
+		.admin-users-table .user-cell {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+		.admin-users-table .user-avatar {
+			width: 42px;
+			height: 42px;
+			border-radius: 50%;
+			background: #e8f4f6;
+			color: #003b4a;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			font-weight: 700;
+			flex-shrink: 0;
+		}
+		.admin-users-table .user-meta strong {
+			display: block;
+			color: #003b4a;
+		}
+		.admin-users-table .user-meta span {
+			color: #6c7a80;
+			font-size: 13px;
+		}
+		.role-badge {
+			display: inline-block;
+			padding: 5px 12px;
+			border-radius: 999px;
+			font-size: 12px;
+			font-weight: 600;
+			text-transform: capitalize;
+			letter-spacing: 0.02em;
+		}
+		.role-badge.role-admin {
+			background: #fff3e6;
+			color: #c56a17;
+		}
+		.role-badge.role-user {
+			background: #e8f4f6;
+			color: #0d6b7a;
+		}
+		.you-badge {
+			display: inline-block;
+			margin-left: 8px;
+			padding: 2px 8px;
+			border-radius: 999px;
+			background: #003b4a;
+			color: #fff;
+			font-size: 11px;
+			font-weight: 600;
+			vertical-align: middle;
+		}
+		.admin-action-btns {
+			display: flex;
+			gap: 8px;
+			justify-content: flex-end;
+		}
+		.admin-action-btns .btn {
+			min-width: 40px;
+			padding: 8px 12px;
+		}
+		.admin-empty {
+			text-align: center;
+			padding: 48px 16px;
+			color: #6c7a80;
+		}
+		@media (max-width: 767px) {
+			.admin-users-panel {
+				padding: 20px 16px 8px;
+			}
+			.admin-action-btns {
+				justify-content: flex-start;
+			}
+		}
+	</style>
+</head>
+<body id="bg">
+<%- include('partials/loader') %>
+<div class="page-wraper">
+	<%- include('partials/header') %>
+
+<div class="page-content bg-white">
+		<div class="dz-bnr-inr dz-bnr-inr-sm style-1 text-center overlay-primary-dark" style="background-image:url('/images/banner/bnr1.jpg');">
+			<div class="container">
+				<div class="dz-bnr-inr-entry">
+					<h1>Manage Users</h1>
+					<nav aria-label="breadcrumb" class="breadcrumb-row">
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item"><a href="/">Home</a></li>
+							<li class="breadcrumb-item"><a href="/account">My Account</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Manage Users</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+
+		<section class="content-inner-1">
+			<div class="container">
+				<%- include('partials/flash') %>
+
+				<div class="admin-users-panel">
+					<div class="panel-head">
+						<div>
+							<h2 class="title">Users</h2>
+							<p class="panel-sub">Create accounts, reset passwords, and remove users.</p>
+						</div>
+						<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalAddUser">
+							<i class="fa-solid fa-user-plus me-2"></i>Add User
+						</button>
+					</div>
+
+					<div class="table-responsive">
+						<table class="table admin-users-table align-middle">
+							<thead>
+								<tr>
+									<th>User</th>
+									<th>Role</th>
+									<th>Created</th>
+									<th class="text-end">Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								<% if (users && users.length) { %>
+									<% users.forEach(function(user) { %>
+										<% const isSelf = currentUser && currentUser.id === user.id; %>
+										<% const initial = (user.name || '?').trim().charAt(0).toUpperCase(); %>
+										<tr>
+											<td>
+												<div class="user-cell">
+													<span class="user-avatar"><%= initial %></span>
+													<div class="user-meta">
+														<strong>
+															<%= user.name %>
+															<% if (isSelf) { %><span class="you-badge">You</span><% } %>
+														</strong>
+														<span><%= user.email %></span>
+													</div>
+												</div>
+											</td>
+											<td>
+												<span class="role-badge role-<%= user.role %>"><%= user.role %></span>
+											</td>
+											<td><%= new Date(user.createdAt).toLocaleDateString() %></td>
+											<td>
+												<div class="admin-action-btns">
+													<button
+														type="button"
+														class="btn btn-sm btn-outline-secondary btn-change-password"
+														title="Change password"
+														data-bs-toggle="modal"
+														data-bs-target="#modalChangePassword"
+														data-user-id="<%= user.id %>"
+														data-user-name="<%= user.name %>"
+														data-user-email="<%= user.email %>"
+													>
+														<i class="fa-solid fa-key"></i>
+													</button>
+													<% if (!isSelf) { %>
+														<button
+															type="button"
+															class="btn btn-sm btn-outline-danger btn-delete-user"
+															title="Delete user"
+															data-bs-toggle="modal"
+															data-bs-target="#modalDeleteUser"
+															data-user-id="<%= user.id %>"
+															data-user-name="<%= user.name %>"
+															data-user-email="<%= user.email %>"
+														>
+															<i class="fa-solid fa-trash"></i>
+														</button>
+													<% } %>
+												</div>
+											</td>
+										</tr>
+									<% }) %>
+								<% } else { %>
+									<tr>
+										<td colspan="4">
+											<div class="admin-empty">
+												<i class="fa-solid fa-users fa-2x mb-3 d-block"></i>
+												No users found yet. Add your first account to get started.
+											</div>
+										</td>
+									</tr>
+								<% } %>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</section>
+</div>
+
+	<%- include('partials/footer') %>
+
+	<div class="modal fade modal-wrapper" id="modalAddUser" tabindex="-1" aria-labelledby="modalAddUserTitle" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalAddUserTitle">Add User</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="flaticon-close"></i></button>
+				</div>
+				<form method="POST" action="/admin/users">
+					<div class="modal-body">
+						<div class="form-group mb-3">
+							<label class="form-label">Name</label>
+							<input name="name" required type="text" class="form-control" placeholder="Full name">
+						</div>
+						<div class="form-group mb-3">
+							<label class="form-label">Email</label>
+							<input name="email" required type="email" class="form-control" placeholder="user@example.com">
+						</div>
+						<div class="form-group mb-3">
+							<label class="form-label">Password</label>
+							<input name="password" required type="password" class="form-control" placeholder="Min. 6 characters" minlength="6">
+						</div>
+						<div class="form-group">
+							<label class="form-label">Role</label>
+							<select name="role" class="form-control form-select">
+								<option value="user" selected>User</option>
+								<option value="admin">Admin</option>
+							</select>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-secondary">Create User</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade modal-wrapper" id="modalChangePassword" tabindex="-1" aria-labelledby="modalChangePasswordTitle" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalChangePasswordTitle">Change Password</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="flaticon-close"></i></button>
+				</div>
+				<form method="POST" id="formChangePassword" action="#">
+					<div class="modal-body">
+						<p class="mb-3 text-muted" id="changePasswordUserLabel"></p>
+						<div class="form-group mb-3">
+							<label class="form-label">New password</label>
+							<input name="password" id="changePasswordInput" required type="password" class="form-control" placeholder="Min. 6 characters" minlength="6" autocomplete="new-password">
+						</div>
+						<div class="form-group">
+							<label class="form-label">Confirm password</label>
+							<input id="changePasswordConfirm" required type="password" class="form-control" placeholder="Re-enter password" minlength="6" autocomplete="new-password">
+						</div>
+						<div class="alert alert-danger d-none mt-3 mb-0" id="changePasswordError" role="alert"></div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-secondary">Update Password</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade modal-wrapper" id="modalDeleteUser" tabindex="-1" aria-labelledby="modalDeleteUserTitle" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalDeleteUserTitle">Delete User</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="flaticon-close"></i></button>
+				</div>
+				<form method="POST" id="formDeleteUser" action="#">
+					<div class="modal-body">
+						<p class="mb-0">Are you sure you want to delete <strong id="deleteUserName"></strong> (<span id="deleteUserEmail"></span>)? This cannot be undone.</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-danger">Delete User</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<button class="scroltop icon-up" type="button"><i class="fas fa-arrow-up"></i></button>
+</div>
+<%- include('partials/scripts') %>
+<script>
+(function () {
+	var changeModal = document.getElementById('modalChangePassword');
+	var deleteModal = document.getElementById('modalDeleteUser');
+	var changeForm = document.getElementById('formChangePassword');
+	var deleteForm = document.getElementById('formDeleteUser');
+	var passwordInput = document.getElementById('changePasswordInput');
+	var confirmInput = document.getElementById('changePasswordConfirm');
+	var passwordError = document.getElementById('changePasswordError');
+
+	if (changeModal) {
+		changeModal.addEventListener('show.bs.modal', function (event) {
+			var button = event.relatedTarget;
+			if (!button) return;
+			var userId = button.getAttribute('data-user-id');
+			var name = button.getAttribute('data-user-name') || '';
+			var email = button.getAttribute('data-user-email') || '';
+			changeForm.action = '/admin/users/' + userId + '/password';
+			document.getElementById('changePasswordUserLabel').textContent = name + ' · ' + email;
+			passwordInput.value = '';
+			confirmInput.value = '';
+			passwordError.classList.add('d-none');
+			passwordError.textContent = '';
+		});
+	}
+
+	if (changeForm) {
+		changeForm.addEventListener('submit', function (event) {
+			if (passwordInput.value !== confirmInput.value) {
+				event.preventDefault();
+				passwordError.textContent = 'Passwords do not match.';
+				passwordError.classList.remove('d-none');
+			}
+		});
+	}
+
+	if (deleteModal) {
+		deleteModal.addEventListener('show.bs.modal', function (event) {
+			var button = event.relatedTarget;
+			if (!button) return;
+			var userId = button.getAttribute('data-user-id');
+			deleteForm.action = '/admin/users/' + userId + '/delete';
+			document.getElementById('deleteUserName').textContent = button.getAttribute('data-user-name') || '';
+			document.getElementById('deleteUserEmail').textContent = button.getAttribute('data-user-email') || '';
+		});
+	}
+})();
+</script>
+</body>
+</html>

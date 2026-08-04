@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include('partials/head') %>
+</head>
+<body id="bg">
+<%- include('partials/loader') %>
+<div class="page-wraper">
+	<%- include('partials/header') %>
+
+<div class="page-content bg-white">
+		<div class="dz-bnr-inr dz-bnr-inr-sm style-1 text-center overlay-primary-dark" style="background-image:url('/images/banner/bnr1.jpg');">
+			<div class="container">
+				<div class="dz-bnr-inr-entry">
+					<h1>My Account</h1>
+					<nav aria-label="breadcrumb" class="breadcrumb-row">
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item"><a href="/">Home</a></li>
+							<li class="breadcrumb-item active" aria-current="page">My Account</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+
+		<section class="content-inner-1">
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-7 col-md-10">
+						<%- include('partials/flash') %>
+						<div class="form-wrapper style-1">
+							<h2 class="title mb-3">Account details</h2>
+							<% if (currentUser) { %>
+								<ul class="list-group list-group-flush m-b30">
+									<li class="list-group-item d-flex justify-content-between">
+										<span>Name</span>
+										<strong><%= currentUser.name %></strong>
+									</li>
+									<li class="list-group-item d-flex justify-content-between">
+										<span>Email</span>
+										<strong><%= currentUser.email %></strong>
+									</li>
+									<li class="list-group-item d-flex justify-content-between">
+										<span>Role</span>
+										<strong class="text-capitalize"><%= currentUser.role %></strong>
+									</li>
+								</ul>
+								<div class="d-flex flex-wrap gap-2">
+									<% if (currentUser.role === 'admin') { %>
+										<a href="/admin/users" class="btn btn-secondary">Manage Users</a>
+									<% } %>
+									<form method="POST" action="/logout" class="d-inline">
+										<button type="submit" class="btn btn-outline-secondary">Logout</button>
+									</form>
+								</div>
+							<% } %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+</div>
+
+	<%- include('partials/footer') %>
+
+	<button class="scroltop icon-up" type="button"><i class="fas fa-arrow-up"></i></button>
+</div>
+<%- include('partials/scripts') %>
+</body>
+</html>
