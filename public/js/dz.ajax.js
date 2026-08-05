@@ -22,36 +22,44 @@ function contactForm()
         $('input[data-recaptcha]').val("").trigger('change');
     }
 	'use strict';
-	var msgDiv;
+
 	$(".dzForm").on('submit',function(e)
 	{
-		e.preventDefault();	//STOP default action
-		$('.dzFormMsg').html('<div class="gen alert alert-success">Submitting..</div>');
-		var dzFormAction = $(this).attr('action');
-		var dzFormData = $(this).serialize();
-		
+		e.preventDefault();
+		var thisForm = $(this);
+		var msgBox = thisForm.find('.dzFormMsg');
+		if (!msgBox.length) {
+			msgBox = $('.dzFormMsg').first();
+		}
+		msgBox.html('<div class="gen alert alert-success">Submitting..</div>');
+
 		$.ajax({
 			method: "POST",
-			url: dzFormAction,
-			data: dzFormData,
+			url: thisForm.attr('action'),
+			data: thisForm.serialize(),
 			dataType: 'json',
 			success: function(dzRes){
-				if(dzRes.status == 1){
-					msgDiv = '<div class="gen alert alert-success">'+dzRes.msg+'</div>';
-				}
-				
-				if(dzRes.status == 0){
-					msgDiv = '<div class="err alert alert-danger">'+dzRes.msg+'</div>';
-				}
-				$('.dzFormMsg').html(msgDiv);
-				
-				
+				var msgDiv = dzRes.status == 1
+					? '<div class="gen alert alert-success">'+dzRes.msg+'</div>'
+					: '<div class="err alert alert-danger">'+dzRes.msg+'</div>';
+				msgBox.html(msgDiv);
+
 				setTimeout(function(){
-					$('.dzFormMsg .alert').hide(1000);
+					msgBox.find('.alert').hide(1000);
 				}, 10000);
-				
-				$('.dzForm')[0].reset();
-                grecaptcha.reset();
+
+				if (dzRes.status == 1) {
+					thisForm[0].reset();
+				}
+				if (typeof grecaptcha !== 'undefined' && thisForm.find('[data-recaptcha]').length) {
+					try { grecaptcha.reset(); } catch (err) {}
+				}
+			},
+			error: function(xhr){
+				var msg = (xhr.responseJSON && xhr.responseJSON.msg)
+					? xhr.responseJSON.msg
+					: 'Something went wrong. Please try again.';
+				msgBox.html('<div class="err alert alert-danger">'+msg+'</div>');
 			}
 		})
 	});
@@ -60,8 +68,12 @@ function contactForm()
 	/* This function is for mail champ subscription START*/
 	$(".dzSubscribe").on('submit',function(e)
 	{
-		e.preventDefault();	//STOP default action
+		e.preventDefault();
 		var thisForm = $(this);
+		var msgBox = thisForm.find('.dzSubscribeMsg');
+		if (!msgBox.length) {
+			msgBox = thisForm.siblings('.dzSubscribeMsg').first();
+		}
 		var dzFormAction = thisForm.attr('action');
 		var dzFormData = thisForm.serialize();
 		thisForm.addClass('dz-ajax-overlay');
@@ -73,19 +85,25 @@ function contactForm()
 			dataType: 'json',
 		  success: function(dzRes) {
 			thisForm.removeClass('dz-ajax-overlay');  
-			if(dzRes.status == 1){
-				msgDiv = '<div class="gen alert alert-success">'+dzRes.msg+'</div>';
-			}
-			if(dzRes.status == 0){
-				msgDiv = '<div class="err alert alert-danger">'+dzRes.msg+'</div>';
-			}
-			$('.dzSubscribeMsg').html(msgDiv);
+			var msgDiv = dzRes.status == 1
+				? '<div class="gen alert alert-success">'+dzRes.msg+'</div>'
+				: '<div class="err alert alert-danger">'+dzRes.msg+'</div>';
+			msgBox.html(msgDiv);
 			
 			setTimeout(function(){
-				$('.dzSubscribeMsg .alert').hide(1000);
+				msgBox.find('.alert').hide(1000);
 			}, 10000);
 			
-			$('.dzSubscribe')[0].reset();
+			if (dzRes.status == 1) {
+				thisForm[0].reset();
+			}
+		  },
+		  error: function(xhr){
+			thisForm.removeClass('dz-ajax-overlay');
+			var msg = (xhr.responseJSON && xhr.responseJSON.msg)
+				? xhr.responseJSON.msg
+				: 'Something went wrong. Please try again.';
+			msgBox.html('<div class="err alert alert-danger">'+msg+'</div>');
 		  }
 		}) 
 	});
@@ -98,4 +116,4 @@ function contactForm()
 jQuery(document).ready(function() {
     'use strict';
 	contactForm();
-})	
+})

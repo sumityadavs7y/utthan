@@ -409,9 +409,10 @@
 							<div class="inner-content">
 								<h2 class="title text-white">Newsletter</h2>
 								<p class="text-white">Sign up for our monthly newsletter to get the latest news, volunteer opportunities.</p>
-								<form class="dzSubscribe" action="#" method="post">
+								<form class="dzSubscribe" action="/api/newsletter" method="post">
 									<div class="dzSubscribeMsg text-white"></div>
 									<input name="dzEmail" required="required" type="email" class="form-control transparent m-b15" placeholder="Enter your email address">
+									<input type="hidden" name="dzSource" value="home-newsletter">
 									<button name="submit" value="Submit" type="submit" class="btn btn-light btn-rounded btn-block">Subscribe Now</button>
 								</form>
 							</div>
@@ -622,10 +623,11 @@
 						</div>
 					</div>
 					<div class="col-lg-9">
-						<form class="dzForm" method="POST" action="#">
+						<form class="dzForm" method="POST" action="/api/contact">
 							<div class="dzFormMsg"></div>
 							<input type="hidden" class="form-control" name="dzToDo" value="Contact">
 							<input type="hidden" class="form-control" name="reCaptchaEnable" value="0">
+							<input type="hidden" name="dzSource" value="home-join">
 							
 							<div class="row g-4">
 								<div class="col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.2s">
@@ -635,7 +637,7 @@
 									<input name="dzLastName" required="" type="text" class="form-control" placeholder="Last Name">
 								</div>
 								<div class="col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.6s">
-									<input name="dzEmail" required="" type="text" class="form-control" placeholder="Email Address">
+									<input name="dzEmail" required="" type="email" class="form-control" placeholder="Email Address">
 								</div>
 								<div class="col-md-4 col-sm-6 wow fadeInUp" data-wow-delay="0.8s">
 									<input name="dzPhoneNumber" required="" type="text" class="form-control" placeholder="Phone Number">

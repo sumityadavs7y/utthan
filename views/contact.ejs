@@ -92,9 +92,10 @@
 						<div class="contact-info form-wrapper style-1">
 							<h2 class="title">Write us a message</h2>
 							<div class="contact-area">
-								<form class="dz-form dzForm contact-bx" method="POST" action="#">
+								<form class="dz-form dzForm contact-bx" method="POST" action="/api/contact">
 									<div class="dzFormMsg"></div>
 									<input type="hidden" class="form-control" name="dzToDo" value="Contact">
+									<input type="hidden" name="dzSource" value="contact">
 									<div class="row sp15">
 										<div class="col-md-6">
 											<label class="form-label">First Name</label>
@@ -111,7 +112,7 @@
 										<div class="col-md-6">
 											<label class="form-label">Email address</label>
 											<div class="input-group">
-												<input name="dzEmail" required type="text" class="form-control" placeholder="info@example.com">
+												<input name="dzEmail" required type="email" class="form-control" placeholder="info@example.com">
 											</div>
 										</div>
 										<div class="col-md-6">

@@ -35,9 +35,9 @@
 					<div class="col-xl-9 col-md-9 col-sm-12">
 						<div class="form-wrapper style-3">
 							<div class="contact-area">
-								<form class="dz-form dzForm contact-bx" method="POST" action="#">
+								<form class="dz-form dzForm contact-bx" method="POST" action="/api/volunteer">
 									<div class="dzFormMsg"></div>
-									<input type="hidden" class="form-control" name="dzToDo" value="Contact">
+									<input type="hidden" class="form-control" name="dzToDo" value="Volunteer">
 									<input type="hidden" class="form-control" name="reCaptchaEnable" value="0">
 									
 									<div class="row sp15">
@@ -50,7 +50,7 @@
 										<div class="col-md-6">
 											<label class="form-label">Email address</label>
 											<div class="input-group">
-												<input name="dzEmail" required type="text" class="form-control" placeholder="xyz@mail.com">
+												<input name="dzEmail" required type="email" class="form-control" placeholder="xyz@mail.com">
 											</div>
 										</div>
 										<div class="col-md-6">
@@ -62,7 +62,7 @@
 										<div class="col-md-12">
 											<label class="form-label">Company Name</label>
 											<div class="input-group">
-												<input name="dzOther[company_Name]" required type="text" class="form-control" placeholder="xyz Studios">
+												<input name="dzCompany" type="text" class="form-control" placeholder="xyz Studios">
 											</div>
 										</div>
 										<div class="col-md-12">
@@ -73,7 +73,7 @@
 										</div>
 										<div class="col-md-12 m-b20">
 											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+												<input class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" name="dzAcceptTerms" required>
 												<label class="form-check-label" for="flexCheckDefault">
 													Accept terms & conditions
 												</label>

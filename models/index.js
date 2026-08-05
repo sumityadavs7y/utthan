@@ -8,6 +8,9 @@ const Campaign = require('./campaign');
 const Certificate = require('./certificate');
 const Media = require('./media');
 const SiteConfig = require('./siteConfig');
+const ContactMessage = require('./contactMessage');
+const VolunteerApplication = require('./volunteerApplication');
+const NewsletterSubscriber = require('./newsletterSubscriber');
 
 User.hasMany(Post, { foreignKey: 'userId', as: 'posts' });
 Post.belongsTo(User, { foreignKey: 'userId', as: 'author' });
@@ -30,5 +33,8 @@ module.exports = {
   Campaign,
   Certificate,
   Media,
-  SiteConfig
+  SiteConfig,
+  ContactMessage,
+  VolunteerApplication,
+  NewsletterSubscriber
 };

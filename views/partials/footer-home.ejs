@@ -7,10 +7,11 @@
 						<h2 class="title text-white m-b0">Don't miss our weekly updates about donations</h2>
 					</div>
 					<div class="col-xl-6 col-lg-9 wow fadeInUp" data-wow-delay="0.4s">
-						<form class="dzSubscribe" action="#" method="post">
+						<form class="dzSubscribe" action="/api/newsletter" method="post">
 							<div class="dzSubscribeMsg text-white"></div>
 							<div class="input-group">
 								<input name="dzEmail" required="required" type="email" class="form-control transparent m-r20" placeholder="Enter your email address...">
+								<input type="hidden" name="dzSource" value="footer-home">
 								<button name="submit" value="Submit" type="submit" class="btn btn-primary">
 									<span>SUBSCRIBE</span>
 									<i class="fa-solid fa-paper-plane"></i>

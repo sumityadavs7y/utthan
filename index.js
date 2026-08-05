@@ -87,6 +87,7 @@ const campaignRoutes = require('./routes/campaign');
 const certificateRoutes = require('./routes/certificate');
 const mediaRoutes = require('./routes/media');
 const settingsRoutes = require('./routes/settings');
+const formsRoutes = require('./routes/forms');
 app.use('/', siteRoutes);
 app.use('/', authRoutes);
 app.use('/', blogRoutes);
@@ -96,6 +97,7 @@ app.use('/', campaignRoutes);
 app.use('/', certificateRoutes);
 app.use('/', mediaRoutes);
 app.use('/', settingsRoutes);
+app.use('/', formsRoutes);
 
 const startServer = async () => {
   try {

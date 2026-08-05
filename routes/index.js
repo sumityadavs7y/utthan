@@ -208,8 +208,7 @@ router.get('/contact', (req, res) => {
     extraJs: [
       '/vendor/magnific-popup/magnific-popup.js',
       '/vendor/swiper/swiper-bundle.min.js',
-      '/js/dz.carousel.js',
-      'https://www.google.com/recaptcha/api.js'
+      '/js/dz.carousel.js'
     ]
   });
 });

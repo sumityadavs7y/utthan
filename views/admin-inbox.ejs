@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<%- include('partials/head') %>
+	<style>
+		.inbox-nav {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+			margin-bottom: 24px;
+		}
+		.inbox-card {
+			border: 1px solid #e6eef1;
+			border-radius: 12px;
+			padding: 16px;
+			margin-bottom: 12px;
+			background: #fff;
+		}
+		.inbox-card.unread {
+			border-color: #9fd3e0;
+			background: #f7fcfd;
+		}
+		.inbox-meta {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px 16px;
+			color: #6c7a80;
+			font-size: 0.9rem;
+			margin-bottom: 8px;
+		}
+		.inbox-actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+			margin-top: 12px;
+		}
+		.inbox-empty {
+			padding: 24px;
+			text-align: center;
+			color: #6c7a80;
+			border: 1px dashed #d9e4e8;
+			border-radius: 12px;
+			background: #fff;
+		}
+		.inbox-message {
+			white-space: pre-wrap;
+			margin: 0;
+		}
+	</style>
+</head>
+<body id="bg">
+<%- include('partials/loader') %>
+<div class="page-wraper">
+	<%- include('partials/header') %>
+
+	<div class="page-content bg-white">
+		<div class="dz-bnr-inr dz-bnr-inr-sm style-1 text-center overlay-primary-dark" style="background-image:url('/images/banner/bnr1.jpg');">
+			<div class="container">
+				<div class="dz-bnr-inr-entry">
+					<h1>Inbox</h1>
+					<nav aria-label="breadcrumb" class="breadcrumb-row">
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item"><a href="/">Home</a></li>
+							<li class="breadcrumb-item"><a href="/account">My Account</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Inbox</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+
+		<section class="content-inner-1">
+			<div class="container">
+				<%- include('partials/flash') %>
+
+				<div class="inbox-nav">
+					<a class="btn btn-sm btn-secondary" href="#contacts">Contacts (<%= contacts.length %>)</a>
+					<a class="btn btn-sm btn-outline-secondary" href="#volunteers">Volunteers (<%= volunteers.length %>)</a>
+					<a class="btn btn-sm btn-outline-secondary" href="#subscribers">Newsletter (<%= subscribers.length %>)</a>
+				</div>
+
+				<section id="contacts" class="m-b50">
+					<h3 class="mb-3">Contact messages</h3>
+					<% if (contacts && contacts.length) { %>
+						<% contacts.forEach(function(item) { %>
+							<div class="inbox-card <%= item.isRead ? '' : 'unread' %>">
+								<div class="inbox-meta">
+									<strong><%= item.firstName %><%= item.lastName ? ' ' + item.lastName : '' %></strong>
+									<span><a href="mailto:<%= item.email %>"><%= item.email %></a></span>
+									<% if (item.phone) { %><span><%= item.phone %></span><% } %>
+									<span>via <%= item.source %></span>
+									<span><%= new Date(item.createdAt).toLocaleString() %></span>
+									<% if (!item.isRead) { %><span class="badge bg-primary">New</span><% } %>
+								</div>
+								<p class="inbox-message"><%= item.message %></p>
+								<div class="inbox-actions">
+									<% if (!item.isRead) { %>
+										<form method="POST" action="/admin/inbox/contacts/<%= item.id %>/read" class="m-0">
+											<button type="submit" class="btn btn-sm btn-outline-secondary">Mark read</button>
+										</form>
+									<% } %>
+									<form method="POST" action="/admin/inbox/contacts/<%= item.id %>/delete" class="m-0" onsubmit="return confirm('Delete this message?');">
+										<button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+									</form>
+								</div>
+							</div>
+						<% }) %>
+					<% } else { %>
+						<div class="inbox-empty">No contact messages yet.</div>
+					<% } %>
+				</section>
+
+				<section id="volunteers" class="m-b50">
+					<h3 class="mb-3">Volunteer applications</h3>
+					<% if (volunteers && volunteers.length) { %>
+						<% volunteers.forEach(function(item) { %>
+							<div class="inbox-card <%= item.isRead ? '' : 'unread' %>">
+								<div class="inbox-meta">
+									<strong><%= item.name %></strong>
+									<span><a href="mailto:<%= item.email %>"><%= item.email %></a></span>
+									<% if (item.phone) { %><span><%= item.phone %></span><% } %>
+									<% if (item.company) { %><span><%= item.company %></span><% } %>
+									<span><%= new Date(item.createdAt).toLocaleString() %></span>
+									<% if (!item.isRead) { %><span class="badge bg-primary">New</span><% } %>
+								</div>
+								<p class="inbox-message"><%= item.message %></p>
+								<div class="inbox-actions">
+									<% if (!item.isRead) { %>
+										<form method="POST" action="/admin/inbox/volunteers/<%= item.id %>/read" class="m-0">
+											<button type="submit" class="btn btn-sm btn-outline-secondary">Mark read</button>
+										</form>
+									<% } %>
+									<form method="POST" action="/admin/inbox/volunteers/<%= item.id %>/delete" class="m-0" onsubmit="return confirm('Delete this application?');">
+										<button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+									</form>
+								</div>
+							</div>
+						<% }) %>
+					<% } else { %>
+						<div class="inbox-empty">No volunteer applications yet.</div>
+					<% } %>
+				</section>
+
+				<section id="subscribers">
+					<h3 class="mb-3">Newsletter subscribers</h3>
+					<% if (subscribers && subscribers.length) { %>
+						<div class="table-responsive">
+							<table class="table align-middle">
+								<thead>
+									<tr>
+										<th>Email</th>
+										<th>Source</th>
+										<th>Joined</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<% subscribers.forEach(function(item) { %>
+										<tr>
+											<td><a href="mailto:<%= item.email %>"><%= item.email %></a></td>
+											<td><%= item.source || '—' %></td>
+											<td><%= new Date(item.createdAt).toLocaleString() %></td>
+											<td class="text-end">
+												<form method="POST" action="/admin/inbox/subscribers/<%= item.id %>/delete" class="m-0" onsubmit="return confirm('Remove this subscriber?');">
+													<button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+												</form>
+											</td>
+										</tr>
+									<% }) %>
+								</tbody>
+							</table>
+						</div>
+					<% } else { %>
+						<div class="inbox-empty">No newsletter subscribers yet.</div>
+					<% } %>
+				</section>
+			</div>
+		</section>
+	</div>
+
+	<%- include('partials/footer') %>
+</div>
+<%- include('partials/scripts') %>
+</body>
+</html>
