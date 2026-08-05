@@ -157,195 +157,60 @@
 				</div>
 			</div>
 			<div class="resize-wrapper">
-				<div class="swiper recent-blog2">
-					<div class="swiper-wrapper">
-						<div class="swiper-slide">
-							<div class="dz-card style-5 wow fadeInUp" data-wow-delay="0.2s">
-								<div class="dz-media">
-									<a href="/campaigns"><img src="/images/project/project1/pic1.jpg" alt=""></a>
-								</div>
-								<div class="dz-info">
-									<ul class="dz-category">
-										<li><a href="#">EDUCATION</a></li>
-									</ul>
-									<h5 class="dz-title"><a href="/campaigns">Educating Children For Better Future </a></h5>  
-									<ul class="dz-meta">
-										<li class="author-wrappper author-wrappper-sm mt-0">
-											<div class="author-media">
-												<img src="/images/avatar/avatar1.jpg" alt=""> 
-											</div>
-											<span>Avinash</span>
-										</li>
-										<li class="dz-date">
-											<i class="fa-solid fa-calendar"></i>
-											<span>45 Days left</span>
-										</li>
-									</ul>
-									<p>Providing education to remote areas for better future</p> 
-									<div class="progress-bx style-2">
-										<div class="progress">
-											<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" style="width:3%">
-												<span class="progress-value">3%</span>
+				<% if (campaigns && campaigns.length) { %>
+					<div class="swiper recent-blog2">
+						<div class="swiper-wrapper">
+							<% campaigns.forEach(function(campaign, index) { %>
+								<div class="swiper-slide">
+									<div class="dz-card style-5 wow fadeInUp" data-wow-delay="<%= ((index % 5) * 0.2 + 0.2).toFixed(1) %>s">
+										<div class="dz-media">
+											<a href="/campaigns"><img src="<%= campaign.imagePath %>" alt="<%= campaign.title %>"></a>
+										</div>
+										<div class="dz-info">
+											<ul class="dz-category">
+												<li><a href="/campaigns"><%= String(campaign.category || '').toUpperCase() %></a></li>
+											</ul>
+											<h5 class="dz-title"><a href="/donate"><%= campaign.title %></a></h5>
+											<ul class="dz-meta">
+												<% if (typeof currentUser !== 'undefined' && currentUser && campaign.authorName) { %>
+													<li class="author-wrappper author-wrappper-sm mt-0">
+														<% if (campaign.authorImagePath) { %>
+															<div class="author-media">
+																<img src="<%= campaign.authorImagePath %>" alt="<%= campaign.authorName %>">
+															</div>
+														<% } %>
+														<span><%= campaign.authorName %></span>
+													</li>
+												<% } %>
+												<% if (typeof currentUser !== 'undefined' && currentUser && campaign.location) { %>
+													<li class="dz-date">
+														<i class="fa-solid fa-location-dot"></i>
+														<span><%= campaign.location %></span>
+													</li>
+												<% } %>
+											</ul>
+											<div class="progress-bx style-2">
+												<div class="progress">
+													<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="<%= campaign.progress %>" aria-valuemin="0" aria-valuemax="100" style="width:<%= campaign.progress %>%">
+														<span class="progress-value"><%= campaign.progress %>%</span>
+													</div>
+												</div>
+												<ul class="progress-tag">
+													<li class="raised">Raised: <span class="text-primary">₹<%= campaign.raisedDisplay %></span></li>
+													<li class="goal">Goal: <span class="text-primary">₹<%= campaign.goalDisplay %></span></li>
+												</ul>
 											</div>
 										</div>
-										<ul class="progress-tag">
-											<li class="raised">Raised: <span class="text-primary">₹0</span></li>
-											<li class="goal">Goal: <span class="text-primary">₹70,000</span></li>
-										</ul>
-									</div> 
-								</div>
-							</div>
-						</div>
-						<div class="swiper-slide">
-							<div class="dz-card style-5 wow fadeInUp" data-wow-delay="0.4s">
-								<div class="dz-media">
-									<a href="/campaigns"><img src="/images/project/project1/pic2.jpg" alt=""></a>
-								</div>
-								<div class="dz-info">
-									<ul class="dz-category">
-										<li><a href="#">HEALTH</a></li>
-									</ul>
-									<h5 class="dz-title"><a href="/campaigns">Online legal advice for asylum seekers in Greece</a></h5>  
-									<ul class="dz-meta">
-										<li class="author-wrappper author-wrappper-sm mt-0">
-											<div class="author-media">
-												<img src="/images/avatar/avatar2.jpg" alt=""> 
-											</div>
-											<span>KK Sharma</span>
-										</li>
-										<li class="dz-date">
-											<i class="fa-solid fa-calendar"></i>
-											<span>45 Days left</span>
-										</li>
-									</ul>
-									<p>Alienum phaedrum torquatos nec eu, vis detraxit periculis ex..</p> 
-									<div class="progress-bx style-2">
-										<div class="progress">
-											<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" style="width:10%">
-												<span class="progress-value">10%</span>
-											</div>
-										</div>
-										<ul class="progress-tag">
-											<li class="raised">Raised: <span class="text-primary">₹0</span></li>
-											<li class="goal">Goal: <span class="text-primary">₹70,000</span></li>
-										</ul>
 									</div>
 								</div>
-							</div>
-						</div>
-						<div class="swiper-slide">
-							<div class="dz-card style-5 wow fadeInUp" data-wow-delay="0.6s">
-								<div class="dz-media">
-									<a href="/campaigns"><img src="/images/project/project1/pic3.jpg" alt=""></a>
-								</div>
-								<div class="dz-info">
-									<ul class="dz-category">
-										<li><a href="#">TECHNOLOGY</a></li>
-									</ul>
-									<h5 class="dz-title"><a href="/campaigns">Things parents learned for they jids in 2020</a></h5>  
-									<ul class="dz-meta">
-										<li class="author-wrappper author-wrappper-sm mt-0">
-											<div class="author-media">
-												<img src="/images/avatar/avatar3.jpg" alt=""> 
-											</div>
-											<span>Tom wilson</span>
-										</li>
-										<li class="dz-date">
-											<i class="fa-solid fa-calendar"></i>
-											<span>45 Days left</span>
-										</li>
-									</ul>
-									<p>Alienum phaedrum torquatos nec eu, vis detraxit periculis ex..</p> 
-									<div class="progress-bx style-2">
-										<div class="progress">
-											<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" style="width:10%">
-												<span class="progress-value">10%</span>
-											</div>
-										</div>
-										<ul class="progress-tag">
-											<li class="raised">Raised: <span class="text-primary">₹0</span></li>
-											<li class="goal">Goal: <span class="text-primary">₹70,000</span></li>
-										</ul>
-									</div> 
-								</div>
-							</div>
-						</div>
-						<div class="swiper-slide">
-							<div class="dz-card style-5 wow fadeInUp" data-wow-delay="0.8s">
-								<div class="dz-media">
-									<a href="/campaigns"><img src="/images/project/project1/pic4.jpg" alt=""></a>
-								</div>
-								<div class="dz-info">
-									<ul class="dz-category">
-										<li><a href="#">TECHNOLOGY</a></li>
-									</ul>
-									<h5 class="dz-title"><a href="/campaigns">Things parents learned for they jids in 2020</a></h5>
-									<ul class="dz-meta">
-										<li class="author-wrappper author-wrappper-sm mt-0">
-											<div class="author-media">
-												<img src="/images/avatar/avatar3.jpg" alt=""> 
-											</div>
-											<span>Tom wilson</span>
-										</li>
-										<li class="dz-date">
-											<i class="fa-solid fa-calendar"></i>
-											<span>45 Days left</span>
-										</li>
-									</ul>
-									<p>Alienum phaedrum torquatos nec eu, vis detraxit periculis ex..</p> 
-									<div class="progress-bx style-2">
-										<div class="progress">
-											<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" style="width:10%">
-												<span class="progress-value">10%</span>
-											</div>
-										</div>
-										<ul class="progress-tag">
-											<li class="raised">Raised: <span class="text-primary">₹0</span></li>
-											<li class="goal">Goal: <span class="text-primary">₹70,000</span></li>
-										</ul>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="swiper-slide">
-							<div class="dz-card style-5 wow fadeInUp" data-wow-delay="1.0s">
-								<div class="dz-media">
-									<a href="/campaigns"><img src="/images/project/project1/pic5.jpg" alt=""></a>
-								</div>
-								<div class="dz-info">
-									<ul class="dz-category">
-										<li><a href="#">TECHNOLOGY</a></li>
-									</ul>
-									<h5 class="dz-title"><a href="/campaigns">He Created the Web. Now He’s Out to Remake</a></h5>
-									<ul class="dz-meta">
-										<li class="author-wrappper author-wrappper-sm mt-0">
-											<div class="author-media">
-												<img src="/images/avatar/avatar3.jpg" alt=""> 
-											</div>
-											<span>Tom wilson</span>
-										</li>
-										<li class="dz-date">
-											<i class="fa-solid fa-calendar"></i>
-											<span>45 Days left</span>
-										</li>
-									</ul>
-									<p>Alienum phaedrum torquatos nec eu, vis detraxit periculis ex..</p> 
-									<div class="progress-bx style-2">
-										<div class="progress">
-											<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" style="width:10%">
-												<span class="progress-value">10%</span>
-											</div>
-										</div>
-										<ul class="progress-tag">
-											<li class="raised">Raised: <span class="text-primary">₹0</span></li>
-											<li class="goal">Goal: <span class="text-primary">₹70,000</span></li>
-										</ul>
-									</div>
-								</div>
-							</div>
+							<% }) %>
 						</div>
 					</div>
-				</div>
+				<% } else { %>
+					<div class="container">
+						<p class="text-center text-muted mb-0">No campaigns yet. Check back soon.</p>
+					</div>
+				<% } %>
 			</div>
 		</section>
 		<!-- Online Courses End -->
@@ -804,77 +669,40 @@
 				</div>
 			</div>
 			<div class="container position-relative">
-				<div class="swiper recent-blog1">
-					<div class="swiper-wrapper">
-						<div class="swiper-slide">
-							<div class="dz-card style-4 wow fadeInUp" data-wow-delay="0.2s" style="background-image:url('/images/blog/blog-grid/pic1.jpg');"> 
-								<div class="dz-info">
-									<div class="dz-meta">
-										<ul>
-											<li class="post-author">
-												<img src="/images/avatar/avatar1.jpg" alt=""> By Jone Doe
-											</li>
-											<li class="post-comments">20 Comments</li>
-											<li class="post-date">
-												<span class="day">20</span>
-												<span class="month">January</span>
-											</li>
-										</ul>
+				<% if (posts && posts.length) { %>
+					<div class="swiper recent-blog1">
+						<div class="swiper-wrapper">
+							<% posts.forEach(function(post, index) { %>
+								<div class="swiper-slide">
+									<div class="dz-card style-4 wow fadeInUp" data-wow-delay="<%= ((index % 3) * 0.2 + 0.2).toFixed(1) %>s" style="background-image:url('<%= post.imagePath %>');">
+										<div class="dz-info">
+											<div class="dz-meta">
+												<ul>
+													<li class="post-author">
+														<img src="/images/logo.png" alt=""> <%= post.authorName %>
+													</li>
+													<li class="post-date">
+														<span class="day"><%= post.day %></span>
+														<span class="month"><%= post.month %></span>
+													</li>
+												</ul>
+											</div>
+											<h5 class="dz-title"><a href="/blog" class="text-white"><%= post.title %></a></h5>
+											<p><%= post.excerpt %></p>
+											<a href="/blog" class="btn btn-primary">Read More</a>
+										</div>
 									</div>
-									<h5 class="dz-title"><a href="/blog">How to keep your Body.</a></h5> 
-									<p>A wonderful serenity has taken of my entire soul, like these.</p>
-									<a href="/blog" class="btn btn-primary">Read More</a>
 								</div>
-							</div>
-						</div>
-						<div class="swiper-slide">
-							<div class="dz-card style-4 wow fadeInUp" data-wow-delay="0.4s" style="background-image:url('/images/blog/blog-grid/pic2.jpg');"> 
-								<div class="dz-info">
-									<div class="dz-meta">
-										<ul>
-											<li class="post-author">
-												<img src="/images/avatar/avatar2.jpg" alt=""> By Jone Doe
-											</li>
-											<li class="post-comments">20 Comments</li>
-											<li class="post-date">
-												<span class="day">20</span>
-												<span class="month">January</span>
-											</li>
-										</ul>
-									</div>
-									<h5 class="dz-title"><a href="/blog" class="text-white">How to keep your Body.</a></h5> 
-									<p>A wonderful serenity has taken of my entire soul, like these.</p>
-									<a href="/blog" class="btn btn-primary">Read More</a>
-								</div>
-							</div>
-						</div>
-						<div class="swiper-slide">
-							<div class="dz-card style-4 wow fadeInUp" data-wow-delay="0.6s" style="background-image:url('/images/blog/blog-grid/pic3.jpg');"> 
-								<div class="dz-info">
-									<div class="dz-meta">
-										<ul>
-											<li class="post-author">
-												<img src="/images/avatar/avatar3.jpg" alt=""> By Jone Doe
-											</li>
-											<li class="post-comments">20 Comments</li>
-											<li class="post-date">
-												<span class="day">20</span>
-												<span class="month">January</span>
-											</li>
-										</ul>
-									</div>
-									<h5 class="dz-title"><a href="/blog" class="text-white">How to keep your Body.</a></h5> 
-									<p>A wonderful serenity has taken of my entire soul, like these.</p>
-									<a href="/blog" class="btn btn-primary">Read More</a>
-								</div>
-							</div>
+							<% }) %>
 						</div>
 					</div>
-				</div>
-				<div class="swiper-btn swiper-btn-center-lr">
-					<div class="swiper-button-prev btn-prev style-2"><i class="flaticon-left-arrow-1"></i></div>
-					<div class="swiper-button-next btn-next style-2"><i class="flaticon-next"></i></div>
-				</div>
+					<div class="swiper-btn swiper-btn-center-lr">
+						<div class="swiper-button-prev btn-prev style-2"><i class="flaticon-left-arrow-1"></i></div>
+						<div class="swiper-button-next btn-next style-2"><i class="flaticon-next"></i></div>
+					</div>
+				<% } else { %>
+					<p class="text-center text-muted mb-0">No blog posts yet. Check back soon.</p>
+				<% } %>
 			</div>
 		</section>
 		<!-- Our Blog End  -->
@@ -893,161 +721,32 @@
 				<h2 class="title">Meet Our Great Member</h2>
 				<p>Our members are the foundation of our success, and their unwavering dedication to making a positive impact in the world is truly inspiring.</p>
 			</div>
-			<div class="swiper team-slider">
-				<div class="swiper-wrapper">
-					<div class="swiper-slide">
-						<div class="dz-team style-1 m-b30 wow fadeInUp" data-wow-delay="0.1s">
-							<div class="dz-media">
-								<a href="/team"><img src="/images/team/nitin.jpg" alt=""></a>
-								<ul class="team-social">
-									<li><a href="https://www.facebook.com/" target="_blank" class="fab fa-facebook-f"></a></li>
-									<li><a href="https://www.instagram.com/" target="_blank" class="fab fa-instagram"></a></li>
-									<li><a href="https://twitter.com/" target="_blank" class="fab fa-twitter"></a></li>
-								</ul>
+			<% if (boardMembers && boardMembers.length) { %>
+				<div class="swiper team-slider">
+					<div class="swiper-wrapper">
+						<% boardMembers.forEach(function(member, index) { %>
+							<div class="swiper-slide">
+								<div class="dz-team style-1 m-b30 wow fadeInUp" data-wow-delay="<%= ((index % 4) * 0.1 + 0.1).toFixed(1) %>s">
+									<div class="dz-media">
+										<a href="/team"><img src="<%= member.imagePath %>" alt="<%= member.name %>"></a>
+									</div>
+									<div class="dz-content">
+										<h5 class="dz-name"><%= member.name %></h5>
+										<% if (member.designation) { %>
+											<span class="dz-position text-primary"><%= member.designation %></span>
+										<% } %>
+									</div>
+								</div>
 							</div>
-							<div class="dz-content">
-								<h5 class="dz-name">Bhuvanendra Pratap Singh</h5>
-								<span class="dz-position text-primary">Managing Director</span>
-							</div>
-						</div>
+						<% }) %>
 					</div>
-					<div class="swiper-slide">
-						<div class="dz-team style-1 m-b30 wow fadeInUp" data-wow-delay="0.2s">
-							<div class="dz-media">
-								<a href="/team"><img src="/images/team/akhil.jpg" alt=""></a>
-								<ul class="team-social">
-									<li><a href="https://www.facebook.com/" target="_blank" class="fab fa-facebook-f"></a></li>
-									<li><a href="https://www.instagram.com/" target="_blank" class="fab fa-instagram"></a></li>
-									<li><a href="https://twitter.com/" target="_blank" class="fab fa-twitter"></a></li>
-								</ul>
-							</div>
-							<div class="dz-content">
-								<h5 class="dz-name">Akhilendra Pratap <br>Singh</h5>
-								<span class="dz-position text-primary">Chief Member</span>
-							</div>
-						</div>
-					</div>
-					<div class="swiper-slide">
-						<div class="dz-team style-1 m-b30 wow fadeInUp" data-wow-delay="0.3s">
-							<div class="dz-media">
-								<a href="/team"><img src="/images/team/nikhil.jpg" alt=""></a>
-								<ul class="team-social">
-									<li><a href="https://www.facebook.com/" target="_blank" class="fab fa-facebook-f"></a></li>
-									<li><a href="https://www.instagram.com/" target="_blank" class="fab fa-instagram"></a></li>
-									<li><a href="https://twitter.com/" target="_blank" class="fab fa-twitter"></a></li>
-								</ul>
-							</div>
-							<div class="dz-content">
-								<h5 class="dz-name">Nikhilendra Pratap <br>Singh</h5>
-								<span class="dz-position text-primary">Chief Member</span>
-							</div>
-						</div>
-					</div>
-					<div class="swiper-slide">
-						<div class="dz-team style-1 m-b30 wow fadeInUp" data-wow-delay="0.4s">
-							<div class="dz-media">
-								<a href="/team"><img src="/images/team/shivam.jpg" alt=""></a>
-								<ul class="team-social">
-									<li><a href="https://www.facebook.com/" target="_blank" class="fab fa-facebook-f"></a></li>
-									<li><a href="https://www.instagram.com/" target="_blank" class="fab fa-instagram"></a></li>
-									<li><a href="https://twitter.com/" target="_blank" class="fab fa-twitter"></a></li>
-								</ul>
-							</div>
-							<div class="dz-content">
-								<h5 class="dz-name">Shivendra Pratap <br>Singh</h5>
-								<span class="dz-position text-primary">Chief Member</Head></span>
-							</div>
-						</div>
-					</div>
-
-					<div class="swiper-slide">
-						<div class="dz-team style-1 m-b30 wow fadeInUp" data-wow-delay="0.4s">
-							<div class="dz-media">
-								<a href="/team"><img src="/images/team/indra.jpg" alt=""></a>
-								<ul class="team-social">
-									<li><a href="https://www.facebook.com/" target="_blank" class="fab fa-facebook-f"></a></li>
-									<li><a href="https://www.instagram.com/" target="_blank" class="fab fa-instagram"></a></li>
-									<li><a href="https://twitter.com/" target="_blank" class="fab fa-twitter"></a></li>
-								</ul>
-							</div>
-							<div class="dz-content">
-								<h5 class="dz-name">Indra <br>Kumar</h5>
-								<span class="dz-position text-primary">Chief Member</Head></span>
-							</div>
-						</div>
-					</div>
-
-					<div class="swiper-slide">
-						<div class="dz-team style-1 m-b30 wow fadeInUp" data-wow-delay="0.4s">
-							<div class="dz-media">
-								<a href="/team"><img src="/images/team/0.jpg" alt=""></a>
-								<ul class="team-social">
-									<li><a href="https://www.facebook.com/" target="_blank" class="fab fa-facebook-f"></a></li>
-									<li><a href="https://www.instagram.com/" target="_blank" class="fab fa-instagram"></a></li>
-									<li><a href="https://twitter.com/" target="_blank" class="fab fa-twitter"></a></li>
-								</ul>
-							</div>
-							<div class="dz-content">
-								<h5 class="dz-name">Rajesh <br>Tripathi</h5>
-								<span class="dz-position text-primary">Chief Member</Head></span>
-							</div>
-						</div>
-					</div>
-
-					<div class="swiper-slide">
-						<div class="dz-team style-1 m-b30 wow fadeInUp" data-wow-delay="0.4s">
-							<div class="dz-media">
-								<a href="/team"><img src="/images/team/pawan.jpg" alt=""></a>
-								<ul class="team-social">
-									<li><a href="https://www.facebook.com/" target="_blank" class="fab fa-facebook-f"></a></li>
-									<li><a href="https://www.instagram.com/" target="_blank" class="fab fa-instagram"></a></li>
-									<li><a href="https://twitter.com/" target="_blank" class="fab fa-twitter"></a></li>
-								</ul>
-							</div>
-							<div class="dz-content">
-								<h5 class="dz-name">Pawan  <br>Giri</h5>
-								<span class="dz-position text-primary">Chief Member</Head></span>
-							</div>
-						</div>
-					</div>
-
-					<div class="swiper-slide">
-						<div class="dz-team style-1 m-b30 wow fadeInUp" data-wow-delay="0.4s">
-							<div class="dz-media">
-								<a href="/team"><img src="/images/team/umesh.jpg" alt=""></a>
-								<ul class="team-social">
-									<li><a href="https://www.facebook.com/" target="_blank" class="fab fa-facebook-f"></a></li>
-									<li><a href="https://www.instagram.com/" target="_blank" class="fab fa-instagram"></a></li>
-									<li><a href="https://twitter.com/" target="_blank" class="fab fa-twitter"></a></li>
-								</ul>
-							</div>
-							<div class="dz-content">
-								<h5 class="dz-name">Umesh Chandra<br>Dubey</h5>
-								<span class="dz-position text-primary">Chief Member</Head></span>
-							</div>
-						</div>
-					</div>
-
-					<div class="swiper-slide">
-						<div class="dz-team style-1 m-b30 wow fadeInUp" data-wow-delay="0.4s">
-							<div class="dz-media">
-								<a href="/team"><img src="/images/team/srikeerti.jpg" alt=""></a>
-								<ul class="team-social">
-									<li><a href="https://www.facebook.com/" target="_blank" class="fab fa-facebook-f"></a></li>
-									<li><a href="https://www.instagram.com/" target="_blank" class="fab fa-instagram"></a></li>
-									<li><a href="https://twitter.com/" target="_blank" class="fab fa-twitter"></a></li>
-								</ul>
-							</div>
-							<div class="dz-content">
-								<h5 class="dz-name">Srikeerti <br>Singh</h5>
-								<span class="dz-position text-primary">Chief Member</Head></span>
-							</div>
-						</div>
-					</div>
-
-					
 				</div>
-			</div>
+				<div class="text-center m-t20">
+					<a href="/team" class="btn btn-primary">View Full Team</a>
+				</div>
+			<% } else { %>
+				<p class="text-center text-muted mb-0">Team members will appear here soon.</p>
+			<% } %>
 		</div>
 		<img src="/images/pattern/shape1.png" class="shape-1 move-1" alt="shape">
 		<img src="/images/pattern/shape2.png" class="shape-4 move-2" alt="shape">
