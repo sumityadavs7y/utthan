@@ -5,8 +5,15 @@ const {
   NewsletterSubscriber
 } = require('../models');
 const { requireAdmin } = require('../middleware/auth');
+const { rateLimit } = require('../middleware/rateLimit');
 
 const router = express.Router();
+
+const formLimit = rateLimit({
+  windowMs: 60 * 1000,
+  max: 8,
+  message: 'Too many submissions. Please wait a minute and try again.'
+});
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -45,7 +52,7 @@ function isValidEmail(email) {
   return EMAIL_RE.test(email) && email.length <= 200;
 }
 
-router.post('/api/contact', async (req, res) => {
+router.post('/api/contact', formLimit, async (req, res) => {
   try {
     const firstName = clean(req.body.dzFirstName || req.body.dzName, 100);
     const lastName = clean(req.body.dzLastName, 100);
@@ -77,7 +84,7 @@ router.post('/api/contact', async (req, res) => {
   }
 });
 
-router.post('/api/volunteer', async (req, res) => {
+router.post('/api/volunteer', formLimit, async (req, res) => {
   try {
     const name = clean(req.body.dzName || [req.body.dzFirstName, req.body.dzLastName].filter(Boolean).join(' '), 200);
     const email = clean(req.body.dzEmail, 200).toLowerCase();
@@ -110,7 +117,7 @@ router.post('/api/volunteer', async (req, res) => {
   }
 });
 
-router.post('/api/newsletter', async (req, res) => {
+router.post('/api/newsletter', formLimit, async (req, res) => {
   try {
     const email = clean(req.body.dzEmail, 200).toLowerCase();
     const source = clean(req.body.dzSource || 'website', 50) || 'website';

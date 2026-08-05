@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+	<%- include('partials/head') %>
+</head>
+<body id="bg">
+<%- include('partials/loader') %>
+<div class="page-wraper">
+	<%- include('partials/header') %>
+
+	<div id="main-content" class="page-content bg-white">
+		<div class="dz-bnr-inr dz-bnr-inr-sm style-1 text-center overlay-primary-dark" style="background-image:url('/images/banner/bnr1.jpg');">
+			<div class="container">
+				<div class="dz-bnr-inr-entry">
+					<h1>Privacy Policy</h1>
+					<nav aria-label="breadcrumb" class="breadcrumb-row">
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item"><a href="/">Home</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Privacy Policy</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+
+		<section class="content-inner-1">
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-8">
+						<article>
+							<p>Utthan Foundation (“we”, “our”, or “us”) respects your privacy. This Privacy Policy explains how we collect, use, and protect information when you visit <a href="/">utthanfoundation.in</a> or contact us through our website.</p>
+
+							<h2 class="h4 mt-4">Information we collect</h2>
+							<ul>
+								<li>Contact details you submit through forms (name, email, phone, message).</li>
+								<li>Volunteer application details and newsletter email addresses.</li>
+								<li>Basic technical data such as browser type and pages visited (for security and site improvement).</li>
+							</ul>
+
+							<h2 class="h4 mt-4">How we use information</h2>
+							<ul>
+								<li>To respond to inquiries, donation questions, and volunteer requests.</li>
+								<li>To send newsletter updates if you subscribe.</li>
+								<li>To operate, secure, and improve our website and programs.</li>
+							</ul>
+
+							<h2 class="h4 mt-4">Sharing of information</h2>
+							<p>We do not sell personal information. We may share data only with trusted service providers who help us run the website, or when required by law.</p>
+
+							<h2 class="h4 mt-4">Data retention &amp; security</h2>
+							<p>We keep submitted information only as long as needed for the purposes above, and take reasonable steps to protect it against unauthorized access.</p>
+
+							<h2 class="h4 mt-4">Your choices</h2>
+							<p>You may request access, correction, or deletion of your personal information by contacting us at <a href="mailto:<%= site.email %>"><%= site.email %></a> or calling <a href="tel:<%= site.phoneTel %>"><%= site.phone %></a>.</p>
+
+							<h2 class="h4 mt-4">Contact</h2>
+							<p><%= site.address %><br>
+							Email: <a href="mailto:<%= site.email %>"><%= site.email %></a><br>
+							Phone: <a href="tel:<%= site.phoneTel %>"><%= site.phone %></a></p>
+
+							<p class="text-muted mt-4 mb-0">Last updated: August 2026</p>
+						</article>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+
+	<%- include('partials/footer') %>
+</div>
+<%- include('partials/scripts') %>
+</body>
+</html>

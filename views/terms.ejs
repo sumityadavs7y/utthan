@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+	<%- include('partials/head') %>
+</head>
+<body id="bg">
+<%- include('partials/loader') %>
+<div class="page-wraper">
+	<%- include('partials/header') %>
+
+	<div id="main-content" class="page-content bg-white">
+		<div class="dz-bnr-inr dz-bnr-inr-sm style-1 text-center overlay-primary-dark" style="background-image:url('/images/banner/bnr1.jpg');">
+			<div class="container">
+				<div class="dz-bnr-inr-entry">
+					<h1>Terms &amp; Conditions</h1>
+					<nav aria-label="breadcrumb" class="breadcrumb-row">
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item"><a href="/">Home</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Terms &amp; Conditions</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+
+		<section class="content-inner-1">
+			<div class="container">
+				<div class="row justify-content-center">
+					<div class="col-lg-8">
+						<article>
+							<p>Welcome to the Utthan Foundation website. By accessing or using this site, you agree to these Terms &amp; Conditions.</p>
+
+							<h2 class="h4 mt-4">About us</h2>
+							<p>Utthan Foundation is a non-profit organization working for education, healthcare, livelihood, and community welfare. Website content is provided for information, donations, volunteering, and engagement with our programs.</p>
+
+							<h2 class="h4 mt-4">Donations</h2>
+							<ul>
+								<li>Donations support Utthan Foundation programs and operations.</li>
+								<li>Please verify payment details carefully before transferring funds.</li>
+								<li>For donation receipts or clarification, contact <a href="mailto:<%= site.email %>"><%= site.email %></a>.</li>
+							</ul>
+
+							<h2 class="h4 mt-4">Volunteer &amp; membership forms</h2>
+							<p>Information submitted through volunteer or membership forms should be accurate. Submitting a form does not guarantee selection; our team may contact you for next steps.</p>
+
+							<h2 class="h4 mt-4">Website content</h2>
+							<p>Text, images, logos, and materials on this website belong to Utthan Foundation or respective owners. You may not copy or reuse content for commercial purposes without permission.</p>
+
+							<h2 class="h4 mt-4">Third-party links</h2>
+							<p>Our site may link to social platforms or external services. We are not responsible for the content or policies of third-party websites.</p>
+
+							<h2 class="h4 mt-4">Limitation of liability</h2>
+							<p>We strive to keep information accurate, but we do not guarantee that all website content is complete or error-free at all times.</p>
+
+							<h2 class="h4 mt-4">Contact</h2>
+							<p>Questions about these terms: <a href="mailto:<%= site.email %>"><%= site.email %></a> | <a href="tel:<%= site.phoneTel %>"><%= site.phone %></a><br>
+							<%= site.address %></p>
+
+							<p class="text-muted mt-4 mb-0">Last updated: August 2026</p>
+						</article>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+
+	<%- include('partials/footer') %>
+</div>
+<%- include('partials/scripts') %>
+</body>
+</html>

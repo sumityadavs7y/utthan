@@ -22,13 +22,28 @@ const { seedDefaultImpact } = require('./utils/seedImpact');
 const {
   resolvePageSeo,
   buildOrganizationJsonLd,
-  buildWebsiteJsonLd
+  buildWebsiteJsonLd,
+  buildWebPageJsonLd,
+  buildBreadcrumbJsonLd,
+  buildLocalBusinessJsonLd
 } = require('./utils/seo');
 const { isDevEnvMode } = require('./utils/helpers');
+const compression = require('compression');
+const { securityHeaders } = require('./middleware/security');
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(express.static(__dirname + '/public'));
+app.use(securityHeaders);
+app.use(compression());
+app.use(express.json({ limit: '32kb' }));
+app.use(express.urlencoded({ extended: false, limit: '32kb' }));
+app.use(express.static(__dirname + '/public', {
+  maxAge: isDevEnvMode() ? 0 : '7d',
+  etag: true,
+  setHeaders(res, filePath) {
+    if (/\.(?:js|css|woff2?|ttf|eot|png|jpe?g|gif|webp|svg|ico)$/i.test(filePath)) {
+      res.setHeader('Cache-Control', isDevEnvMode() ? 'no-cache' : 'public, max-age=604800, immutable');
+    }
+  }
+}));
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -45,6 +60,8 @@ app.use(session({
   store: sessionStore,
   cookie: {
     httpOnly: true,
+    sameSite: 'lax',
+    secure: !isDevEnvMode(),
     maxAge: 7 * 24 * 60 * 60 * 1000
   }
 }));
@@ -57,7 +74,10 @@ app.use((req, res, next) => {
   res.locals.seoHelpers = {
     resolvePageSeo,
     buildOrganizationJsonLd,
-    buildWebsiteJsonLd
+    buildWebsiteJsonLd,
+    buildWebPageJsonLd,
+    buildBreadcrumbJsonLd,
+    buildLocalBusinessJsonLd
   };
   next();
 });
@@ -117,6 +137,19 @@ app.use('/', mediaRoutes);
 app.use('/', settingsRoutes);
 app.use('/', formsRoutes);
 app.use('/', impactRoutes);
+
+app.use((req, res) => {
+  res.status(404).render('404', {
+    title: 'Page Not Found - Utthan Foundation',
+    currentPage: 'not-found',
+    skin: 'skin-1',
+    loaderStyle: 'page-1',
+    isHome: false,
+    extraCss: [],
+    extraJs: [],
+    canonicalPath: req.path || '/404'
+  });
+});
 
 const startServer = async () => {
   try {

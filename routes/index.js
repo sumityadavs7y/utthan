@@ -245,9 +245,54 @@ router.get('/contact', (req, res) => {
   });
 });
 
+router.get('/privacy-policy', (req, res) => {
+  renderPage(res, 'privacy-policy', {
+    title: 'Privacy Policy - Utthan Foundation',
+    currentPage: 'privacy'
+  });
+});
+
+router.get('/terms', (req, res) => {
+  renderPage(res, 'terms', {
+    title: 'Terms & Conditions - Utthan Foundation',
+    currentPage: 'terms'
+  });
+});
+
+router.get('/faq', (req, res) => {
+  const { FAQS, buildFaqJsonLd } = require('../utils/faq');
+  renderPage(res, 'faq', {
+    title: 'FAQ - Utthan Foundation',
+    currentPage: 'faq',
+    faqs: FAQS,
+    faqJsonLd: buildFaqJsonLd(FAQS)
+  });
+});
+
 router.get('/sitemap.xml', (req, res) => {
   const { buildSitemapXml } = require('../utils/seo');
   res.type('application/xml').send(buildSitemapXml());
+});
+
+router.get('/robots.txt', (req, res) => {
+  const { buildRobotsTxt } = require('../utils/seo');
+  res.type('text/plain').send(buildRobotsTxt());
+});
+
+router.get('/feed.xml', async (req, res) => {
+  try {
+    const { Post } = require('../models');
+    const { buildBlogRssXml } = require('../utils/seo');
+    const posts = await Post.findAll({
+      order: [['id', 'DESC']],
+      limit: 20,
+      attributes: ['id', 'content', 'createdAt']
+    });
+    res.type('application/rss+xml').send(buildBlogRssXml(posts, res.locals.site));
+  } catch (error) {
+    console.error('RSS feed error:', error);
+    res.status(500).type('text/plain').send('Unable to generate feed.');
+  }
 });
 
 module.exports = router;

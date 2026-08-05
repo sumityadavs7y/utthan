@@ -1,0 +1,12 @@
+/* TEAM */
+Utthan Foundation
+Site: https://utthanfoundation.in
+Location: Lucknow, Uttar Pradesh, India
+
+/* THANKS */
+Donors, volunteers, and community partners
+
+/* SITE */
+Standards: HTML5, CSS3, Schema.org
+Doctype: HTML5
+Components: Express, EJS, Sequelize
