@@ -18,6 +18,7 @@ const { seedDefaultCampaigns } = require('./utils/seedCampaign');
 const { seedDefaultCertificates } = require('./utils/seedCertificate');
 const { migrateImagesToMedia } = require('./utils/migrateImagesToMedia');
 const { seedDefaultSiteConfig, getSiteConfig } = require('./utils/siteConfig');
+const { seedDefaultImpact } = require('./utils/seedImpact');
 const { isDevEnvMode } = require('./utils/helpers');
 
 app.use(express.json());
@@ -88,6 +89,7 @@ const certificateRoutes = require('./routes/certificate');
 const mediaRoutes = require('./routes/media');
 const settingsRoutes = require('./routes/settings');
 const formsRoutes = require('./routes/forms');
+const impactRoutes = require('./routes/impact');
 app.use('/', siteRoutes);
 app.use('/', authRoutes);
 app.use('/', blogRoutes);
@@ -98,6 +100,7 @@ app.use('/', certificateRoutes);
 app.use('/', mediaRoutes);
 app.use('/', settingsRoutes);
 app.use('/', formsRoutes);
+app.use('/', impactRoutes);
 
 const startServer = async () => {
   try {
@@ -111,6 +114,7 @@ const startServer = async () => {
     await sessionStore.sync();
     await seedDefaultAdmin();
     await seedDefaultSiteConfig();
+    await seedDefaultImpact();
     await seedDefaultGallery();
     await seedDefaultTeam();
     await seedDefaultCampaigns();

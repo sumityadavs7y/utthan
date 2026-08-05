@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { Gallery, Certificate, Campaign, Chairman, TeamMember, Post, Media } = require('../models');
+const { Gallery, Certificate, Campaign, Chairman, TeamMember, Post, Media, Testimonial } = require('../models');
 const { isMediaUrl } = require('./media');
 
 const publicRoot = path.join(__dirname, '../public');
@@ -140,6 +140,7 @@ async function migrateImagesToMedia() {
     migrateModel(Campaign, ['imagePath', 'authorImagePath'], 'campaigns'),
     migrateModel(Chairman, ['photoPath', 'signaturePath'], 'chairman profiles'),
     migrateModel(TeamMember, ['imagePath'], 'team members'),
+    migrateModel(Testimonial, ['imagePath'], 'testimonials'),
     migratePosts()
   ]);
 

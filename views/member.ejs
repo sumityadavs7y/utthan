@@ -108,18 +108,14 @@
 							<p class="m-t20">Our mission is to empower the vulnerable and build a stronger community through education, support, and assistance for the poor, homeless, and underprivileged.</p>
 						</div>
 						<div class="row">
-							<div class="col-lg-3 col-sm-4 col-6 m-b30">
-								<h2><span class="counter">0</span></h2>
-								<span class="counter-text">Total Donor</span>
-							</div>
-							<div class="col-lg-3 col-sm-4 col-6 m-b30">
-								<h2><span class="counter">0</span></h2>
-								<span class="counter-text">Volunteer</span>
-							</div>
-							<div class="col-lg-4 col-sm-4 col-12 m-b30">
-								<h2>₹ <span class="counter">0</span></h2>
-								<span class="counter-text">Total Donation</span>
-							</div>
+							<% (impactStats || []).slice(0, 3).forEach(function(stat) { %>
+								<div class="col-lg-3 col-sm-4 col-6 m-b30">
+									<h2>
+										<% if (stat.prefix) { %><%= stat.prefix %> <% } %><span class="counter"><%= stat.value %></span><% if (stat.suffix) { %><%= stat.suffix %><% } %>
+									</h2>
+									<span class="counter-text"><%= stat.label %></span>
+								</div>
+							<% }) %>
 						</div>
 						<a href="/about-us" class="m-r30 m-sm-r10 btn btn-secondary">See Projects <i class="flaticon-right-arrows ps-3"></i></a>
 						<a href="/team" class="btn btn-outline-dark">More About Us</a>
@@ -129,44 +125,32 @@
 		</section>
 		
 		<!-- Counter -->
-		<div class="counter-wrapper-1">
-			<div class="container">
-				<div class="counter-inner bg-secondary">
-					<div class="row">
-						<div class="col-lg-3 col-6 m-b30">
-							<div class="counter-style-1 text-center">
-								<span class="counter counter-num">00,000</span>
-								<p class="counter-text">Total Donor</p>
-							</div>
+		<% if (impactStats && impactStats.length) { %>
+			<div class="counter-wrapper-1">
+				<div class="container">
+					<div class="counter-inner bg-secondary">
+						<div class="row">
+							<% impactStats.forEach(function(stat) { %>
+								<div class="col-lg-3 col-6 m-b30">
+									<div class="counter-style-1 text-center">
+										<span class="counter-num">
+											<% if (stat.prefix) { %><%= stat.prefix %> <% } %><span class="counter"><%= stat.value %></span><% if (stat.suffix) { %> <%= stat.suffix %><% } %>
+										</span>
+										<p class="counter-text"><%= stat.label %></p>
+									</div>
+								</div>
+							<% }) %>
 						</div>
-						<div class="col-lg-3 col-6 m-b30">
-							<div class="counter-style-1 text-center">
-								<span class="counter counter-num">00</span>
-								<p class="counter-text">Donations</p>
-							</div>
-						</div>
-						<div class="col-lg-3 col-6 m-b30">
-							<div class="counter-style-1 text-center">
-								<span class="counter-num counter">00</span>
-								<p class="counter-text">Projects</p>
-							</div>
-						</div>
-						<div class="col-lg-3 col-6 m-b30">
-							<div class="counter-style-1 text-center">
-								<span class="counter counter-num">00</span>
-								<p class="counter-text">Volunteer</p>
-							</div>
-						</div>
+						<img src="/images/counter/pattren1.png" class="pattren1 move-2" alt="">
+						<img src="/images/counter/pattren2.png" class="pattren2 move-2" alt="">
+						<img src="/images/counter/pattren3.png" class="pattren3 move-2" alt="">
+						<img src="/images/counter/pattren4.png" class="pattren4 move-2" alt="">
+						<img src="/images/counter/pattren5.png" class="pattren5 move-2" alt="">
+						<img src="/images/counter/pattren6.png" class="pattren6 move-2" alt="">
 					</div>
-					<img src="/images/counter/pattren1.png" class="pattren1 move-2" alt="">
-					<img src="/images/counter/pattren2.png" class="pattren2 move-2" alt="">
-					<img src="/images/counter/pattren3.png" class="pattren3 move-2" alt="">
-					<img src="/images/counter/pattren4.png" class="pattren4 move-2" alt="">
-					<img src="/images/counter/pattren5.png" class="pattren5 move-2" alt="">
-					<img src="/images/counter/pattren6.png" class="pattren6 move-2" alt="">
 				</div>
 			</div>
-		</div>
+		<% } %>
 		<!-- Counter End -->
 		
 		<!-- Categories -->

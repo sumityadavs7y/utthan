@@ -11,6 +11,8 @@ const SiteConfig = require('./siteConfig');
 const ContactMessage = require('./contactMessage');
 const VolunteerApplication = require('./volunteerApplication');
 const NewsletterSubscriber = require('./newsletterSubscriber');
+const ImpactStat = require('./impactStat');
+const Testimonial = require('./testimonial');
 
 User.hasMany(Post, { foreignKey: 'userId', as: 'posts' });
 Post.belongsTo(User, { foreignKey: 'userId', as: 'author' });
@@ -36,5 +38,7 @@ module.exports = {
   SiteConfig,
   ContactMessage,
   VolunteerApplication,
-  NewsletterSubscriber
+  NewsletterSubscriber,
+  ImpactStat,
+  Testimonial
 };

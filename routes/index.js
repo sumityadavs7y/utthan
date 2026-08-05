@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Chairman, Campaign, TeamMember, Post, User } = require('../models');
+const { Chairman, Campaign, TeamMember, Post, User, ImpactStat, Testimonial } = require('../models');
 
 const HOME_CAMPAIGN_LIMIT = 8;
 const HOME_POST_LIMIT = 6;
@@ -80,13 +80,31 @@ function serializeHomePost(post, currentUser) {
   };
 }
 
+function serializeTestimonial(item) {
+  const quote = String(item.quote || '').trim();
+  const excerptMax = 160;
+  const needsMore = quote.length > excerptMax;
+  return {
+    id: item.id,
+    title: item.title,
+    quote,
+    excerpt: needsMore ? `${quote.slice(0, excerptMax - 1).trimEnd()}…` : quote,
+    needsMore,
+    name: item.name,
+    role: item.role,
+    imagePath: item.imagePath
+  };
+}
+
 router.get('/', async (req, res) => {
   let campaigns = [];
   let boardMembers = [];
   let posts = [];
+  let impactStats = [];
+  let testimonials = [];
 
   try {
-    const [campaignRows, memberRows, postRows] = await Promise.all([
+    const [campaignRows, memberRows, postRows, statRows, testimonialRows] = await Promise.all([
       Campaign.findAll({
         order: [['sortOrder', 'ASC'], ['id', 'ASC']],
         limit: HOME_CAMPAIGN_LIMIT
@@ -103,12 +121,16 @@ router.get('/', async (req, res) => {
         }],
         order: [['id', 'DESC']],
         limit: HOME_POST_LIMIT
-      })
+      }),
+      ImpactStat.findAll({ order: [['sortOrder', 'ASC'], ['id', 'ASC']] }),
+      Testimonial.findAll({ order: [['sortOrder', 'ASC'], ['id', 'ASC']] })
     ]);
 
     campaigns = campaignRows.map(serializeHomeCampaign);
     boardMembers = memberRows;
     posts = postRows.map((post) => serializeHomePost(post, res.locals.currentUser));
+    impactStats = statRows;
+    testimonials = testimonialRows.map(serializeTestimonial);
   } catch (error) {
     console.error('Home page data load error:', error);
   }
@@ -122,6 +144,8 @@ router.get('/', async (req, res) => {
     campaigns,
     boardMembers,
     posts,
+    impactStats,
+    testimonials,
     extraCss: [
       '/vendor/magnific-popup/magnific-popup.min.css',
       '/vendor/swiper/swiper-bundle.min.css',
@@ -166,10 +190,18 @@ router.get('/about-us', async (req, res) => {
   });
 });
 
-router.get('/member', (req, res) => {
+router.get('/member', async (req, res) => {
+  let impactStats = [];
+  try {
+    impactStats = await ImpactStat.findAll({ order: [['sortOrder', 'ASC'], ['id', 'ASC']] });
+  } catch (error) {
+    console.error('Member page stats load error:', error);
+  }
+
   renderPage(res, 'member', {
     title: 'Become A Member - Utthan Foundation',
     currentPage: 'member',
+    impactStats,
     extraCss: [
       '/vendor/magnific-popup/magnific-popup.min.css',
       '/vendor/bootstrap-select/css/bootstrap-select.min.css'

@@ -506,109 +506,62 @@
 				</div>
 			</div>
 			<div class="resize-wrapper">
-				<div class="swiper testimonial-swiper3 m-b30">
-					<div class="swiper-wrapper">
-						<div class="swiper-slide">
-							<div class="testimonial-3 wow fadeInUp" data-wow-delay="0.2s">
-								<div class="testimonial-media">
-									<img src="/images/testimonials/large/pic1.jpg" alt="">
-								</div>
-								<div class="testimonial-content">
-									<h5 class="testimonial-title">Heroes like you helped my son<br> win his battle.</h5>
-									<p class="testimonial-text">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, or randomised words which <a href="#"  data-bs-toggle="modal" data-bs-target="#read">Read More</a></p>
-									<div class="testimonial-info">
-										<div class="quotes">
-											<i class="fa-solid fa-quote-left"></i>
+				<% if (testimonials && testimonials.length) { %>
+					<div class="swiper testimonial-swiper3 m-b30">
+						<div class="swiper-wrapper">
+							<% testimonials.forEach(function(item, index) { %>
+								<div class="swiper-slide">
+									<div class="testimonial-3 wow fadeInUp" data-wow-delay="<%= ((index % 3) * 0.2 + 0.2).toFixed(1) %>s">
+										<div class="testimonial-media">
+											<img src="<%= item.imagePath %>" alt="<%= item.name %>">
 										</div>
-										<div class="clearfix">
-											<h5 class="testimonial-name">Lindsay S.</h5>
-											<span class="testimonial-position">Community Engagement</span>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="swiper-slide">
-							<div class="testimonial-3 wow fadeInUp" data-wow-delay="0.4s">
-								<div class="testimonial-media">
-									<img src="/images/testimonials/large/pic2.jpg" alt="">
-								</div>
-								<div class="testimonial-content">
-									<h5 class="testimonial-title">Heroes like you helped my son<br> win his battle.</h5>
-									<p class="testimonial-text">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, or randomised words which <a href="#"  data-bs-toggle="modal" data-bs-target="#read">Read More</a></p>
-									<div class="testimonial-info">
-										<div class="quotes">
-											<i class="fa-solid fa-quote-left"></i>
-										</div>
-										<div class="clearfix">
-											<h5 class="testimonial-name">Lindsay S.</h5>
-											<span class="testimonial-position">Community Engagement</span>
+										<div class="testimonial-content">
+											<h5 class="testimonial-title"><%= item.title %></h5>
+											<p class="testimonial-text">
+												<%= item.excerpt %>
+												<% if (item.needsMore) { %>
+													<a href="javascript:void(0);" class="js-testimonial-readmore" data-bs-toggle="modal" data-bs-target="#read" data-quote="<%= encodeURIComponent(item.quote) %>" data-title="<%= encodeURIComponent(item.title) %>">Read More</a>
+												<% } %>
+											</p>
+											<div class="testimonial-info">
+												<div class="quotes">
+													<i class="fa-solid fa-quote-left"></i>
+												</div>
+												<div class="clearfix">
+													<h5 class="testimonial-name"><%= item.name %></h5>
+													<% if (item.role) { %><span class="testimonial-position"><%= item.role %></span><% } %>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-						</div>
-						<div class="swiper-slide">
-							<div class="testimonial-3 wow fadeInUp" data-wow-delay="0.6s">
-								<div class="testimonial-media">
-									<img src="/images/testimonials/large/pic3.jpg" alt="">
-								</div>
-								<div class="testimonial-content">
-									<h5 class="testimonial-title">Heroes like you helped my son<br> win his battle.</h5>
-									<p class="testimonial-text">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, or randomised words which <a href="#"  data-bs-toggle="modal" data-bs-target="#read">Read More</a></p>
-									<div class="testimonial-info">
-										<div class="quotes">
-											<i class="fa-solid fa-quote-left"></i>
-										</div>
-										<div class="clearfix">
-											<h5 class="testimonial-name">Lindsay S.</h5>
-											<span class="testimonial-position">Community Engagement</span>
-										</div>
-									</div>
-								</div>
-							</div>
+							<% }) %>
 						</div>
 					</div>
-				</div>
+				<% } else { %>
+					<p class="text-white text-center m-b30">Stories from our community will appear here soon.</p>
+				<% } %>
 				<a href="/donate" class="btn btn-primary m-r15 m-b15 wow fadeInUp" data-wow-delay="0.2s">Donate Here For Better Future</a>
 				<a href="/contact" class="btn btn-light m-b15 wow fadeInUp" data-wow-delay="0.4s">Talk To Us</a>
 			</div>
 
 			<!-- Counter -->
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-3 col-6 m-b30 wow fadeInUp" data-wow-delay="0.2s">
-						<div class="counter-style-3 text-center text-white">
-							<span class="counter counter-num text-primary">0</span>
-							<p class="counter-text m-b0">Completed Projects</p>
-						</div>
-					</div>
-					<div class="col-lg-3 col-6 m-b30 wow fadeInUp" data-wow-delay="0.4s">
-						<div class="counter-style-3 text-center text-white">
-							<span class="counter-num text-primary">
-								<span class="counter">0</span> +
-							</span>
-							<p class="counter-text m-b0">Happy Faces</p>
-						</div>
-					</div>
-					<div class="col-lg-3 col-6 m-b30 wow fadeInUp" data-wow-delay="0.6s">
-						<div class="counter-style-3 text-center text-white">
-							<span class="counter-num text-primary">
-								<span class="counter">0</span> +
-							</span>
-							<p class="counter-text m-b0">Shelters Provided</p>
-						</div>
-					</div>
-					<div class="col-lg-3 col-6 m-b30 wow fadeInUp" data-wow-delay="0.7s">
-						<div class="counter-style-3 text-center text-white">
-							<span class="counter-num text-primary">
-								<span class="counter">0</span> +
-							</span>
-							<p class="counter-text m-b0">Animals Rescued</p>
-						</div>
+			<% if (impactStats && impactStats.length) { %>
+				<div class="container">
+					<div class="row">
+						<% impactStats.forEach(function(stat, index) { %>
+							<div class="col-lg-3 col-6 m-b30 wow fadeInUp" data-wow-delay="<%= ((index % 4) * 0.2 + 0.2).toFixed(1) %>s">
+								<div class="counter-style-3 text-center text-white">
+									<span class="counter-num text-primary">
+										<% if (stat.prefix) { %><%= stat.prefix %> <% } %><span class="counter"><%= stat.value %></span><% if (stat.suffix) { %> <%= stat.suffix %><% } %>
+									</span>
+									<p class="counter-text m-b0"><%= stat.label %></p>
+								</div>
+							</div>
+						<% }) %>
 					</div>
 				</div>
-			</div>
+			<% } %>
 		</section>
 		<!-- Testimonial End -->
 		
@@ -767,12 +720,28 @@
 	<div class="modal fade modal-wrapper" id="read" tabindex="-1" role="dialog" aria-labelledby="read" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="readTitle">Success Story</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="flaticon-close"></i></button>
+				</div>
 				<div class="modal-body">
-					<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+					<p id="readQuote" style="white-space: pre-wrap;"></p>
 				</div>
 			</div>
 		</div>
 	</div>
+	<script>
+		document.addEventListener('click', function (event) {
+			var link = event.target.closest('.js-testimonial-readmore');
+			if (!link) return;
+			var title = decodeURIComponent(link.getAttribute('data-title') || '');
+			var quote = decodeURIComponent(link.getAttribute('data-quote') || '');
+			var titleEl = document.getElementById('readTitle');
+			var quoteEl = document.getElementById('readQuote');
+			if (titleEl) titleEl.textContent = title || 'Success Story';
+			if (quoteEl) quoteEl.textContent = quote;
+		});
+	</script>
 	<!-- Choose a donation amount -->
 	<div class="modal fade modal-wrapper" id="modalDonate" tabindex="-1" role="dialog" aria-labelledby="modalDonate" aria-hidden="true">
 		<div class="modal-dialog" role="document">
