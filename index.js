@@ -19,6 +19,11 @@ const { seedDefaultCertificates } = require('./utils/seedCertificate');
 const { migrateImagesToMedia } = require('./utils/migrateImagesToMedia');
 const { seedDefaultSiteConfig, getSiteConfig } = require('./utils/siteConfig');
 const { seedDefaultImpact } = require('./utils/seedImpact');
+const {
+  resolvePageSeo,
+  buildOrganizationJsonLd,
+  buildWebsiteJsonLd
+} = require('./utils/seo');
 const { isDevEnvMode } = require('./utils/helpers');
 
 app.use(express.json());
@@ -45,6 +50,17 @@ app.use(session({
 }));
 
 app.use(flash());
+
+app.use((req, res, next) => {
+  res.locals.currentPath = req.path || '/';
+  res.locals.canonicalPath = req.path || '/';
+  res.locals.seoHelpers = {
+    resolvePageSeo,
+    buildOrganizationJsonLd,
+    buildWebsiteJsonLd
+  };
+  next();
+});
 
 app.use(async (req, res, next) => {
   res.locals.success = req.flash('success');

@@ -417,7 +417,7 @@
 											<% if (images.length === 1) { %>
 												<div class="feed-card-media media-single" data-gallery="<%= encodeURIComponent(JSON.stringify(images)) %>">
 													<button type="button" class="media-open" data-index="0">
-														<img src="<%= images[0] %>" alt="Post image">
+														<img src="<%= images[0] %>" alt="Utthan Foundation update photo">
 													</button>
 												</div>
 											<% } else { %>
@@ -426,7 +426,7 @@
 													<% visible.forEach(function(src, idx) { %>
 														<div class="media-item">
 															<button type="button" class="media-open" data-index="<%= idx %>">
-																<img src="<%= src %>" alt="Post image">
+																<img src="<%= src %>" alt="Utthan Foundation update photo">
 																<% if (extra > 0 && idx === visible.length - 1) { %>
 																	<span class="media-more">+<%= extra %></span>
 																<% } %>
@@ -667,14 +667,14 @@
 		if (!images || !images.length) return '';
 		var encoded = encodeURIComponent(JSON.stringify(images));
 		if (images.length === 1) {
-			return '<div class="feed-card-media media-single" data-gallery="' + encoded + '"><button type="button" class="media-open" data-index="0"><img src="' + escapeHtml(images[0]) + '" alt="Post image"></button></div>';
+			return '<div class="feed-card-media media-single" data-gallery="' + encoded + '"><button type="button" class="media-open" data-index="0"><img src="' + escapeHtml(images[0]) + '" alt="Utthan Foundation update photo"></button></div>';
 		}
 		var visible = images.slice(0, 4);
 		var extra = images.length - visible.length;
 		var gridClass = images.length === 2 ? 'cols-2' : (images.length === 3 ? 'cols-3' : 'cols-4');
 		var html = '<div class="feed-card-media media-grid ' + gridClass + '" data-gallery="' + encoded + '">';
 		visible.forEach(function (src, idx) {
-			html += '<div class="media-item"><button type="button" class="media-open" data-index="' + idx + '"><img src="' + escapeHtml(src) + '" alt="Post image">';
+			html += '<div class="media-item"><button type="button" class="media-open" data-index="' + idx + '"><img src="' + escapeHtml(src) + '" alt="Utthan Foundation update photo">';
 			if (extra > 0 && idx === visible.length - 1) {
 				html += '<span class="media-more">+' + extra + '</span>';
 			}

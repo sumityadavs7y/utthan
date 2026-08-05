@@ -8,7 +8,8 @@ exports.envConfig = {
   envMode: process.env.ENV_MODE || 'production',
   sessionSecret: process.env.SESSION_SECRET || 'change-me-in-production',
   adminEmail: process.env.ADMIN_EMAIL || 'test@test.com',
-  adminPassword: process.env.ADMIN_PASSWORD || 'admin123'
+  adminPassword: process.env.ADMIN_PASSWORD || 'admin123',
+  siteUrl: process.env.SITE_URL || process.env.APP_URL || 'https://utthanfoundation.in'
 };
 
 exports.databaseConfig = {

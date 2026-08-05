@@ -98,13 +98,13 @@
 								</div>
 							</div>
 							<div class="col-lg-8">
-								<img src="/images/pattern/shape2.png" class="shape-2 move-2" alt="shape">
+								<img src="/images/pattern/shape2.png" class="shape-2 move-2" alt="" aria-hidden="true">
 								<div class="dz-info">
 									<h2 class="title m-b30 m-md-b20">Message From Chairman</h2>
 									<p class="text" style="text-align: justify; white-space: pre-wrap;"><%= chairman.message %></p>
 									<div class="signature">
 										<% if (chairman.signaturePath) { %>
-											<img src="<%= chairman.signaturePath %>" alt="signature">
+											<img src="<%= chairman.signaturePath %>" alt="Signature of <%= chairman.name %>">
 										<% } %>
 										<p class="text-dark m-t15 mb-0">
 											<strong><%= chairman.name %></strong>
@@ -123,7 +123,7 @@
 					</div>
 				<% } %>
 			</div>
-			<img src="/images/pattern/shape6.png" class="shape-6 rotating" alt="shape">
+			<img src="/images/pattern/shape6.png" class="shape-6 rotating" alt="" aria-hidden="true">
 		</section>
 
 		<section class="content-inner">
@@ -176,7 +176,7 @@
 										</div>
 									<% } %>
 									<div class="dz-media">
-										<img src="<%= member.imagePath %>" alt="<%= member.name %>">
+										<img src="<%= member.imagePath %>" alt="<%= member.name %>" loading="lazy">
 									</div>
 									<div class="dz-content">
 										<h5 class="dz-name"><%= member.name %></h5>
@@ -246,7 +246,7 @@
 										</div>
 									<% } %>
 									<div class="dz-media">
-										<img src="<%= member.imagePath %>" alt="<%= member.name %>">
+										<img src="<%= member.imagePath %>" alt="<%= member.name %>" loading="lazy">
 									</div>
 									<div class="dz-content">
 										<h5 class="dz-name"><%= member.name %></h5>

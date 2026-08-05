@@ -216,7 +216,7 @@ router.get('/member', async (req, res) => {
 
 router.get('/donate', (req, res) => {
   renderPage(res, 'donate', {
-    title: 'Donate Us - Utthan Foundation',
+    title: 'Donate - Utthan Foundation',
     currentPage: 'donate',
     extraCss: [
       '/vendor/magnific-popup/magnific-popup.min.css',
@@ -243,6 +243,11 @@ router.get('/contact', (req, res) => {
       '/js/dz.carousel.js'
     ]
   });
+});
+
+router.get('/sitemap.xml', (req, res) => {
+  const { buildSitemapXml } = require('../utils/seo');
+  res.type('application/xml').send(buildSitemapXml());
 });
 
 module.exports = router;

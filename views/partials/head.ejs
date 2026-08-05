@@ -1,18 +1,48 @@
 <!-- Meta -->
+<%
+	const pageSeo = seoHelpers.resolvePageSeo({
+		currentPage: typeof currentPage !== 'undefined' ? currentPage : '',
+		title: typeof title !== 'undefined' ? title : 'Utthan Foundation',
+		metaDescription: typeof metaDescription !== 'undefined' ? metaDescription : null,
+		metaKeywords: typeof metaKeywords !== 'undefined' ? metaKeywords : null,
+		metaRobots: typeof metaRobots !== 'undefined' ? metaRobots : null,
+		canonicalPath: typeof canonicalPath !== 'undefined' ? canonicalPath : (typeof currentPath !== 'undefined' ? currentPath : '/'),
+		ogImage: typeof ogImage !== 'undefined' ? ogImage : null
+	});
+	const orgJsonLd = seoHelpers.buildOrganizationJsonLd(typeof site !== 'undefined' && site ? site : {});
+	const websiteJsonLd = seoHelpers.buildWebsiteJsonLd();
+%>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="keywords" content="">
-<meta name="author" content="Utthan Foundation">
-<meta name="robots" content="">
-<meta name="description" content="Utthan Foundation - For The Ones In Need. Empowering underprivileged communities through education, healthcare, and livelihood development.">
-<meta property="og:title" content="<%= typeof title !== 'undefined' ? title : 'Utthan Foundation' %>">
-<meta property="og:description" content="Utthan Foundation Crowdfunding & Charity">
-<meta name="format-detection" content="telephone=no">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="<%= pageSeo.description %>">
+<meta name="keywords" content="<%= pageSeo.keywords %>">
+<meta name="author" content="Utthan Foundation">
+<meta name="robots" content="<%= pageSeo.robots %>">
+<meta name="theme-color" content="#003b4a">
+<meta name="format-detection" content="telephone=no">
+<link rel="canonical" href="<%= pageSeo.canonical %>">
 
-<title><%= typeof title !== 'undefined' ? title : 'Utthan Foundation' %></title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="<%= pageSeo.siteName %>">
+<meta property="og:locale" content="<%= pageSeo.locale %>">
+<meta property="og:title" content="<%= pageSeo.title %>">
+<meta property="og:description" content="<%= pageSeo.description %>">
+<meta property="og:url" content="<%= pageSeo.canonical %>">
+<meta property="og:image" content="<%= pageSeo.ogImage %>">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="<%= pageSeo.title %>">
+<meta name="twitter:description" content="<%= pageSeo.description %>">
+<meta name="twitter:image" content="<%= pageSeo.ogImage %>">
+
+<title><%= pageSeo.title %></title>
 
 <link rel="icon" type="image/png" href="/images/favicon.png">
+<link rel="apple-touch-icon" href="/images/logo.png">
+
+<script type="application/ld+json"><%- JSON.stringify(orgJsonLd) %></script>
+<script type="application/ld+json"><%- JSON.stringify(websiteJsonLd) %></script>
 
 <% if (typeof extraCss !== 'undefined' && extraCss && extraCss.length) { %>
 	<% extraCss.forEach(function(href) { %>

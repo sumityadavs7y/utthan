@@ -1,0 +1,10 @@
+Sitemap: https://utthanfoundation.in/sitemap.xml
+
+User-agent: *
+Allow: /
+
+Disallow: /login
+Disallow: /account
+Disallow: /admin/
+Disallow: /api/
+Disallow: /logout

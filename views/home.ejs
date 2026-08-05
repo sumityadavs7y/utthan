@@ -8,9 +8,9 @@
 <div class="page-wraper page-wraper-sidebar">
 <div class="page-sidebar">
 		<ul class="dz-social">
-			<% if (site.facebookUrl) { %><li><a href="<%= site.facebookUrl %>" target="_blank" rel="noopener">Facebook</a></li><% } %>
-			<% if (site.twitterUrl) { %><li><a href="<%= site.twitterUrl %>" target="_blank" rel="noopener">Twitter</a></li><% } %>
-			<% if (site.linkedinUrl) { %><li><a href="<%= site.linkedinUrl %>" target="_blank" rel="noopener">Linkedin</a></li><% } %>
+			<% if (site.facebookUrl) { %><li><a href="<%= site.facebookUrl %>" target="_blank" rel="noopener noreferrer">Facebook</a></li><% } %>
+			<% if (site.twitterUrl) { %><li><a href="<%= site.twitterUrl %>" target="_blank" rel="noopener noreferrer">Twitter</a></li><% } %>
+			<% if (site.linkedinUrl) { %><li><a href="<%= site.linkedinUrl %>" target="_blank" rel="noopener noreferrer">Linkedin</a></li><% } %>
 		</ul>
 		<a href="tel:<%= site.phoneTel %>" class="btn-bottom btn btn-primary light"><%= site.phone %></a>
 	</div>
@@ -23,7 +23,7 @@
 	<div class="contact-sidebar">
 		<div class="contact-box">
 			<div class="logo-contact logo-dark">
-				<a href="/"><img src="/images/logo-3.png" alt=""></a>
+				<a href="/"><img src="/images/logo-3.png" alt="Utthan Foundation"></a>
 			</div>
 			<div class="m-b50 contact-text">
 				<div class="dz-title">
@@ -81,7 +81,7 @@
 								<div class="row">
 									<div class="col-xl-6 col-md-5">
 										<div class="banner-media">
-											<img src="/images/main-slider/slider2/pic1.png" alt="">
+											<img src="/images/main-slider/slider2/pic1.png" alt="Children supported by Utthan Foundation donation programs">
 										</div>
 									</div>
 									<div class="col-xl-6 col-md-7">
@@ -89,7 +89,7 @@
 											<div class="top-content">
 												<h5 class="sub-title text-primary">GIVE A HAND TO MAKE</h5>
 												<h1 class="title">Your Donation Can Change the World </h1>
-												<p>Your donation to Uttan Foundation can make a significant difference in the lives of underprivileged children.</p>
+												<p>Your donation to Utthan Foundation can make a significant difference in the lives of underprivileged children.</p>
 												<div class="d-flex align-items-center">
 													<a class="btn btn-primary btnhover1" href="/donate" data-bs-toggle="modal" data-bs-target="#modalDonate">
 														<span>Donate</span>
@@ -110,15 +110,15 @@
 								<div class="row">
 									<div class="col-xl-6 col-md-5">
 										<div class="banner-media2">
-											<img src="/images/main-slider/slider2/pic2.png" alt="">
+											<img src="/images/main-slider/slider2/pic2.png" alt="Utthan Foundation community education and innovation programs">
 										</div>
 									</div>
 									<div class="col-xl-6 col-md-7">
 										<div class="banner-content">
 											<div class="top-content">
 												<h5 class="sub-title text-primary">INNOVATIONS IN TECHNOLOGY</h5>
-												<h1 class="title">We Help Surface Innovations</h1>
-												<p>Uttan Foundation is dedicated to empowering underprivileged communities through education.</p>
+												<h2 class="title">We Help Surface Innovations</h2>
+												<p>Utthan Foundation is dedicated to empowering underprivileged communities through education.</p>
 												<div class="d-flex align-items-center">
 													<a class="btn btn-primary btnhover1" href="/donate" data-bs-toggle="modal" data-bs-target="#modalDonate">
 														<span>Donate</span>
@@ -222,10 +222,10 @@
 					<div class="col-lg-6 m-b30">
 						<div class="dz-about-media">
 							<div class="img-wrapper wow fadeInUp" data-wow-delay="0.2s">
-								<img src="/images/about/pic2.jpg" alt="" class="img1">
-								<a href="<%= site.youtubeUrl %>" class="popup-youtube video-btn"><i class="fa-solid fa-play"></i></a>
+								<img src="/images/about/pic2.jpg" alt="Utthan Foundation volunteers helping communities" class="img1">
+								<a href="<%= site.youtubeUrl %>" class="popup-youtube video-btn" aria-label="Watch Utthan Foundation video on YouTube"><i class="fa-solid fa-play"></i></a>
 							</div>
-							<img src="/images/about/pic3.jpg" alt=""  class="img2 wow fadeInUp" data-wow-delay="0.4s">
+							<img src="/images/about/pic3.jpg" alt="Community outreach by Utthan Foundation" class="img2 wow fadeInUp" data-wow-delay="0.4s">
 						</div>
 					</div>
 					<div class="col-lg-6 m-b30 wow fadeInUp" data-wow-delay="0.6s">
@@ -234,7 +234,7 @@
 							<h2>Help is <br>Our Main Goal</h2>
 						</div>
 						<h4 class="font-weight-500 m-b10">We Need Your Help</h4>
-						<p class="m-b20">Uttan Foundation needs your help to empower underprivileged communities through education, healthcare, and livelihood development. Your support can make a real impact in breaking the cycle of poverty and improving the quality of life for many. </p>
+						<p class="m-b20">Utthan Foundation needs your help to empower underprivileged communities through education, healthcare, and livelihood development. Your support can make a real impact in breaking the cycle of poverty and improving the quality of life for many. </p>
 						<div class="dz-about-info">
 							<div class="row">
 								<div class="col-lg-6 col-sm-6">
@@ -465,15 +465,15 @@
 				<div class="row align-items-center content-bx style-2">
 					<div class="col-lg-6 m-b30 wow fadeInUp" data-wow-delay="0.2s">
 						<div class="dz-media video-bx4 rounded">
-							<img src="/images/project/pic13.jpg" alt="image">
-							<a href="<%= site.youtubeUrl %>" class="popup-youtube vedio-btn"><i class="fa-solid fa-play"></i></a>
+							<img src="/images/project/pic13.jpg" alt="Utthan Foundation community impact video thumbnail">
+							<a href="<%= site.youtubeUrl %>" class="popup-youtube vedio-btn" aria-label="Play Utthan Foundation video"><i class="fa-solid fa-play"></i></a>
 						</div>
 					</div>
 					<div class="col-lg-6 m-b30 wow fadeInUp" data-wow-delay="0.4s">
 						<div class="inner-content">
 							<div class="section-head">
 								<h2 class="title">Save The<br> Humanity For Better Future</h2>
-								<p class="max-w400">At Uttan Foundation, we believe in the power of collective action to create a better future for all. Our mission is to work towards the betterment of humanity by providing aid and support to underprivileged communities through education, healthcare, and livelihood development programs.</p>
+								<p class="max-w400">At Utthan Foundation, we believe in the power of collective action to create a better future for all. Our mission is to work towards the betterment of humanity by providing aid and support to underprivileged communities through education, healthcare, and livelihood development programs.</p>
 							</div>
 							<a href="/blog" class="btn btn-primary">BLogs</a>
 						</div>
@@ -634,7 +634,7 @@
 											<div class="dz-meta">
 												<ul>
 													<li class="post-author">
-														<img src="/images/logo.png" alt=""> <%= post.authorName %>
+														<img src="/images/logo.png" alt="Utthan Foundation"> <%= post.authorName %>
 													</li>
 													<li class="post-date">
 														<span class="day"><%= post.day %></span>
@@ -703,12 +703,12 @@
 				<p class="text-center text-muted mb-0">Team members will appear here soon.</p>
 			<% } %>
 		</div>
-		<img src="/images/pattern/shape1.png" class="shape-1 move-1" alt="shape">
-		<img src="/images/pattern/shape2.png" class="shape-4 move-2" alt="shape">
-		<img src="/images/pattern/shape3.png" class="shape-6 move-1" alt="shape">
-		<img src="/images/pattern/shape5.png" class="shape-2 rotating" alt="shape">
-		<img src="/images/pattern/shape6.png" class="shape-5 rotating" alt="shape">
-		<img src="/images/pattern/shape6.png" class="shape-3 rotating" alt="shape">
+		<img src="/images/pattern/shape1.png" class="shape-1 move-1" alt="" aria-hidden="true">
+		<img src="/images/pattern/shape2.png" class="shape-4 move-2" alt="" aria-hidden="true">
+		<img src="/images/pattern/shape3.png" class="shape-6 move-1" alt="" aria-hidden="true">
+		<img src="/images/pattern/shape5.png" class="shape-2 rotating" alt="" aria-hidden="true">
+		<img src="/images/pattern/shape6.png" class="shape-5 rotating" alt="" aria-hidden="true">
+		<img src="/images/pattern/shape6.png" class="shape-3 rotating" alt="" aria-hidden="true">
 	</section>
 	<!-- Our Team -->
 	
