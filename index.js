@@ -17,6 +17,7 @@ const { seedDefaultTeam } = require('./utils/seedTeam');
 const { seedDefaultCampaigns } = require('./utils/seedCampaign');
 const { seedDefaultCertificates } = require('./utils/seedCertificate');
 const { migrateImagesToMedia } = require('./utils/migrateImagesToMedia');
+const { seedDefaultSiteConfig, getSiteConfig } = require('./utils/siteConfig');
 const { isDevEnvMode } = require('./utils/helpers');
 
 app.use(express.json());
@@ -49,6 +50,13 @@ app.use(async (req, res, next) => {
   res.locals.error = req.flash('error');
   res.locals.currentUser = null;
 
+  try {
+    res.locals.site = await getSiteConfig();
+  } catch (error) {
+    console.error('Site config load error:', error);
+    res.locals.site = await Promise.resolve(require('./utils/siteConfig').serializeSiteConfig(null));
+  }
+
   if (!req.session.userId) {
     return next();
   }
@@ -78,6 +86,7 @@ const teamRoutes = require('./routes/team');
 const campaignRoutes = require('./routes/campaign');
 const certificateRoutes = require('./routes/certificate');
 const mediaRoutes = require('./routes/media');
+const settingsRoutes = require('./routes/settings');
 app.use('/', siteRoutes);
 app.use('/', authRoutes);
 app.use('/', blogRoutes);
@@ -86,6 +95,7 @@ app.use('/', teamRoutes);
 app.use('/', campaignRoutes);
 app.use('/', certificateRoutes);
 app.use('/', mediaRoutes);
+app.use('/', settingsRoutes);
 
 const startServer = async () => {
   try {
@@ -98,6 +108,7 @@ const startServer = async () => {
     await runMigrations();
     await sessionStore.sync();
     await seedDefaultAdmin();
+    await seedDefaultSiteConfig();
     await seedDefaultGallery();
     await seedDefaultTeam();
     await seedDefaultCampaigns();

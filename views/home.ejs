@@ -8,11 +8,11 @@
 <div class="page-wraper page-wraper-sidebar">
 <div class="page-sidebar">
 		<ul class="dz-social">
-			<li><a href="https://www.facebook.com/theutthanfoundation/">Facebook</a></li>
-			<li><a href="https://twitter.com/theutthan">Twitter</a></li>
-			<li><a href="https://www.linkedin.com/in/theutthanfoundation">Linkedin</a></li>
+			<% if (site.facebookUrl) { %><li><a href="<%= site.facebookUrl %>" target="_blank" rel="noopener">Facebook</a></li><% } %>
+			<% if (site.twitterUrl) { %><li><a href="<%= site.twitterUrl %>" target="_blank" rel="noopener">Twitter</a></li><% } %>
+			<% if (site.linkedinUrl) { %><li><a href="<%= site.linkedinUrl %>" target="_blank" rel="noopener">Linkedin</a></li><% } %>
 		</ul>
-		<a href="tel:+917052701010;" class="btn-bottom btn btn-primary light" data-bs-toggle="modal" data-bs-target="#modalDonate">+91-7052701010</a>
+		<a href="tel:<%= site.phoneTel %>" class="btn-bottom btn btn-primary light"><%= site.phone %></a>
 	</div>
 	
 	
@@ -42,9 +42,8 @@
 					<span class="icon-cell"><i class="las la-phone-volume"></i></span> 
 				</div>
 				<div class="icon-content">
-					
 					<h5 class="tilte">Call Now</h5>
-					<p class="m-b0">+91-7052701010</p>
+					<p class="m-b0"><%= site.phone %></p>
 				</div>
 			</div>
 			<div class="icon-bx-wraper left">
@@ -52,8 +51,8 @@
 					<span class="icon-cell"><i class="las la-envelope-open"></i></span> 
 				</div>
 				<div class="icon-content">
-					<h5 class="tilte">Location</h5>
-					<p class="m-b0">help@utthanfoundation.in</p>
+					<h5 class="tilte">Email Now</h5>
+					<p class="m-b0"><%= site.email %></p>
 				</div>
 			</div>
 			<div class="icon-bx-wraper left">
@@ -61,8 +60,8 @@
 					<span class="icon-cell"><i class="las la-map-marker"></i></span> 
 				</div>
 				<div class="icon-content">
-					<h5 class="tilte">Email Now</h5>
-					<p class="m-b0">Sushant Golf City, Lucknow, Uttar Pradesh, India</p>
+					<h5 class="tilte">Location</h5>
+					<p class="m-b0"><%= site.address %></p>
 				</div>
 			</div>
 		</div>	
@@ -359,7 +358,7 @@
 						<div class="dz-about-media">
 							<div class="img-wrapper wow fadeInUp" data-wow-delay="0.2s">
 								<img src="/images/about/pic2.jpg" alt="" class="img1">
-								<a href="https://www.youtube.com/@theutthanfoundation" class="popup-youtube video-btn"><i class="fa-solid fa-play"></i></a>
+								<a href="<%= site.youtubeUrl %>" class="popup-youtube video-btn"><i class="fa-solid fa-play"></i></a>
 							</div>
 							<img src="/images/about/pic3.jpg" alt=""  class="img2 wow fadeInUp" data-wow-delay="0.4s">
 						</div>
@@ -601,7 +600,7 @@
 					<div class="col-lg-6 m-b30 wow fadeInUp" data-wow-delay="0.2s">
 						<div class="dz-media video-bx4 rounded">
 							<img src="/images/project/pic13.jpg" alt="image">
-							<a href="https://youtube.com/@theutthanfoundation" class="popup-youtube vedio-btn"><i class="fa-solid fa-play"></i></a>
+							<a href="<%= site.youtubeUrl %>" class="popup-youtube vedio-btn"><i class="fa-solid fa-play"></i></a>
 						</div>
 					</div>
 					<div class="col-lg-6 m-b30 wow fadeInUp" data-wow-delay="0.4s">

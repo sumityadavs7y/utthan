@@ -24,6 +24,11 @@
 			</li>
 			<% if (currentUser.role === 'admin') { %>
 				<li>
+					<a class="dropdown-item" href="/admin/settings">
+						<i class="fa-solid fa-gear me-2"></i>Site Settings
+					</a>
+				</li>
+				<li>
 					<a class="dropdown-item" href="/admin/users">
 						<i class="fa-solid fa-users me-2"></i>Manage Users
 					</a>

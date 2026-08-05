@@ -47,7 +47,8 @@
 								</ul>
 								<div class="d-flex flex-wrap gap-2">
 									<% if (currentUser.role === 'admin') { %>
-										<a href="/admin/users" class="btn btn-secondary">Manage Users</a>
+										<a href="/admin/settings" class="btn btn-secondary">Site Settings</a>
+										<a href="/admin/users" class="btn btn-outline-secondary">Manage Users</a>
 									<% } %>
 									<form method="POST" action="/logout" class="d-inline">
 										<button type="submit" class="btn btn-outline-secondary">Logout</button>

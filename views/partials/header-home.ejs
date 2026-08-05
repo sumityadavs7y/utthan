@@ -17,8 +17,8 @@
 
 				<div class="extra-nav">
 					<div class="extra-cell d-flex align-items-center">
-						<a class="btn btn-primary btnhover1" href="tel:+917052701010">
-							<span>+91-7052701010</span>
+						<a class="btn btn-primary btnhover1" href="tel:<%= site.phoneTel %>">
+							<span><%= site.phone %></span>
 							<i class="flaticon-phone-call-1 ms-3"></i>
 						</a>
 						<a href="#" class="menu-btn">
@@ -67,6 +67,9 @@
 								<a href="/admin/users" class="btn btn-light btn-login btn-sm me-2 mb-2">
 									<i class="fa-solid fa-users me-2"></i>Manage Users
 								</a>
+								<a href="/admin/settings" class="btn btn-light btn-login btn-sm me-2 mb-2">
+									<i class="fa-solid fa-gear me-2"></i>Settings
+								</a>
 							<% } %>
 							<form method="POST" action="/logout" class="d-inline">
 								<button type="submit" class="btn btn-light btn-login btn-sm mb-2">
@@ -80,10 +83,10 @@
 						<% } %>
 						<div class="dz-social-icon">
 							<ul>
-								<li><a class="fab fa-facebook-f" href="https://www.facebook.com/theutthanfoundation"></a></li>
-								<li><a class="fab fa-twitter" href="https://twitter.com/theutthan"></a></li>
-								<li><a class="fab fa-linkedin-in" href="https://www.linkedin.com/in/theutthanfoundation"></a></li>
-								<li><a class="fab fa-instagram" href="https://www.instagram.com/theutthanfoundation/"></a></li>
+								<% if (site.facebookUrl) { %><li><a class="fab fa-facebook-f" href="<%= site.facebookUrl %>" target="_blank" rel="noopener"></a></li><% } %>
+								<% if (site.twitterUrl) { %><li><a class="fab fa-twitter" href="<%= site.twitterUrl %>" target="_blank" rel="noopener"></a></li><% } %>
+								<% if (site.linkedinUrl) { %><li><a class="fab fa-linkedin-in" href="<%= site.linkedinUrl %>" target="_blank" rel="noopener"></a></li><% } %>
+								<% if (site.instagramUrl) { %><li><a class="fab fa-instagram" href="<%= site.instagramUrl %>" target="_blank" rel="noopener"></a></li><% } %>
 							</ul>
 						</div>
 					</div>

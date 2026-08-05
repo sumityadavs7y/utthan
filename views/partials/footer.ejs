@@ -10,11 +10,11 @@
 						<p>Our mission is to empower disadvantaged communities by providing access to education, healthcare and livelihood opportunities. We also strive to promote equality and justice for all by raising awareness about social issues and advocating for policy change.</p>
 						<div class="dz-social-icon style-1">
 							<ul>
-								<li><a target="_blank" class="fab fa-facebook-f" href="https://www.facebook.com/theutthanfoundation/"></a></li>
-								<li><a target="_blank" class="fab fa-instagram" href="https://www.instagram.com/theutthanfoundation/"></a></li>
-								<li><a target="_blank" class="fab fa-twitter" href="https://twitter.com/theutthan"></a></li>
-								<li><a target="_blank" class="fab fa-youtube" href="https://youtube.com/@theutthanfoundation"></a></li>
-								<li><a target="_blank" class="fab fa-linkedin-in" href="https://www.linkedin.com/in/theutthanfoundation"></a></li>
+								<% if (site.facebookUrl) { %><li><a target="_blank" rel="noopener" class="fab fa-facebook-f" href="<%= site.facebookUrl %>"></a></li><% } %>
+								<% if (site.instagramUrl) { %><li><a target="_blank" rel="noopener" class="fab fa-instagram" href="<%= site.instagramUrl %>"></a></li><% } %>
+								<% if (site.twitterUrl) { %><li><a target="_blank" rel="noopener" class="fab fa-twitter" href="<%= site.twitterUrl %>"></a></li><% } %>
+								<% if (site.youtubeUrl) { %><li><a target="_blank" rel="noopener" class="fab fa-youtube" href="<%= site.youtubeUrl %>"></a></li><% } %>
+								<% if (site.linkedinUrl) { %><li><a target="_blank" rel="noopener" class="fab fa-linkedin-in" href="<%= site.linkedinUrl %>"></a></li><% } %>
 							</ul>
 						</div>
 					</div>
@@ -46,15 +46,15 @@
 						<ul>
 							<li>
 								<i class="fas fa-map-marker-alt"></i>
-								<span>Sushant Golf City, Lucknow</span>
+								<span><%= site.addressShort %></span>
 							</li>
 							<li>
 								<i class="fa-solid fa-phone"></i>
-								<a href="tel:+917052701010">+91-7052701010</a>
+								<a href="tel:<%= site.phoneTel %>"><%= site.phone %></a>
 							</li>
 							<li>
 								<i class="fa fa-envelope"></i>
-								<a href="mailto:help@utthanfoundation.in">help@utthanfoundation.in</a>
+								<a href="mailto:<%= site.email %>"><%= site.email %></a>
 							</li>
 						</ul>
 					</div>
