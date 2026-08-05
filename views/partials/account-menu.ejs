@@ -1,0 +1,80 @@
+<% if (typeof currentUser !== 'undefined' && currentUser) { %>
+	<div class="dropdown account-nav-dropdown">
+		<a
+			href="#"
+			class="<%= typeof accountBtnClass !== 'undefined' && accountBtnClass ? accountBtnClass : 'btn btn-outline-secondary btnhover1' %> dropdown-toggle"
+			id="<%= typeof accountMenuId !== 'undefined' ? accountMenuId : 'accountMenu' %>"
+			role="button"
+			data-bs-toggle="dropdown"
+			aria-expanded="false"
+		>
+			<% if (typeof accountIconAfter !== 'undefined' && accountIconAfter) { %>
+				<span><%= currentUser.name %></span>
+				<i class="fa-solid fa-user ms-3"></i>
+			<% } else { %>
+				<i class="fa-solid fa-user"></i>
+				<span class="m-l10"><%= currentUser.name %></span>
+			<% } %>
+		</a>
+		<ul class="dropdown-menu dropdown-menu-end account-dropdown-menu" aria-labelledby="<%= typeof accountMenuId !== 'undefined' ? accountMenuId : 'accountMenu' %>">
+			<li>
+				<a class="dropdown-item" href="/account">
+					<i class="fa-solid fa-user me-2"></i>My Account
+				</a>
+			</li>
+			<% if (currentUser.role === 'admin') { %>
+				<li>
+					<a class="dropdown-item" href="/admin/users">
+						<i class="fa-solid fa-users me-2"></i>Manage Users
+					</a>
+				</li>
+			<% } %>
+			<li><hr class="dropdown-divider"></li>
+			<li>
+				<form method="POST" action="/logout" class="m-0">
+					<button type="submit" class="dropdown-item text-danger">
+						<i class="fa-solid fa-right-from-bracket me-2"></i>Logout
+					</button>
+				</form>
+			</li>
+		</ul>
+	</div>
+<% } else { %>
+	<a href="/login" class="<%= typeof accountBtnClass !== 'undefined' && accountBtnClass ? accountBtnClass : 'btn btn-outline-secondary btnhover1' %>">
+		<% if (typeof accountIconAfter !== 'undefined' && accountIconAfter) { %>
+			<span>Login</span>
+			<i class="fa-solid fa-user ms-3"></i>
+		<% } else { %>
+			<i class="fa-solid fa-user"></i>
+			<span class="m-l10">My Account</span>
+		<% } %>
+	</a>
+<% } %>
+<style>
+	.account-nav-dropdown { position: relative; display: inline-block; }
+	.account-dropdown-menu {
+		min-width: 200px;
+		padding: 8px 0;
+		border: 1px solid #e6eef1;
+		border-radius: 12px;
+		box-shadow: 0 12px 28px rgba(0, 59, 74, 0.12);
+		margin-top: 8px !important;
+	}
+	.account-dropdown-menu .dropdown-item {
+		padding: 10px 16px;
+		font-weight: 500;
+	}
+	.account-dropdown-menu .dropdown-item:hover,
+	.account-dropdown-menu .dropdown-item:focus {
+		background: #f3f8f9;
+		color: #003b4a;
+	}
+	.account-dropdown-menu .dropdown-item.text-danger:hover {
+		background: #fff5f5;
+		color: #c0392b;
+	}
+	.extra-nav .account-nav-dropdown .dropdown-toggle::after {
+		margin-left: 8px;
+		vertical-align: 0.15em;
+	}
+</style>

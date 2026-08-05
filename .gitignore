@@ -3,6 +3,17 @@ node_modules/
 .DS_Store
 database/
 uploads/
+public/uploads/**
+!public/uploads/blogs/
+!public/uploads/blogs/.gitkeep
+!public/uploads/gallery/
+!public/uploads/gallery/.gitkeep
+!public/uploads/team/
+!public/uploads/team/.gitkeep
+!public/uploads/campaigns/
+!public/uploads/campaigns/.gitkeep
+!public/uploads/certificates/
+!public/uploads/certificates/.gitkeep
 *.log
 logs/
 dist/

@@ -17,17 +17,6 @@
 
 				<div class="extra-nav">
 					<div class="extra-cell d-flex align-items-center">
-						<% if (typeof currentUser !== 'undefined' && currentUser) { %>
-							<a class="btn btn-outline-light btnhover1 me-2" href="/account">
-								<span><%= currentUser.name %></span>
-								<i class="fa-solid fa-user ms-3"></i>
-							</a>
-						<% } else { %>
-							<a class="btn btn-outline-light btnhover1 me-2" href="/login">
-								<span>Login</span>
-								<i class="fa-solid fa-user ms-3"></i>
-							</a>
-						<% } %>
 						<a class="btn btn-primary btnhover1" href="tel:+917052701010">
 							<span>+91-7052701010</span>
 							<i class="flaticon-phone-call-1 ms-3"></i>
@@ -62,7 +51,6 @@
 								<li><a href="/campaigns">Our Campaigns</a></li>
 								<li><a href="/member">Become A Member</a></li>
 								<li><a href="/certificates">Our Certificates</a></li>
-								<li><a href="/fundraiser">Fundraiser</a></li>
 							</ul>
 						</li>
 						<li><a href="/donate">Donate Us</a></li>
@@ -72,6 +60,9 @@
 					</ul>
 					<div class="header-bottom">
 						<% if (typeof currentUser !== 'undefined' && currentUser) { %>
+							<a href="/account" class="btn btn-light btn-login btn-sm me-2 mb-2">
+								<i class="fa-solid fa-user me-2"></i>My Account
+							</a>
 							<% if (currentUser.role === 'admin') { %>
 								<a href="/admin/users" class="btn btn-light btn-login btn-sm me-2 mb-2">
 									<i class="fa-solid fa-users me-2"></i>Manage Users

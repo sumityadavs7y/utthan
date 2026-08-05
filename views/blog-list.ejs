@@ -2,6 +2,312 @@
 <html lang="en">
 <head>
 	<%- include('partials/head') %>
+	<style>
+		.blog-feed-wrap {
+			max-width: 680px;
+			margin: 0 auto;
+		}
+		.feed-composer,
+		.feed-card {
+			background: #fff;
+			border: 1px solid #e6eef1;
+			border-radius: 16px;
+			box-shadow: 0 10px 28px rgba(0, 59, 74, 0.06);
+			margin-bottom: 20px;
+		}
+		.feed-composer {
+			padding: 22px;
+		}
+		.feed-composer-head {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			margin-bottom: 14px;
+		}
+		.feed-avatar {
+			width: 44px;
+			height: 44px;
+			border-radius: 50%;
+			background: #e8f4f6;
+			color: #003b4a;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			font-weight: 700;
+			flex-shrink: 0;
+			overflow: hidden;
+		}
+		.feed-avatar img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+		.feed-composer textarea {
+			width: 100%;
+			min-height: 110px;
+			border: 1px solid #d9e4e8;
+			border-radius: 12px;
+			padding: 14px 16px;
+			resize: vertical;
+			background: #f8fbfc;
+		}
+		.feed-composer textarea:focus {
+			outline: none;
+			border-color: #003b4a;
+			background: #fff;
+		}
+		.feed-composer-actions {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			margin-top: 14px;
+		}
+		.feed-composer-actions .image-picker {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			color: #003b4a;
+			font-weight: 600;
+			cursor: pointer;
+		}
+		.feed-composer-actions .image-picker input {
+			display: none;
+		}
+		.feed-image-preview-grid {
+			display: none;
+			grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+			gap: 10px;
+			margin-top: 14px;
+		}
+		.feed-image-preview-grid.is-visible {
+			display: grid;
+		}
+		.feed-image-preview-grid .preview-item {
+			position: relative;
+			border-radius: 10px;
+			overflow: hidden;
+			border: 1px solid #e6eef1;
+			aspect-ratio: 1;
+			background: #f2f6f7;
+		}
+		.feed-image-preview-grid .preview-item img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			display: block;
+		}
+		.feed-card-header {
+			display: flex;
+			align-items: flex-start;
+			justify-content: space-between;
+			gap: 12px;
+			padding: 18px 18px 0;
+		}
+		.feed-card-author {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+		.feed-card-author strong {
+			display: block;
+			color: #003b4a;
+			font-size: 16px;
+		}
+		.feed-card-author span {
+			color: #6c7a80;
+			font-size: 13px;
+		}
+		.feed-card-body {
+			padding: 14px 18px 18px;
+		}
+		.feed-card-body .feed-text {
+			white-space: pre-wrap;
+			word-break: break-word;
+			color: #24353a;
+			margin: 0;
+			line-height: 1.6;
+			font-size: 15px;
+		}
+		.feed-read-more {
+			display: inline-block;
+			margin-top: 6px;
+			padding: 0;
+			border: 0;
+			background: none;
+			color: #003b4a;
+			font-weight: 600;
+			font-size: 14px;
+			cursor: pointer;
+		}
+		.feed-read-more:hover {
+			text-decoration: underline;
+		}
+		.feed-card-media {
+			margin-top: 14px;
+			border-radius: 12px;
+			overflow: hidden;
+			background: #f2f6f7;
+		}
+		.feed-card-media.media-single .media-open,
+		.feed-card-media.media-single img {
+			width: 100%;
+			display: block;
+			max-height: 520px;
+			object-fit: cover;
+		}
+		.feed-card-media .media-open {
+			display: block;
+			padding: 0;
+			border: 0;
+			background: none;
+			cursor: zoom-in;
+			width: 100%;
+			height: 100%;
+			position: relative;
+		}
+		.feed-card-media.media-grid {
+			display: grid;
+			gap: 4px;
+		}
+		.feed-card-media.media-grid.cols-2 {
+			grid-template-columns: 1fr 1fr;
+		}
+		.feed-card-media.media-grid.cols-3 {
+			grid-template-columns: 1fr 1fr;
+		}
+		.feed-card-media.media-grid.cols-3 .media-item:first-child {
+			grid-column: 1 / -1;
+		}
+		.feed-card-media.media-grid.cols-4 {
+			grid-template-columns: 1fr 1fr;
+		}
+		.feed-card-media .media-item {
+			position: relative;
+			overflow: hidden;
+			background: #e8eef0;
+			min-height: 140px;
+		}
+		.feed-card-media .media-item img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			display: block;
+			aspect-ratio: 4 / 3;
+		}
+		.feed-card-media.media-grid.cols-3 .media-item:first-child img {
+			aspect-ratio: 16 / 9;
+		}
+		.feed-card-media .media-more {
+			position: absolute;
+			inset: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: rgba(0, 59, 74, 0.55);
+			color: #fff;
+			font-size: 28px;
+			font-weight: 700;
+			pointer-events: none;
+		}
+		.feed-card-actions .btn {
+			padding: 6px 10px;
+		}
+		.feed-empty {
+			text-align: center;
+			padding: 56px 20px;
+			color: #6c7a80;
+			border: 1px solid #e6eef1;
+			border-radius: 16px;
+			background: #fff;
+		}
+		.feed-load-more-wrap {
+			text-align: center;
+			padding: 10px 0 30px;
+		}
+		.feed-load-more-wrap.is-hidden {
+			display: none;
+		}
+		.feed-sentinel {
+			height: 1px;
+		}
+		.feed-loading {
+			display: none;
+			text-align: center;
+			color: #6c7a80;
+			padding: 8px 0 20px;
+		}
+		.feed-loading.is-visible {
+			display: block;
+		}
+		.feed-lightbox {
+			position: fixed;
+			inset: 0;
+			z-index: 9999;
+			display: none;
+			align-items: center;
+			justify-content: center;
+			background: rgba(0, 20, 28, 0.88);
+			padding: 24px;
+		}
+		.feed-lightbox.is-open {
+			display: flex;
+		}
+		.feed-lightbox img {
+			max-width: min(960px, 92vw);
+			max-height: 84vh;
+			object-fit: contain;
+			border-radius: 8px;
+			box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+		}
+		.feed-lightbox .lb-close,
+		.feed-lightbox .lb-prev,
+		.feed-lightbox .lb-next {
+			position: absolute;
+			border: 0;
+			background: rgba(255, 255, 255, 0.12);
+			color: #fff;
+			width: 44px;
+			height: 44px;
+			border-radius: 50%;
+			cursor: pointer;
+			font-size: 18px;
+		}
+		.feed-lightbox .lb-close {
+			top: 20px;
+			right: 20px;
+		}
+		.feed-lightbox .lb-prev {
+			left: 20px;
+			top: 50%;
+			transform: translateY(-50%);
+		}
+		.feed-lightbox .lb-next {
+			right: 20px;
+			top: 50%;
+			transform: translateY(-50%);
+		}
+		.feed-lightbox .lb-counter {
+			position: absolute;
+			bottom: 22px;
+			left: 50%;
+			transform: translateX(-50%);
+			color: #fff;
+			font-size: 14px;
+			opacity: 0.9;
+		}
+		@media (max-width: 575px) {
+			.feed-composer,
+			.feed-card {
+				border-radius: 12px;
+			}
+			.feed-lightbox .lb-prev,
+			.feed-lightbox .lb-next {
+				display: none;
+			}
+		}
+	</style>
 </head>
 <body id="bg">
 <%- include('partials/loader') %>
@@ -9,294 +315,533 @@
 	<%- include('partials/header') %>
 
 <div class="page-content bg-white">
-		
-		<!-- Banner  -->
 		<div class="dz-bnr-inr dz-bnr-inr-sm style-1 text-center overlay-primary-dark" style="background-image:url('/images/banner/bnr5.jpg');">
 			<div class="container">
 				<div class="dz-bnr-inr-entry">
-					<h1>Blog List</h1>
-					<!-- Breadcrumb Row -->
+					<h1>Blogs &amp; Media</h1>
 					<nav aria-label="breadcrumb" class="breadcrumb-row">
 						<ul class="breadcrumb">
 							<li class="breadcrumb-item"><a href="/">Home</a></li>
-							<li class="breadcrumb-item active" aria-current="page">Blog List</li>
+							<li class="breadcrumb-item active" aria-current="page">Blogs &amp; Media</li>
 						</ul>
 					</nav>
-					<!-- Breadcrumb Row End -->
 				</div>
 			</div>
 		</div>
-		<!-- Banner End -->
+
 		<section class="content-inner-2">
 			<div class="container">
-				<div class="row">
-					<div class="col-xl-8 col-lg-8 m-b40">
-						<div class="col-12 m-b30">
-							<div class="dz-card style-1 blog-half">
-								<div class="dz-media">
-									<a href="/blog"><img src="/images/blog/blog-grid/pic4.jpg" alt=""></a>
-									<ul class="dz-badge-list">
-										<li><a href="#" class="dz-badge">HEALTH</a></li>
-									</ul>
-									<a href="/blog" class="btn btn-secondary">Read More</a>
-								</div>
-								<div class="dz-info">
-									<h5 class="dz-title"><a href="/blog">Partnering to create a community</a></h5>
-									<p>Utthan Foundation is dedicated to improving the lives of those in need through education, healthcare, and livelihood support.</p>
-									
-									<div class="author-wrappper">
-										<div class="author-media">
-											<img src="/images/avatar/avatar2.jpg" alt=""> 
-										</div>
-										<div class="author-content">
-											<div class="author-head">
-												<h6 class="author-name">Rahul Singh</h6>
-											</div>
-											<ul class="author-meta">
-												<li class="date">November 21th, 2022</li>
-											</ul>
-										</div>
-									</div>
+				<div class="blog-feed-wrap">
+					<%- include('partials/flash') %>
+
+					<% if (typeof currentUser !== 'undefined' && currentUser) { %>
+						<div class="feed-composer">
+							<div class="feed-composer-head">
+								<span class="feed-avatar"><%= currentUser.name.trim().charAt(0).toUpperCase() %></span>
+								<div>
+									<strong><%= currentUser.name %></strong>
+									<div class="text-muted" style="font-size:13px;">Share an update from Utthan Foundation</div>
 								</div>
 							</div>
-							<div class="dz-card style-1 blog-half">
-								<div class="dz-media">
-									<a href="/blog"><img src="/images/blog/blog-grid/pic3.jpg" alt=""></a>
-									<ul class="dz-badge-list">
-										<li><a href="#" class="dz-badge">TECHNOLOGY</a></li>
-									</ul>
-									<a href="/blog" class="btn btn-secondary">Read More</a>
+							<form method="POST" action="/blog" enctype="multipart/form-data" id="composerForm">
+								<textarea name="content" required placeholder="What's happening at Utthan?" maxlength="5000"></textarea>
+								<div class="feed-image-preview-grid" id="composerPreview"></div>
+								<div class="feed-composer-actions">
+									<label class="image-picker">
+										<input type="file" name="images" id="composerImages" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
+										<i class="fa-regular fa-image"></i>
+										<span>Add photos</span>
+									</label>
+									<button type="submit" class="btn btn-secondary">Post</button>
 								</div>
-								<div class="dz-info">
-									<h5 class="dz-title"><a href="/blog">4 Things parents learned for they jids in 2020 </a></h5>
-									<p>Join us in building a brighter future for all by supporting the mission of Utthan Foundation</p>
-									
-									<div class="author-wrappper">
-										<div class="author-media">
-											<img src="/images/avatar/avatar3.jpg" alt=""> 
-										</div>
-										<div class="author-content">
-											<div class="author-head">
-												<h6 class="author-name">Avinash</h6>
-											</div>
-											<ul class="author-meta">
-												<li class="date">November 21th, 2022</li>
-											</ul>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="dz-card style-1 blog-half">
-								<div class="dz-media">
-									<a href="/blog"><img src="/images/blog/blog-grid/pic2.jpg" alt=""></a>
-									<ul class="dz-badge-list">
-										<li><a href="#" class="dz-badge">EDUCATION</a></li>
-									</ul>
-									<a href="/blog" class="btn btn-secondary">Read More</a>
-								</div>
-								<div class="dz-info">
-									<h5 class="dz-title"><a href="/blog">He Created the Web. Now He’s Out to Remake </a></h5>
-									<p>Together, let us create a better tomorrow for those in need through the power of generosity and commitment at Utthan Foundation.</p>
-									
-									<div class="author-wrappper">
-										<div class="author-media">
-											<img src="/images/avatar/avatar4.jpg" alt=""> 
-										</div>
-										<div class="author-content">
-											<div class="author-head">
-												<h6 class="author-name">Pawan Singh</h6>
-											</div>
-											<ul class="author-meta">
-												<li class="date">November 21th, 2022</li>
-											</ul>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="dz-card style-1 blog-half">
-								<div class="dz-media">
-									<a href="/blog"><img src="/images/blog/blog-grid/pic4.jpg" alt=""></a>
-									<ul class="dz-badge-list">
-										<li><a href="#" class="dz-badge">DESIGN</a></li>
-									</ul>
-									<a href="/blog" class="btn btn-secondary">Read More</a>
-								</div>
-								<div class="dz-info">
-									<h5 class="dz-title"><a href="/blog">New vaccine for cattle calf loss learned </a></h5>
-									<p>Together, let us create a better tomorrow for those in need through the power of generosity and commitment at Utthan Foundation.</p>
-									
-									<div class="author-wrappper">
-										<div class="author-media">
-											<img src="/images/avatar/avatar2.jpg" alt=""> 
-										</div>
-										<div class="author-content">
-											<div class="author-head">
-												<h6 class="author-name">Rahul Singh</h6>
-											</div>
-											<ul class="author-meta">
-												<li class="date">November 21th, 2022</li>
-											</ul>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="dz-card style-1 blog-half">
-								<div class="dz-media">
-									<a href="/blog"><img src="/images/blog/blog-grid/pic4.jpg" alt=""></a>
-									<ul class="dz-badge-list">
-										<li><a href="#" class="dz-badge">HEALTH</a></li>
-									</ul>
-									<a href="/blog" class="btn btn-secondary">Read More</a>
-								</div>
-								<div class="dz-info">
-									<h5 class="dz-title"><a href="/blog">Partnering to create a community</a></h5>
-									<p>Mission-driven: Utthan Foundation is on a mission to empower communities and create positive change through education, healthcare, and livelihood support.</p>
-									
-									<div class="author-wrappper">
-										<div class="author-media">
-											<img src="/images/avatar/avatar2.jpg" alt=""> 
-										</div>
-										<div class="author-content">
-											<div class="author-head">
-												<h6 class="author-name">Aman Gupta</h6>
-											</div>
-											<ul class="author-meta">
-												<li class="date">November 21th, 2022</li>
-											</ul>
-										</div>
-									</div>
-								</div>
-							</div>
+							</form>
 						</div>
-						<div class="row">		
-							<div class="col-12 m-sm-t0 m-t30 m-b15">		
-								<nav aria-label="Blog Pagination" class="pagination-bx">
-									<div class="page-item">
-										<a class="page-link prev" href="#"><i class="fas fa-chevron-left"></i></a>
+					<% } %>
+
+					<div id="feedList">
+						<% if (posts && posts.length) { %>
+							<% posts.forEach(function(post) { %>
+								<% const images = post.images || []; %>
+								<% const isLoggedIn = typeof currentUser !== 'undefined' && currentUser; %>
+								<article class="feed-card" data-post-id="<%= post.id %>">
+									<div class="feed-card-header">
+										<div class="feed-card-author">
+											<% if (isLoggedIn && post.author) { %>
+												<span class="feed-avatar"><%= (post.author.name || '?').trim().charAt(0).toUpperCase() %></span>
+												<div>
+													<strong><%= post.author.name %></strong>
+													<span data-created-at="<%= post.createdAt.toISOString ? post.createdAt.toISOString() : post.createdAt %>"><%= new Date(post.createdAt).toLocaleString() %></span>
+												</div>
+											<% } else { %>
+												<span class="feed-avatar"><img src="/images/logo.png" alt="Utthan Foundation"></span>
+												<div>
+													<strong>Utthan Foundation</strong>
+													<span data-created-at="<%= post.createdAt.toISOString ? post.createdAt.toISOString() : post.createdAt %>"><%= new Date(post.createdAt).toLocaleString() %></span>
+												</div>
+											<% } %>
+										</div>
+										<% if (post.canManage) { %>
+											<div class="feed-card-actions">
+												<% if (currentUser && post.author && currentUser.id === post.author.id) { %>
+													<button
+														type="button"
+														class="btn btn-sm btn-outline-secondary btn-edit-post"
+														title="Edit"
+														data-bs-toggle="modal"
+														data-bs-target="#modalEditPost"
+														data-post-id="<%= post.id %>"
+														data-post-content="<%= encodeURIComponent(post.content) %>"
+														data-post-images="<%= encodeURIComponent(JSON.stringify(images)) %>"
+													>
+														<i class="fa-solid fa-pen"></i>
+													</button>
+												<% } %>
+												<button
+													type="button"
+													class="btn btn-sm btn-outline-danger btn-delete-post"
+													title="Delete"
+													data-bs-toggle="modal"
+													data-bs-target="#modalDeletePost"
+													data-post-id="<%= post.id %>"
+												>
+													<i class="fa-solid fa-trash"></i>
+												</button>
+											</div>
+										<% } %>
 									</div>
-									<ul class="pagination">
-										<li class="page-item"><a class="page-link" href="#">1</a></li>
-										<li class="page-item"><a class="page-link active" href="#">2</a></li>
-										<li class="page-item"><a class="page-link" href="#">3</a></li>
-										<li class="page-item"><a class="page-link" href="#">4</a></li>
-									</ul>
-									<div class="page-item">
-										<a class="page-link next" href="#"><i class="fas fa-chevron-right"></i></a>
+									<div class="feed-card-body">
+										<p class="feed-text" data-full-text="<%= encodeURIComponent(post.content) %>"></p>
+										<% if (images.length) { %>
+											<% const visible = images.slice(0, 4); %>
+											<% const extra = images.length - visible.length; %>
+											<% if (images.length === 1) { %>
+												<div class="feed-card-media media-single" data-gallery="<%= encodeURIComponent(JSON.stringify(images)) %>">
+													<button type="button" class="media-open" data-index="0">
+														<img src="<%= images[0] %>" alt="Post image">
+													</button>
+												</div>
+											<% } else { %>
+												<% const gridClass = images.length === 2 ? 'cols-2' : (images.length === 3 ? 'cols-3' : 'cols-4'); %>
+												<div class="feed-card-media media-grid <%= gridClass %>" data-gallery="<%= encodeURIComponent(JSON.stringify(images)) %>">
+													<% visible.forEach(function(src, idx) { %>
+														<div class="media-item">
+															<button type="button" class="media-open" data-index="<%= idx %>">
+																<img src="<%= src %>" alt="Post image">
+																<% if (extra > 0 && idx === visible.length - 1) { %>
+																	<span class="media-more">+<%= extra %></span>
+																<% } %>
+															</button>
+														</div>
+													<% }) %>
+												</div>
+											<% } %>
+										<% } %>
 									</div>
-								</nav>
+								</article>
+							<% }) %>
+						<% } else { %>
+							<div class="feed-empty" id="feedEmpty">
+								<i class="fa-regular fa-newspaper fa-2x mb-3 d-block"></i>
+								Updates from Utthan Foundation will appear here.
 							</div>
-						</div>
+						<% } %>
 					</div>
-					<div class="col-xl-4 col-lg-4">
-						<aside class="side-bar sticky-top right">
-							<div class="widget style-1">
-								<div class="widget-title">
-									<h4 class="title">Search</h4>
-								</div>
-								<div class="search-bx">
-									<form role="search" method="post">
-										<div class="input-group">
-											<input name="text" class="form-control" placeholder="Search Here..." type="text">
-											<span class="input-group-btn">
-												<button type="submit" class="btn btn-primary sharp radius-no"><i class="la la-search scale3"></i></button>
-											</span> 
-										</div>
-									</form>
-								</div>
-							</div>
-							
-							<div class="widget style-1 widget_categories">
-								<div class="widget-title">
-									<h4 class="title">Category</h4>
-								</div>
-								<ul>
-									<li class="cat-item"><a href="#">Software</a></li>                                         
-									<li class="cat-item"><a href="#">Analysis</a></li>                                         
-									<li class="cat-item"><a href="#">Cryptocurrency</a></li>                                         
-									<li class="cat-item"><a href="#">Technology</a></li>                                         
-									<li class="cat-item"><a href="#">Mobile App</a></li> 
-									<li class="cat-item"><a href="#">Development</a></li> 
-								</ul>
-							</div>
-							<div class="widget style-1 recent-posts-entry">
-								<div class="widget-title">
-									<h4 class="title">Recent Post</h4>
-								</div>
-								<div class="widget-post-bx">
-									<div class="widget-post clearfix">
-										<div class="dz-media"> 
-											<img src="/images/blog/recent-blog/pic1.jpg" alt="">
-										</div>
-										<div class="dz-info">
-											<div class="dz-meta">
-												<ul>
-													<li class="post-date"> 7 March, 2022</li>
-												</ul>
-											</div>
-											<h6 class="title"><a href="/blog">Aliqua sodales vestibulum risus nterdum malesuad</a></h6>
-										</div>
-									</div>
-									<div class="widget-post clearfix">
-										<div class="dz-media"> 
-											<img src="/images/blog/recent-blog/pic2.jpg" alt="">
-										</div>
-										<div class="dz-info">
-											<div class="dz-meta">
-												<ul>
-													<li class="post-date"> 6 March, 2022 </li>
-												</ul>
-											</div>
-											<h6 class="title"><a href="/blog">How To Make Money From The agency Phenomenon</a></h6>
-										</div>
-									</div>
-									<div class="widget-post clearfix">
-										<div class="dz-media"> 
-											<img src="/images/blog/recent-blog/pic3.jpg" alt="">
-										</div>
-										<div class="dz-info">
-											<div class="dz-meta">
-												<ul>
-													<li class="post-date"> 5 March, 2022 </li>
-												</ul>
-											</div>
-											<h6 class="title"><a href="/blog">The 8 Biggest Agency Mistakes You Can Easily</a></h6>
-										</div>
-									</div>
-								</div>
-							</div>
-							
-							<div class="widget style-1 widget_tag_cloud">
-								<div class="widget-title">
-									<h4 class="title">Popular Tags</h4>
-								</div>
-								<div class="tagcloud"> 
-									<a href="#">Mock-Ups</a>
-									<a href="#">UI</a>
-									<a href="#">Websites</a>
-									<a href="#">PSD Templates</a>
-									<a href="#">Branding</a>
-									<a href="#">WordPress</a>
-									<a href="#">Graphic Design</a>
-									<a href="#">UI Kit</a>
-									<a href="#">Development</a>
-								</div>
-							</div>
-							
-						</aside>
+
+					<div class="feed-loading" id="feedLoading">Loading more posts...</div>
+					<div class="feed-sentinel" id="feedSentinel"></div>
+					<div class="feed-load-more-wrap <%= hasMore ? '' : 'is-hidden' %>" id="feedLoadMoreWrap">
+						<button type="button" class="btn btn-outline-secondary" id="feedLoadMore">Load more</button>
 					</div>
 				</div>
 			</div>
 		</section>
-		
-		
 </div>
 
-
-	<%- include('partials/newsletter') %>
 	<%- include('partials/footer') %>
+
+	<% if (typeof currentUser !== 'undefined' && currentUser) { %>
+	<div class="modal fade modal-wrapper" id="modalEditPost" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Edit Post</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="flaticon-close"></i></button>
+				</div>
+				<form method="POST" id="formEditPost" action="#" enctype="multipart/form-data">
+					<div class="modal-body">
+						<div class="form-group mb-3">
+							<label class="form-label">Text</label>
+							<textarea name="content" id="editPostContent" class="form-control" rows="5" required maxlength="5000"></textarea>
+						</div>
+						<div class="form-group mb-2">
+							<label class="form-label">Replace photos (optional)</label>
+							<input type="file" name="images" class="form-control" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
+						</div>
+						<p class="text-muted small mb-0" id="editPostCurrentImage"></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-secondary">Save Changes</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade modal-wrapper" id="modalDeletePost" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Delete Post</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="flaticon-close"></i></button>
+				</div>
+				<form method="POST" id="formDeletePost" action="#">
+					<div class="modal-body">
+						<p class="mb-0">Are you sure you want to delete this post? This cannot be undone.</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-danger">Delete</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<% } %>
+
+	<div class="feed-lightbox" id="feedLightbox" aria-hidden="true">
+		<button type="button" class="lb-close" id="lbClose" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+		<button type="button" class="lb-prev" id="lbPrev" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button>
+		<img src="" alt="Expanded post image" id="lbImage">
+		<button type="button" class="lb-next" id="lbNext" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button>
+		<div class="lb-counter" id="lbCounter"></div>
+	</div>
 
 	<button class="scroltop icon-up" type="button"><i class="fas fa-arrow-up"></i></button>
 </div>
 <%- include('partials/scripts') %>
+<script>
+(function () {
+	var READ_MORE_LIMIT = 280;
+	var hasMore = <%= hasMore ? 'true' : 'false' %>;
+	var loading = false;
+	var feedList = document.getElementById('feedList');
+	var loadMoreWrap = document.getElementById('feedLoadMoreWrap');
+	var loadMoreBtn = document.getElementById('feedLoadMore');
+	var sentinel = document.getElementById('feedSentinel');
+	var loadingEl = document.getElementById('feedLoading');
+	var currentUserId = <%= (typeof currentUser !== 'undefined' && currentUser) ? currentUser.id : 'null' %>;
+	var isLoggedIn = <%= (typeof currentUser !== 'undefined' && currentUser) ? 'true' : 'false' %>;
+
+	var lightbox = document.getElementById('feedLightbox');
+	var lbImage = document.getElementById('lbImage');
+	var lbCounter = document.getElementById('lbCounter');
+	var galleryImages = [];
+	var galleryIndex = 0;
+
+	function escapeHtml(value) {
+		return String(value == null ? '' : value)
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#39;');
+	}
+
+	function formatDate(value) {
+		try {
+			return new Date(value).toLocaleString();
+		} catch (e) {
+			return value;
+		}
+	}
+
+	function truncateText(text) {
+		if (!text || text.length <= READ_MORE_LIMIT) {
+			return { preview: text || '', needsMore: false };
+		}
+		var cut = text.slice(0, READ_MORE_LIMIT);
+		var lastSpace = cut.lastIndexOf(' ');
+		if (lastSpace > READ_MORE_LIMIT * 0.6) cut = cut.slice(0, lastSpace);
+		return { preview: cut + '…', needsMore: true };
+	}
+
+	function setupTextBlock(textEl) {
+		if (!textEl) return;
+		var full = '';
+		try {
+			full = decodeURIComponent(textEl.getAttribute('data-full-text') || '');
+		} catch (e) {
+			full = textEl.getAttribute('data-full-text') || '';
+		}
+		var truncated = truncateText(full);
+		textEl.textContent = truncated.preview;
+
+		var existing = textEl.parentNode.querySelector('.feed-read-more');
+		if (existing) existing.remove();
+
+		if (!truncated.needsMore) return;
+
+		var btn = document.createElement('button');
+		btn.type = 'button';
+		btn.className = 'feed-read-more';
+		btn.textContent = 'Read more';
+		btn.addEventListener('click', function () {
+			var expanded = textEl.getAttribute('data-expanded') === '1';
+			if (expanded) {
+				textEl.textContent = truncated.preview;
+				textEl.setAttribute('data-expanded', '0');
+				btn.textContent = 'Read more';
+			} else {
+				textEl.textContent = full;
+				textEl.setAttribute('data-expanded', '1');
+				btn.textContent = 'Show less';
+			}
+		});
+		textEl.insertAdjacentElement('afterend', btn);
+	}
+
+	function enhanceFeedTexts(root) {
+		(root || feedList).querySelectorAll('.feed-text[data-full-text]').forEach(setupTextBlock);
+	}
+
+	function openLightbox(images, index) {
+		galleryImages = images || [];
+		galleryIndex = index || 0;
+		if (!galleryImages.length) return;
+		updateLightbox();
+		lightbox.classList.add('is-open');
+		lightbox.setAttribute('aria-hidden', 'false');
+		document.body.style.overflow = 'hidden';
+	}
+
+	function closeLightbox() {
+		lightbox.classList.remove('is-open');
+		lightbox.setAttribute('aria-hidden', 'true');
+		document.body.style.overflow = '';
+		galleryImages = [];
+	}
+
+	function updateLightbox() {
+		lbImage.src = galleryImages[galleryIndex];
+		lbCounter.textContent = (galleryIndex + 1) + ' / ' + galleryImages.length;
+		document.getElementById('lbPrev').style.visibility = galleryImages.length > 1 ? 'visible' : 'hidden';
+		document.getElementById('lbNext').style.visibility = galleryImages.length > 1 ? 'visible' : 'hidden';
+	}
+
+	function stepLightbox(delta) {
+		if (galleryImages.length < 2) return;
+		galleryIndex = (galleryIndex + delta + galleryImages.length) % galleryImages.length;
+		updateLightbox();
+	}
+
+	feedList.addEventListener('click', function (event) {
+		var openBtn = event.target.closest('.media-open');
+		if (!openBtn) return;
+		var media = openBtn.closest('[data-gallery]');
+		if (!media) return;
+		var images = [];
+		try {
+			images = JSON.parse(decodeURIComponent(media.getAttribute('data-gallery') || '[]'));
+		} catch (e) {
+			images = [];
+		}
+		var index = Number(openBtn.getAttribute('data-index') || 0);
+		openLightbox(images, index);
+	});
+
+	document.getElementById('lbClose').addEventListener('click', closeLightbox);
+	document.getElementById('lbPrev').addEventListener('click', function () { stepLightbox(-1); });
+	document.getElementById('lbNext').addEventListener('click', function () { stepLightbox(1); });
+	lightbox.addEventListener('click', function (event) {
+		if (event.target === lightbox) closeLightbox();
+	});
+	document.addEventListener('keydown', function (event) {
+		if (!lightbox.classList.contains('is-open')) return;
+		if (event.key === 'Escape') closeLightbox();
+		if (event.key === 'ArrowLeft') stepLightbox(-1);
+		if (event.key === 'ArrowRight') stepLightbox(1);
+	});
+
+	function renderMedia(images) {
+		if (!images || !images.length) return '';
+		var encoded = encodeURIComponent(JSON.stringify(images));
+		if (images.length === 1) {
+			return '<div class="feed-card-media media-single" data-gallery="' + encoded + '"><button type="button" class="media-open" data-index="0"><img src="' + escapeHtml(images[0]) + '" alt="Post image"></button></div>';
+		}
+		var visible = images.slice(0, 4);
+		var extra = images.length - visible.length;
+		var gridClass = images.length === 2 ? 'cols-2' : (images.length === 3 ? 'cols-3' : 'cols-4');
+		var html = '<div class="feed-card-media media-grid ' + gridClass + '" data-gallery="' + encoded + '">';
+		visible.forEach(function (src, idx) {
+			html += '<div class="media-item"><button type="button" class="media-open" data-index="' + idx + '"><img src="' + escapeHtml(src) + '" alt="Post image">';
+			if (extra > 0 && idx === visible.length - 1) {
+				html += '<span class="media-more">+' + extra + '</span>';
+			}
+			html += '</button></div>';
+		});
+		html += '</div>';
+		return html;
+	}
+
+	function renderPostCard(post) {
+		var images = post.images || [];
+		var actions = '';
+		var authorBlock;
+
+		if (isLoggedIn && post.author) {
+			var initial = (post.author.name || '?').trim().charAt(0).toUpperCase();
+			authorBlock =
+				'<span class="feed-avatar">' + escapeHtml(initial) + '</span>' +
+				'<div><strong>' + escapeHtml(post.author.name) + '</strong>' +
+				'<span data-created-at="' + escapeHtml(post.createdAt) + '">' + escapeHtml(formatDate(post.createdAt)) + '</span></div>';
+		} else {
+			authorBlock =
+				'<span class="feed-avatar"><img src="/images/logo.png" alt="Utthan Foundation"></span>' +
+				'<div><strong>Utthan Foundation</strong>' +
+				'<span data-created-at="' + escapeHtml(post.createdAt) + '">' + escapeHtml(formatDate(post.createdAt)) + '</span></div>';
+		}
+
+		if (post.canManage) {
+			actions = '<div class="feed-card-actions">';
+			if (currentUserId && post.author && post.author.id === currentUserId) {
+				actions += '<button type="button" class="btn btn-sm btn-outline-secondary btn-edit-post" title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditPost" data-post-id="' + post.id + '" data-post-content="' + encodeURIComponent(post.content) + '" data-post-images="' + encodeURIComponent(JSON.stringify(images)) + '"><i class="fa-solid fa-pen"></i></button> ';
+			}
+			actions += '<button type="button" class="btn btn-sm btn-outline-danger btn-delete-post" title="Delete" data-bs-toggle="modal" data-bs-target="#modalDeletePost" data-post-id="' + post.id + '"><i class="fa-solid fa-trash"></i></button></div>';
+		}
+
+		return (
+			'<article class="feed-card" data-post-id="' + post.id + '">' +
+				'<div class="feed-card-header">' +
+					'<div class="feed-card-author">' + authorBlock + '</div>' +
+					actions +
+				'</div>' +
+				'<div class="feed-card-body">' +
+					'<p class="feed-text" data-full-text="' + encodeURIComponent(post.content) + '"></p>' +
+					renderMedia(images) +
+				'</div>' +
+			'</article>'
+		);
+	}
+
+	function getOldestId() {
+		var cards = feedList.querySelectorAll('.feed-card[data-post-id]');
+		if (!cards.length) return null;
+		return cards[cards.length - 1].getAttribute('data-post-id');
+	}
+
+	function setHasMore(next) {
+		hasMore = !!next;
+		if (hasMore) {
+			loadMoreWrap.classList.remove('is-hidden');
+		} else {
+			loadMoreWrap.classList.add('is-hidden');
+		}
+	}
+
+	function loadMore() {
+		if (loading || !hasMore) return;
+		var beforeId = getOldestId();
+		if (!beforeId) {
+			setHasMore(false);
+			return;
+		}
+
+		loading = true;
+		loadingEl.classList.add('is-visible');
+
+		fetch('/blog/api/posts?beforeId=' + encodeURIComponent(beforeId) + '&limit=10')
+			.then(function (res) { return res.json(); })
+			.then(function (data) {
+				var empty = document.getElementById('feedEmpty');
+				if (empty) empty.remove();
+
+				(data.posts || []).forEach(function (post) {
+					feedList.insertAdjacentHTML('beforeend', renderPostCard(post));
+				});
+				enhanceFeedTexts(feedList);
+				setHasMore(data.hasMore);
+			})
+			.catch(function () {
+				setHasMore(true);
+			})
+			.finally(function () {
+				loading = false;
+				loadingEl.classList.remove('is-visible');
+			});
+	}
+
+	if (loadMoreBtn) {
+		loadMoreBtn.addEventListener('click', loadMore);
+	}
+
+	if (sentinel && 'IntersectionObserver' in window) {
+		var observer = new IntersectionObserver(function (entries) {
+			entries.forEach(function (entry) {
+				if (entry.isIntersecting) loadMore();
+			});
+		}, { rootMargin: '200px' });
+		observer.observe(sentinel);
+	}
+
+	var composerImages = document.getElementById('composerImages');
+	var composerPreview = document.getElementById('composerPreview');
+
+	if (composerImages && composerPreview) {
+		composerImages.addEventListener('change', function () {
+			composerPreview.innerHTML = '';
+			var files = Array.prototype.slice.call(composerImages.files || []);
+			if (!files.length) {
+				composerPreview.classList.remove('is-visible');
+				return;
+			}
+			files.slice(0, 10).forEach(function (file) {
+				var item = document.createElement('div');
+				item.className = 'preview-item';
+				var img = document.createElement('img');
+				img.src = URL.createObjectURL(file);
+				img.alt = 'Preview';
+				item.appendChild(img);
+				composerPreview.appendChild(item);
+			});
+			composerPreview.classList.add('is-visible');
+		});
+	}
+
+	var editModal = document.getElementById('modalEditPost');
+	var deleteModal = document.getElementById('modalDeletePost');
+	var editForm = document.getElementById('formEditPost');
+	var deleteForm = document.getElementById('formDeletePost');
+
+	if (editModal) {
+		editModal.addEventListener('show.bs.modal', function (event) {
+			var button = event.relatedTarget;
+			if (!button) return;
+			var postId = button.getAttribute('data-post-id');
+			editForm.action = '/blog/' + postId + '/edit';
+			document.getElementById('editPostContent').value = decodeURIComponent(button.getAttribute('data-post-content') || '');
+			var images = [];
+			try {
+				images = JSON.parse(decodeURIComponent(button.getAttribute('data-post-images') || '[]'));
+			} catch (e) {
+				images = [];
+			}
+			document.getElementById('editPostCurrentImage').textContent = images.length
+				? ('Currently ' + images.length + ' photo(s). Choosing new photos will replace them.')
+				: 'No photos on this post yet.';
+		});
+	}
+
+	if (deleteModal) {
+		deleteModal.addEventListener('show.bs.modal', function (event) {
+			var button = event.relatedTarget;
+			if (!button) return;
+			deleteForm.action = '/blog/' + button.getAttribute('data-post-id') + '/delete';
+		});
+	}
+
+	enhanceFeedTexts(feedList);
+})();
+</script>
 </body>
 </html>

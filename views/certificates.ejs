@@ -2,127 +2,226 @@
 <html lang="en">
 <head>
 	<%- include('partials/head') %>
+	<style>
+		.certificate-composer {
+			background: #fff;
+			border: 1px solid #e6eef1;
+			border-radius: 16px;
+			box-shadow: 0 10px 28px rgba(0, 59, 74, 0.06);
+			padding: 22px;
+			margin-bottom: 28px;
+		}
+		.certificate-composer-head {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			margin-bottom: 14px;
+		}
+		.certificate-composer-head .feed-avatar {
+			width: 44px;
+			height: 44px;
+			border-radius: 50%;
+			background: #e8f4f6;
+			color: #003b4a;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			font-weight: 700;
+			flex-shrink: 0;
+		}
+		.certificate-composer input[type="text"] {
+			width: 100%;
+			border: 1px solid #d9e4e8;
+			border-radius: 12px;
+			padding: 12px 16px;
+			background: #f8fbfc;
+		}
+		.certificate-composer input[type="text"]:focus {
+			outline: none;
+			border-color: #003b4a;
+			background: #fff;
+		}
+		.certificate-composer-actions {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			margin-top: 14px;
+		}
+		.certificate-composer-actions .image-picker {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			color: #003b4a;
+			font-weight: 600;
+			cursor: pointer;
+		}
+		.certificate-composer-actions .image-picker input {
+			display: none;
+		}
+		.certificate-preview-grid {
+			display: none;
+			grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+			gap: 10px;
+			margin-top: 14px;
+		}
+		.certificate-preview-grid.is-visible {
+			display: grid;
+		}
+		.certificate-preview-grid .preview-item {
+			border-radius: 10px;
+			overflow: hidden;
+			border: 1px solid #e6eef1;
+			aspect-ratio: 1;
+			background: #f2f6f7;
+		}
+		.certificate-preview-grid .preview-item img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			display: block;
+		}
+		.certificate-item-wrap {
+			position: relative;
+		}
+		.certificate-item-wrap .certificate-admin-actions {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			z-index: 2;
+			display: flex;
+			gap: 6px;
+		}
+		.certificate-item-wrap .certificate-admin-btn {
+			width: 34px;
+			height: 34px;
+			border: 0;
+			border-radius: 50%;
+			background: rgba(255, 255, 255, 0.92);
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+			cursor: pointer;
+		}
+		.certificate-item-wrap .certificate-edit-btn { color: #003b4a; }
+		.certificate-item-wrap .certificate-delete-btn { color: #c0392b; }
+		.certificate-empty {
+			text-align: center;
+			padding: 48px 16px;
+			color: #6c7a80;
+			border: 1px dashed #d9e4e8;
+			border-radius: 16px;
+		}
+		.dz-post-thum .lightimg {
+			cursor: zoom-in;
+			display: block;
+		}
+		.dz-post-thum .lightimg img {
+			width: 100%;
+			display: block;
+			aspect-ratio: 1;
+			object-fit: cover;
+		}
+	</style>
 </head>
 <body id="bg">
 <%- include('partials/loader') %>
 <div class="page-wraper">
 	<%- include('partials/header') %>
 
-<div class="page-content bg-white">
-		
-		<!-- Banner  -->
+	<div class="page-content bg-white">
 		<div class="dz-bnr-inr dz-bnr-inr-sm style-1 text-center overlay-primary-dark" style="background-image:url('/images/banner/bnr5.jpg');">
 			<div class="container">
 				<div class="dz-bnr-inr-entry">
 					<h1>Our Certificates</h1>
-					<!-- Breadcrumb Row -->
 					<nav aria-label="breadcrumb" class="breadcrumb-row">
 						<ul class="breadcrumb">
 							<li class="breadcrumb-item"><a href="/">Home</a></li>
 							<li class="breadcrumb-item active" aria-current="page">Our Certificates</li>
 						</ul>
 					</nav>
-					<!-- Breadcrumb Row End -->
 				</div>
 			</div>
 		</div>
-		<!-- Banner End -->
-		
-		<!-- Certificates -->
+
 		<div class="content-inner">
 			<div class="container">
-				<div class="row certificates-bx" id="lightgallery">
-					<div class="col-xl-3 col-lg-4 col-6 m-b30">
-						<div class="dz-post-thum dz-img-effect">
-							<span data-exthumbimage="images/certificates/pic1.jpg" data-src="/images/certificates/pic1.jpg" class="lightimg" title="Certificate 1">		<img src="/images/certificates/pic1.jpg" alt=""> 
-							</span>
+				<%- include('partials/flash') %>
+
+				<% if (typeof currentUser !== 'undefined' && currentUser && currentUser.role === 'admin') { %>
+					<div class="certificate-composer">
+						<div class="certificate-composer-head">
+							<span class="feed-avatar"><%= currentUser.name.trim().charAt(0).toUpperCase() %></span>
+							<div>
+								<strong><%= currentUser.name %></strong>
+								<div class="text-muted" style="font-size:13px;">Upload certificate images</div>
+							</div>
 						</div>
+						<form method="POST" action="/certificates" enctype="multipart/form-data" id="certificateUploadForm">
+							<input type="text" name="title" placeholder="Optional caption for these certificates" maxlength="200">
+							<div class="certificate-preview-grid" id="certificatePreview"></div>
+							<div class="certificate-composer-actions">
+								<label class="image-picker">
+									<input type="file" name="images" id="certificateImages" accept="image/jpeg,image/png,image/webp,image/gif" multiple required>
+									<i class="fa-regular fa-image"></i>
+									<span>Choose certificates</span>
+								</label>
+								<button type="submit" class="btn btn-secondary">Upload</button>
+							</div>
+						</form>
 					</div>
-					<div class="col-xl-3 col-lg-4 col-6 m-b30">
-						<div class="dz-post-thum dz-img-effect">
-							<span data-exthumbimage="images/certificates/pic2.jpg" data-src="/images/certificates/pic2.jpg" class="lightimg" title="Certificate 2">		
-								<img src="/images/certificates/pic2.jpg" alt=""> 
-							</span>
-						</div>
+				<% } %>
+
+				<% if (items && items.length) { %>
+					<div class="row certificates-bx" id="lightgallery">
+						<% items.forEach(function(item) { %>
+							<div class="col-xl-3 col-lg-4 col-6 m-b30">
+								<div class="dz-post-thum dz-img-effect certificate-item-wrap">
+									<% if (typeof currentUser !== 'undefined' && currentUser && currentUser.role === 'admin') { %>
+										<div class="certificate-admin-actions">
+											<button
+												type="button"
+												class="certificate-admin-btn certificate-edit-btn"
+												title="Edit"
+												data-bs-toggle="modal"
+												data-bs-target="#modalEditCertificate"
+												data-item-id="<%= item.id %>"
+												data-item-title="<%= encodeURIComponent(item.title || '') %>"
+												onclick="event.stopPropagation();"
+											>
+												<i class="fa-solid fa-pen"></i>
+											</button>
+											<form method="POST" action="/certificates/<%= item.id %>/delete" class="m-0" onsubmit="return confirm('Delete this certificate?');">
+												<button type="submit" class="certificate-admin-btn certificate-delete-btn" title="Delete" onclick="event.stopPropagation();">
+													<i class="fa-solid fa-trash"></i>
+												</button>
+											</form>
+										</div>
+									<% } %>
+									<span
+										data-exthumbimage="<%= item.imagePath %>"
+										data-src="<%= item.imagePath %>"
+										class="lightimg"
+										title="<%= item.title || 'Certificate' %>"
+									>
+										<img src="<%= item.imagePath %>" alt="<%= item.title || 'Certificate' %>">
+									</span>
+								</div>
+							</div>
+						<% }) %>
 					</div>
-					<div class="col-xl-3 col-lg-4 col-6 m-b30">
-						<div class="dz-post-thum dz-img-effect">
-							<span data-exthumbimage="images/certificates/pic3.jpg" data-src="/images/certificates/pic3.jpg" class="lightimg" title="Certificate 3">		
-								<img src="/images/certificates/pic3.jpg" alt=""> 
-							</span>
-						</div>
+				<% } else { %>
+					<div class="certificate-empty">
+						<p class="mb-0">No certificates yet<% if (typeof currentUser !== 'undefined' && currentUser && currentUser.role === 'admin') { %>. Upload the first ones above.<% } else { %>.<% } %></p>
 					</div>
-					<div class="col-xl-3 col-lg-4 col-6 m-b30">
-						<div class="dz-post-thum dz-img-effect">
-							<span data-exthumbimage="images/certificates/pic4.jpg" data-src="/images/certificates/pic4.jpg" class="lightimg" title="Certificate 4">		
-								<img src="/images/certificates/pic4.jpg" alt=""> 
-							</span>
-						</div>
-					</div>
-					<div class="col-xl-3 col-lg-4 col-6 m-b30">
-						<div class="dz-post-thum dz-img-effect">
-							<span data-exthumbimage="images/certificates/pic5.jpg" data-src="/images/certificates/pic5.jpg" class="lightimg" title="Certificate 5">		
-								<img src="/images/certificates/pic5.jpg" alt=""> 
-							</span>
-						</div>
-					</div>
-					<div class="col-xl-3 col-lg-4 col-6 m-b30">
-						<div class="dz-post-thum dz-img-effect">
-							<span data-exthumbimage="images/certificates/pic6.jpg" data-src="/images/certificates/pic6.jpg" class="lightimg" title="Certificate 6">		
-								<img src="/images/certificates/pic6.jpg" alt=""> 
-							</span>
-						</div>
-					</div>
-					<div class="col-xl-3 col-lg-4 col-6 m-b30">
-						<div class="dz-post-thum dz-img-effect">
-							<span data-exthumbimage="images/certificates/pic7.jpg" data-src="/images/certificates/pic7.jpg" class="lightimg" title="Certificate 7">		
-								<img src="/images/certificates/pic7.jpg" alt=""> 
-							</span>
-						</div>
-					</div>
-					<div class="col-xl-3 col-lg-4 col-6 m-b30">
-						<div class="dz-post-thum dz-img-effect">
-							<span data-exthumbimage="images/certificates/pic8.jpg" data-src="/images/certificates/pic8.jpg" class="lightimg" title="Certificate 8">		
-								<img src="/images/certificates/pic8.jpg" alt=""> 
-							</span>
-						</div>
-					</div>
-					<div class="col-xl-3 col-lg-4 col-6 m-b30">
-						<div class="dz-post-thum dz-img-effect">
-							<span data-exthumbimage="images/certificates/pic9.jpg" data-src="/images/certificates/pic9.jpg" class="lightimg" title="Certificate 9">		
-								<img src="/images/certificates/pic9.jpg" alt=""> 
-							</span>
-						</div>
-					</div>
-					<div class="col-xl-3 col-lg-4 col-6 m-b30">
-						<div class="dz-post-thum dz-img-effect">
-							<span data-exthumbimage="images/certificates/pic10.jpg" data-src="/images/certificates/pic10.jpg" class="lightimg" title="Certificate 10">		
-								<img src="/images/certificates/pic10.jpg" alt=""> 
-							</span>
-						</div>
-					</div>
-					<div class="col-xl-3 col-lg-4 col-6 m-b30">
-						<div class="dz-post-thum dz-img-effect">
-							<span data-exthumbimage="images/certificates/pic11.jpg" data-src="/images/certificates/pic11.jpg" class="lightimg" title="Certificate 11">		
-								<img src="/images/certificates/pic11.jpg" alt=""> 
-							</span>
-						</div>
-					</div>
-					<div class="col-xl-3 col-lg-4 col-6 m-b30">
-						<div class="dz-post-thum dz-img-effect">
-							<span data-exthumbimage="images/certificates/pic12.jpg" data-src="/images/certificates/pic12.jpg" class="lightimg" title="Certificate 12">		
-								<img src="/images/certificates/pic12.jpg" alt=""> 
-							</span>
-						</div>
-					</div>
-				</div>
+				<% } %>
 			</div>
 		</div>
-		<!-- Certificates -->
-		
+
 		<hr class="container my-0">
 
-		<!-- Call To Action -->
 		<section class="content-inner-2">
 			<div class="container">
 				<div class="section-head text-center mb-0">
@@ -133,17 +232,88 @@
 				</div>
 			</div>
 		</section>
-		<!-- Call To Action End -->
-		
-		
-</div>
-
+	</div>
 
 	<%- include('partials/newsletter') %>
 	<%- include('partials/footer') %>
-
 	<button class="scroltop icon-up" type="button"><i class="fas fa-arrow-up"></i></button>
 </div>
+
+<% if (typeof currentUser !== 'undefined' && currentUser && currentUser.role === 'admin') { %>
+	<div class="modal fade modal-wrapper" id="modalEditCertificate" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Edit Certificate</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="flaticon-close"></i></button>
+				</div>
+				<form method="POST" id="formEditCertificate" action="#" enctype="multipart/form-data">
+					<div class="modal-body">
+						<div class="form-group mb-3">
+							<label class="form-label">Caption</label>
+							<input type="text" name="title" id="editCertificateTitle" class="form-control" maxlength="200" placeholder="Optional caption">
+						</div>
+						<div class="form-group mb-0">
+							<label class="form-label">Replace image (optional)</label>
+							<input type="file" name="image" class="form-control" accept="image/jpeg,image/png,image/webp,image/gif">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-secondary">Save Changes</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+<% } %>
+
 <%- include('partials/scripts') %>
+<script>
+(function () {
+	var input = document.getElementById('certificateImages');
+	var preview = document.getElementById('certificatePreview');
+	if (input && preview) {
+		input.addEventListener('change', function () {
+			preview.innerHTML = '';
+			var files = Array.prototype.slice.call(input.files || []);
+			if (!files.length) {
+				preview.classList.remove('is-visible');
+				return;
+			}
+			files.forEach(function (file) {
+				var item = document.createElement('div');
+				item.className = 'preview-item';
+				var img = document.createElement('img');
+				img.src = URL.createObjectURL(file);
+				img.alt = file.name;
+				item.appendChild(img);
+				preview.appendChild(item);
+			});
+			preview.classList.add('is-visible');
+		});
+	}
+
+	var editModal = document.getElementById('modalEditCertificate');
+	var editForm = document.getElementById('formEditCertificate');
+	var editTitle = document.getElementById('editCertificateTitle');
+
+	if (editModal && editForm && editTitle) {
+		editModal.addEventListener('show.bs.modal', function (event) {
+			var button = event.relatedTarget;
+			if (!button) return;
+			var id = button.getAttribute('data-item-id');
+			var title = '';
+			try {
+				title = decodeURIComponent(button.getAttribute('data-item-title') || '');
+			} catch (e) {
+				title = button.getAttribute('data-item-title') || '';
+			}
+			editForm.action = '/certificates/' + id + '/edit';
+			editTitle.value = title;
+		});
+	}
+})();
+</script>
 </body>
 </html>

@@ -27,8 +27,14 @@ function redirectIfAuthenticated(req, res, next) {
   return next();
 }
 
+function canManagePost(user, post) {
+  if (!user || !post) return false;
+  return user.id === post.userId || user.role === 'admin';
+}
+
 module.exports = {
   requireAuth,
   requireAdmin,
-  redirectIfAuthenticated
+  redirectIfAuthenticated,
+  canManagePost
 };

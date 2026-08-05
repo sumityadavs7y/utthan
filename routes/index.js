@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { Chairman } = require('../models');
 
 const renderPage = (res, view, locals) => {
   res.render(view, {
@@ -36,10 +37,18 @@ router.get('/', (req, res) => {
   });
 });
 
-router.get('/about-us', (req, res) => {
+router.get('/about-us', async (req, res) => {
+  let chairman = null;
+  try {
+    chairman = await Chairman.findOne({ order: [['id', 'ASC']] });
+  } catch (error) {
+    console.error('About us chairman load error:', error);
+  }
+
   renderPage(res, 'about-us', {
     title: 'About Us - Utthan Foundation',
     currentPage: 'about-us',
+    chairman,
     extraCss: [
       '/vendor/magnific-popup/magnific-popup.min.css',
       '/vendor/swiper/swiper-bundle.min.css',
@@ -49,54 +58,6 @@ router.get('/about-us', (req, res) => {
       '/vendor/magnific-popup/magnific-popup.js',
       '/vendor/counter/waypoints-min.js',
       '/vendor/counter/counterup.min.js',
-      '/vendor/swiper/swiper-bundle.min.js',
-      '/js/dz.carousel.js'
-    ]
-  });
-});
-
-router.get('/team', (req, res) => {
-  renderPage(res, 'team', {
-    title: 'Our Team - Utthan Foundation',
-    currentPage: 'team',
-    extraCss: [
-      '/vendor/magnific-popup/magnific-popup.min.css'
-    ],
-    extraJs: [
-      '/vendor/magnific-popup/magnific-popup.js'
-    ]
-  });
-});
-
-router.get('/campaigns', (req, res) => {
-  renderPage(res, 'campaigns', {
-    title: 'Our Campaigns - Utthan Foundation',
-    currentPage: 'campaigns',
-    extraCss: [
-      '/vendor/magnific-popup/magnific-popup.min.css',
-      '/vendor/bootstrap-select/css/bootstrap-select.min.css'
-    ],
-    extraJs: [
-      '/vendor/bootstrap-select/js/bootstrap-select.min.js',
-      '/vendor/magnific-popup/magnific-popup.js',
-      '/vendor/masonry/masonry-4.2.2.js',
-      '/vendor/masonry/isotope.pkgd.min.js',
-      '/vendor/imagesloaded/imagesloaded.js'
-    ]
-  });
-});
-
-router.get('/fundraiser', (req, res) => {
-  renderPage(res, 'fundraiser-detail', {
-    title: 'Fundraiser - Utthan Foundation',
-    currentPage: 'fundraiser',
-    extraCss: [
-      '/vendor/magnific-popup/magnific-popup.min.css',
-      '/vendor/swiper/swiper-bundle.min.css',
-      '/vendor/bootstrap-select/css/bootstrap-select.min.css'
-    ],
-    extraJs: [
-      '/vendor/magnific-popup/magnific-popup.js',
       '/vendor/swiper/swiper-bundle.min.js',
       '/js/dz.carousel.js'
     ]
@@ -119,22 +80,6 @@ router.get('/member', (req, res) => {
   });
 });
 
-router.get('/certificates', (req, res) => {
-  renderPage(res, 'certificates', {
-    title: 'Certificates - Utthan Foundation',
-    currentPage: 'certificates',
-    extraCss: [
-      '/vendor/lightgallery/css/lightgallery.min.css',
-      '/vendor/magnific-popup/magnific-popup.min.css',
-      '/vendor/bootstrap-select/css/bootstrap-select.min.css'
-    ],
-    extraJs: [
-      '/vendor/magnific-popup/magnific-popup.js',
-      '/vendor/lightgallery/js/lightgallery-all.min.js'
-    ]
-  });
-});
-
 router.get('/donate', (req, res) => {
   renderPage(res, 'donate', {
     title: 'Donate Us - Utthan Foundation',
@@ -144,37 +89,6 @@ router.get('/donate', (req, res) => {
       '/vendor/bootstrap-select/css/bootstrap-select.min.css'
     ],
     extraJs: [
-      '/vendor/magnific-popup/magnific-popup.js'
-    ]
-  });
-});
-
-router.get('/gallery', (req, res) => {
-  renderPage(res, 'gallery', {
-    title: 'Gallery - Utthan Foundation',
-    currentPage: 'gallery',
-    extraCss: [
-      '/vendor/lightgallery/css/lightgallery.min.css',
-      '/vendor/magnific-popup/magnific-popup.min.css',
-      '/vendor/bootstrap-select/css/bootstrap-select.min.css'
-    ],
-    extraJs: [
-      '/vendor/magnific-popup/magnific-popup.js',
-      '/vendor/lightgallery/js/lightgallery-all.min.js'
-    ]
-  });
-});
-
-router.get('/blog', (req, res) => {
-  renderPage(res, 'blog-list', {
-    title: 'Blogs & Media - Utthan Foundation',
-    currentPage: 'blog',
-    extraCss: [
-      '/vendor/magnific-popup/magnific-popup.min.css',
-      '/vendor/bootstrap-select/css/bootstrap-select.min.css'
-    ],
-    extraJs: [
-      '/vendor/bootstrap-select/js/bootstrap-select.min.js',
       '/vendor/magnific-popup/magnific-popup.js'
     ]
   });

@@ -10,6 +10,10 @@ const { envConfig } = require('./config');
 const { sequelize, testConnection, User } = require('./models');
 const { runMigrations } = require('./utils/migrate');
 const { seedDefaultAdmin } = require('./utils/seedAdmin');
+const { seedDefaultGallery } = require('./utils/seedGallery');
+const { seedDefaultTeam } = require('./utils/seedTeam');
+const { seedDefaultCampaigns } = require('./utils/seedCampaign');
+const { seedDefaultCertificates } = require('./utils/seedCertificate');
 const { isDevEnvMode } = require('./utils/helpers');
 
 app.use(express.json());
@@ -65,8 +69,19 @@ app.use(async (req, res, next) => {
 
 const siteRoutes = require('./routes/index');
 const authRoutes = require('./routes/auth');
+const blogRoutes = require('./routes/blog');
+const galleryRoutes = require('./routes/gallery');
+const teamRoutes = require('./routes/team');
+const campaignRoutes = require('./routes/campaign');
+const certificateRoutes = require('./routes/certificate');
+const { ensureUploadDir, ensureGalleryUploadDir, ensureTeamUploadDir, ensureCampaignUploadDir, ensureCertificateUploadDir } = require('./middleware/upload');
 app.use('/', siteRoutes);
 app.use('/', authRoutes);
+app.use('/', blogRoutes);
+app.use('/', galleryRoutes);
+app.use('/', teamRoutes);
+app.use('/', campaignRoutes);
+app.use('/', certificateRoutes);
 
 const startServer = async () => {
   try {
@@ -78,7 +93,16 @@ const startServer = async () => {
     await testConnection();
     await runMigrations();
     await sessionStore.sync();
+    ensureUploadDir();
+    ensureGalleryUploadDir();
+    ensureTeamUploadDir();
+    ensureCampaignUploadDir();
+    ensureCertificateUploadDir();
     await seedDefaultAdmin();
+    await seedDefaultGallery();
+    await seedDefaultTeam();
+    await seedDefaultCampaigns();
+    await seedDefaultCertificates();
 
     app.listen(envConfig.port, () => {
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');

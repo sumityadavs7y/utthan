@@ -44,10 +44,7 @@
 
 				<div class="extra-nav">
 					<div class="extra-cell">
-						<a href="<%= typeof currentUser !== 'undefined' && currentUser ? '/account' : '/login' %>" class="btn btn-outline-secondary btnhover1">
-							<i class="fa-solid fa-user"></i>
-							<span class="m-l10"><%= typeof currentUser !== 'undefined' && currentUser ? currentUser.name : 'My Account' %></span>
-						</a>
+						<%- include('account-menu', { accountBtnClass: 'btn btn-outline-secondary btnhover1', accountMenuId: 'accountMenuHeader' }) %>
 					</div>
 				</div>
 
@@ -59,7 +56,7 @@
 						<li class="<%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'active' : '' %>">
 							<a href="/">Home</a>
 						</li>
-						<li class="sub-menu-down <%= typeof currentPage !== 'undefined' && ['about-us','team','campaigns','member','certificates','fundraiser'].includes(currentPage) ? 'active' : '' %>">
+						<li class="sub-menu-down <%= typeof currentPage !== 'undefined' && ['about-us','team','campaigns','member','certificates'].includes(currentPage) ? 'active' : '' %>">
 							<a href="javascript:void(0);">About Us</a>
 							<ul class="sub-menu">
 								<li><a href="/about-us">About Us</a></li>
@@ -67,7 +64,6 @@
 								<li><a href="/campaigns">Our Campaigns</a></li>
 								<li><a href="/member">Become A Member</a></li>
 								<li><a href="/certificates">Our Certificates</a></li>
-								<li><a href="/fundraiser">Fundraiser</a></li>
 							</ul>
 						</li>
 						<li class="<%= typeof currentPage !== 'undefined' && currentPage === 'donate' ? 'active' : '' %>">
@@ -85,6 +81,9 @@
 					</ul>
 					<div class="header-bottom">
 						<% if (typeof currentUser !== 'undefined' && currentUser) { %>
+							<a href="/account" class="btn btn-light btn-login btn-sm me-2">
+								<i class="fa-solid fa-user me-2"></i>My Account
+							</a>
 							<% if (currentUser.role === 'admin') { %>
 								<a href="/admin/users" class="btn btn-light btn-login btn-sm me-2">
 									<i class="fa-solid fa-users me-2"></i>Manage Users
