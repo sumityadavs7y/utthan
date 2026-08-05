@@ -1,10 +1,9 @@
 const express = require('express');
-const path = require('path');
-const fs = require('fs');
 const { Op } = require('sequelize');
 const { Post, User } = require('../models');
 const { requireAuth, canManagePost } = require('../middleware/auth');
-const { upload, ensureUploadDir } = require('../middleware/upload');
+const { upload } = require('../middleware/upload');
+const { saveUploadedFiles, deleteMediaByUrls } = require('../utils/media');
 
 const router = express.Router();
 const PAGE_SIZE = 10;
@@ -40,10 +39,6 @@ function parseImages(imagePath) {
 function serializeImages(paths) {
   if (!paths || !paths.length) return null;
   return JSON.stringify(paths);
-}
-
-function pathsFromFiles(files) {
-  return (files || []).map((file) => `/uploads/blogs/${file.filename}`);
 }
 
 function serializePost(post, currentUser) {
@@ -86,22 +81,6 @@ async function fetchPostsPage({ beforeId, limit = PAGE_SIZE, currentUser }) {
   return { posts, hasMore };
 }
 
-function removeImageFile(imagePath) {
-  if (!imagePath) return;
-  const absolute = path.join(__dirname, '../public', imagePath.replace(/^\//, ''));
-  if (fs.existsSync(absolute)) {
-    fs.unlinkSync(absolute);
-  }
-}
-
-function removeImageFiles(paths) {
-  parseImages(paths).forEach(removeImageFile);
-}
-
-function cleanupUploadedFiles(files) {
-  (files || []).forEach((file) => removeImageFile(`/uploads/blogs/${file.filename}`));
-}
-
 function handleUpload(req, res, next) {
   upload.array('images', MAX_IMAGES)(req, res, (err) => {
     if (err) {
@@ -114,7 +93,6 @@ function handleUpload(req, res, next) {
 
 router.get('/blog', async (req, res) => {
   try {
-    ensureUploadDir();
     const { posts, hasMore } = await fetchPostsPage({
       currentUser: res.locals.currentUser
     });
@@ -165,22 +143,21 @@ router.post('/blog', requireAuth, handleUpload, async (req, res) => {
   try {
     const content = (req.body.content || '').trim();
     if (!content) {
-      cleanupUploadedFiles(req.files);
       req.flash('error', 'Post text is required.');
       return res.redirect('/blog');
     }
 
+    const imageUrls = await saveUploadedFiles(req.files);
     await Post.create({
       userId: req.session.userId,
       content,
-      imagePath: serializeImages(pathsFromFiles(req.files))
+      imagePath: serializeImages(imageUrls)
     });
 
     req.flash('success', 'Your post was published.');
     return res.redirect('/blog');
   } catch (error) {
     console.error('Create post error:', error);
-    cleanupUploadedFiles(req.files);
     req.flash('error', 'Unable to create post. Please try again.');
     return res.redirect('/blog');
   }
@@ -192,26 +169,22 @@ router.post('/blog/:id/edit', requireAuth, handleUpload, async (req, res) => {
     const content = (req.body.content || '').trim();
 
     if (!postId || Number.isNaN(postId)) {
-      cleanupUploadedFiles(req.files);
       req.flash('error', 'Invalid post.');
       return res.redirect('/blog');
     }
 
     if (!content) {
-      cleanupUploadedFiles(req.files);
       req.flash('error', 'Post text is required.');
       return res.redirect('/blog');
     }
 
     const post = await Post.findByPk(postId);
     if (!post) {
-      cleanupUploadedFiles(req.files);
       req.flash('error', 'Post not found.');
       return res.redirect('/blog');
     }
 
     if (!canManagePost(res.locals.currentUser, post) || res.locals.currentUser.id !== post.userId) {
-      cleanupUploadedFiles(req.files);
       req.flash('error', 'You can only edit your own posts.');
       return res.redirect('/blog');
     }
@@ -219,8 +192,9 @@ router.post('/blog/:id/edit', requireAuth, handleUpload, async (req, res) => {
     post.content = content;
 
     if (req.files && req.files.length) {
-      removeImageFiles(post.imagePath);
-      post.imagePath = serializeImages(pathsFromFiles(req.files));
+      await deleteMediaByUrls(parseImages(post.imagePath));
+      const imageUrls = await saveUploadedFiles(req.files);
+      post.imagePath = serializeImages(imageUrls);
     }
 
     await post.save();
@@ -228,7 +202,6 @@ router.post('/blog/:id/edit', requireAuth, handleUpload, async (req, res) => {
     return res.redirect('/blog');
   } catch (error) {
     console.error('Edit post error:', error);
-    cleanupUploadedFiles(req.files);
     req.flash('error', 'Unable to update post. Please try again.');
     return res.redirect('/blog');
   }
@@ -254,7 +227,7 @@ router.post('/blog/:id/delete', requireAuth, async (req, res) => {
       return res.redirect('/blog');
     }
 
-    removeImageFiles(post.imagePath);
+    await deleteMediaByUrls(parseImages(post.imagePath));
     await post.destroy();
 
     req.flash('success', 'Post deleted.');

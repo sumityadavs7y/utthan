@@ -6,6 +6,7 @@ const Chairman = require('./chairman');
 const TeamMember = require('./teamMember');
 const Campaign = require('./campaign');
 const Certificate = require('./certificate');
+const Media = require('./media');
 
 User.hasMany(Post, { foreignKey: 'userId', as: 'posts' });
 Post.belongsTo(User, { foreignKey: 'userId', as: 'author' });
@@ -26,5 +27,6 @@ module.exports = {
   Chairman,
   TeamMember,
   Campaign,
-  Certificate
+  Certificate,
+  Media
 };

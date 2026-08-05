@@ -1,9 +1,8 @@
 const express = require('express');
-const path = require('path');
-const fs = require('fs');
 const { Campaign } = require('../models');
 const { requireAdmin } = require('../middleware/auth');
-const { campaignUpload, ensureCampaignUploadDir } = require('../middleware/upload');
+const { campaignUpload } = require('../middleware/upload');
+const { saveUploadedFile, deleteMediaByUrl } = require('../utils/media');
 
 const router = express.Router();
 
@@ -19,21 +18,6 @@ const renderPage = (res, view, locals) => {
     ...locals
   });
 };
-
-function removeUploadedFile(imagePath) {
-  if (!imagePath || !String(imagePath).startsWith('/uploads/campaigns/')) return;
-  const absolute = path.join(__dirname, '../public', imagePath.replace(/^\//, ''));
-  if (fs.existsSync(absolute)) {
-    fs.unlinkSync(absolute);
-  }
-}
-
-function cleanupFiles(files) {
-  if (!files) return;
-  Object.values(files).forEach((list) => {
-    (list || []).forEach((file) => removeUploadedFile(`/uploads/campaigns/${file.filename}`));
-  });
-}
 
 function firstFile(files, field) {
   return files && files[field] && files[field][0] ? files[field][0] : null;
@@ -94,7 +78,6 @@ function serializeCampaign(campaign) {
 
 router.get('/campaigns', async (req, res) => {
   try {
-    ensureCampaignUploadDir();
     const rows = await Campaign.findAll({
       order: [['sortOrder', 'ASC'], ['id', 'ASC']]
     });
@@ -156,13 +139,11 @@ router.post('/campaigns', requireAdmin, handleUpload, async (req, res) => {
     const authorImageFile = firstFile(req.files, 'authorImage');
 
     if (!title) {
-      cleanupFiles(req.files);
       req.flash('error', 'Campaign title is required.');
       return res.redirect('/campaigns');
     }
 
     if (!imageFile) {
-      cleanupFiles(req.files);
       req.flash('error', 'Campaign image is required.');
       return res.redirect('/campaigns');
     }
@@ -170,11 +151,11 @@ router.post('/campaigns', requireAdmin, handleUpload, async (req, res) => {
     await Campaign.create({
       title,
       category,
-      imagePath: `/uploads/campaigns/${imageFile.filename}`,
+      imagePath: await saveUploadedFile(imageFile),
       goalAmount,
       raisedAmount,
       authorName,
-      authorImagePath: authorImageFile ? `/uploads/campaigns/${authorImageFile.filename}` : null,
+      authorImagePath: authorImageFile ? await saveUploadedFile(authorImageFile) : null,
       location,
       sortOrder
     });
@@ -183,7 +164,6 @@ router.post('/campaigns', requireAdmin, handleUpload, async (req, res) => {
     return res.redirect('/campaigns');
   } catch (error) {
     console.error('Campaign create error:', error);
-    cleanupFiles(req.files);
     req.flash('error', 'Unable to create campaign.');
     return res.redirect('/campaigns');
   }
@@ -193,21 +173,18 @@ router.post('/campaigns/:id/edit', requireAdmin, handleUpload, async (req, res) 
   try {
     const campaignId = Number(req.params.id);
     if (!campaignId || Number.isNaN(campaignId)) {
-      cleanupFiles(req.files);
       req.flash('error', 'Invalid campaign.');
       return res.redirect('/campaigns');
     }
 
     const campaign = await Campaign.findByPk(campaignId);
     if (!campaign) {
-      cleanupFiles(req.files);
       req.flash('error', 'Campaign not found.');
       return res.redirect('/campaigns');
     }
 
     const title = (req.body.title || '').trim();
     if (!title) {
-      cleanupFiles(req.files);
       req.flash('error', 'Campaign title is required.');
       return res.redirect('/campaigns');
     }
@@ -228,13 +205,13 @@ router.post('/campaigns/:id/edit', requireAdmin, handleUpload, async (req, res) 
     }
 
     if (imageFile) {
-      removeUploadedFile(campaign.imagePath);
-      campaign.imagePath = `/uploads/campaigns/${imageFile.filename}`;
+      await deleteMediaByUrl(campaign.imagePath);
+      campaign.imagePath = await saveUploadedFile(imageFile);
     }
 
     if (authorImageFile) {
-      removeUploadedFile(campaign.authorImagePath);
-      campaign.authorImagePath = `/uploads/campaigns/${authorImageFile.filename}`;
+      await deleteMediaByUrl(campaign.authorImagePath);
+      campaign.authorImagePath = await saveUploadedFile(authorImageFile);
     }
 
     await campaign.save();
@@ -242,7 +219,6 @@ router.post('/campaigns/:id/edit', requireAdmin, handleUpload, async (req, res) 
     return res.redirect('/campaigns');
   } catch (error) {
     console.error('Campaign edit error:', error);
-    cleanupFiles(req.files);
     req.flash('error', 'Unable to update campaign.');
     return res.redirect('/campaigns');
   }
@@ -262,8 +238,8 @@ router.post('/campaigns/:id/delete', requireAdmin, async (req, res) => {
       return res.redirect('/campaigns');
     }
 
-    removeUploadedFile(campaign.imagePath);
-    removeUploadedFile(campaign.authorImagePath);
+    await deleteMediaByUrl(campaign.imagePath);
+    await deleteMediaByUrl(campaign.authorImagePath);
     await campaign.destroy();
 
     req.flash('success', 'Campaign deleted.');

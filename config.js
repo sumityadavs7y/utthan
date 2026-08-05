@@ -1,3 +1,8 @@
+const path = require('path');
+const fs = require('fs');
+
+const sqliteStorage = path.join(__dirname, 'database', 'app.db');
+
 exports.envConfig = {
   port: process.env.PORT || '3000',
   envMode: process.env.ENV_MODE || 'production',
@@ -20,5 +25,10 @@ exports.databaseConfig = {
     acquire: 30000,
     idle: 10000
   },
-  storage: process.env.DB_DIALECT === 'sqlite' ? './database/app.db' : undefined
+  storage: process.env.DB_DIALECT === 'sqlite' ? sqliteStorage : undefined
+};
+
+exports.ensureSqliteDir = function ensureSqliteDir() {
+  if ((process.env.DB_DIALECT || 'postgres') !== 'sqlite') return;
+  fs.mkdirSync(path.dirname(sqliteStorage), { recursive: true });
 };

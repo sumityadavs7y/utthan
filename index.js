@@ -5,8 +5,10 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
+const { envConfig, ensureSqliteDir } = require('./config');
+ensureSqliteDir();
+
 const app = express();
-const { envConfig } = require('./config');
 const { sequelize, testConnection, User } = require('./models');
 const { runMigrations } = require('./utils/migrate');
 const { seedDefaultAdmin } = require('./utils/seedAdmin');
@@ -14,6 +16,7 @@ const { seedDefaultGallery } = require('./utils/seedGallery');
 const { seedDefaultTeam } = require('./utils/seedTeam');
 const { seedDefaultCampaigns } = require('./utils/seedCampaign');
 const { seedDefaultCertificates } = require('./utils/seedCertificate');
+const { migrateImagesToMedia } = require('./utils/migrateImagesToMedia');
 const { isDevEnvMode } = require('./utils/helpers');
 
 app.use(express.json());
@@ -74,7 +77,7 @@ const galleryRoutes = require('./routes/gallery');
 const teamRoutes = require('./routes/team');
 const campaignRoutes = require('./routes/campaign');
 const certificateRoutes = require('./routes/certificate');
-const { ensureUploadDir, ensureGalleryUploadDir, ensureTeamUploadDir, ensureCampaignUploadDir, ensureCertificateUploadDir } = require('./middleware/upload');
+const mediaRoutes = require('./routes/media');
 app.use('/', siteRoutes);
 app.use('/', authRoutes);
 app.use('/', blogRoutes);
@@ -82,6 +85,7 @@ app.use('/', galleryRoutes);
 app.use('/', teamRoutes);
 app.use('/', campaignRoutes);
 app.use('/', certificateRoutes);
+app.use('/', mediaRoutes);
 
 const startServer = async () => {
   try {
@@ -93,16 +97,12 @@ const startServer = async () => {
     await testConnection();
     await runMigrations();
     await sessionStore.sync();
-    ensureUploadDir();
-    ensureGalleryUploadDir();
-    ensureTeamUploadDir();
-    ensureCampaignUploadDir();
-    ensureCertificateUploadDir();
     await seedDefaultAdmin();
     await seedDefaultGallery();
     await seedDefaultTeam();
     await seedDefaultCampaigns();
     await seedDefaultCertificates();
+    await migrateImagesToMedia();
 
     app.listen(envConfig.port, () => {
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');

@@ -1,9 +1,8 @@
 const express = require('express');
-const path = require('path');
-const fs = require('fs');
 const { Gallery } = require('../models');
 const { requireAdmin } = require('../middleware/auth');
-const { galleryUpload, ensureGalleryUploadDir } = require('../middleware/upload');
+const { galleryUpload } = require('../middleware/upload');
+const { saveUploadedFile, saveUploadedFiles, deleteMediaByUrl } = require('../utils/media');
 
 const router = express.Router();
 const MAX_IMAGES = 20;
@@ -18,20 +17,6 @@ const renderPage = (res, view, locals) => {
     ...locals
   });
 };
-
-function removeImageFile(imagePath) {
-  if (!imagePath) return;
-  // Only delete files under /uploads/gallery to preserve seeded static assets
-  if (!String(imagePath).startsWith('/uploads/gallery/')) return;
-  const absolute = path.join(__dirname, '../public', imagePath.replace(/^\//, ''));
-  if (fs.existsSync(absolute)) {
-    fs.unlinkSync(absolute);
-  }
-}
-
-function cleanupUploadedFiles(files) {
-  (files || []).forEach((file) => removeImageFile(`/uploads/gallery/${file.filename}`));
-}
 
 function handleUpload(req, res, next) {
   galleryUpload.array('images', MAX_IMAGES)(req, res, (err) => {
@@ -53,16 +38,11 @@ function handleEditUpload(req, res, next) {
   });
 }
 
-async function loadGalleryItems() {
-  return Gallery.findAll({
-    order: [['id', 'DESC']]
-  });
-}
-
 router.get('/gallery', async (req, res) => {
   try {
-    ensureGalleryUploadDir();
-    const items = await loadGalleryItems();
+    const items = await Gallery.findAll({
+      order: [['id', 'DESC']]
+    });
 
     renderPage(res, 'gallery', {
       title: 'Gallery - Utthan Foundation',
@@ -108,19 +88,19 @@ router.post('/gallery', requireAdmin, handleUpload, async (req, res) => {
       return res.redirect('/gallery');
     }
 
+    const urls = await saveUploadedFiles(files);
     await Gallery.bulkCreate(
-      files.map((file) => ({
+      urls.map((imagePath) => ({
         userId: req.session.userId,
         title,
-        imagePath: `/uploads/gallery/${file.filename}`
+        imagePath
       }))
     );
 
-    req.flash('success', files.length === 1 ? 'Image uploaded.' : `${files.length} images uploaded.`);
+    req.flash('success', urls.length === 1 ? 'Image uploaded.' : `${urls.length} images uploaded.`);
     return res.redirect('/gallery');
   } catch (error) {
     console.error('Gallery upload error:', error);
-    cleanupUploadedFiles(req.files);
     req.flash('error', 'Unable to upload images. Please try again.');
     return res.redirect('/gallery');
   }
@@ -131,14 +111,12 @@ router.post('/gallery/:id/edit', requireAdmin, handleEditUpload, async (req, res
     const itemId = Number(req.params.id);
 
     if (!itemId || Number.isNaN(itemId)) {
-      if (req.file) removeImageFile(`/uploads/gallery/${req.file.filename}`);
       req.flash('error', 'Invalid gallery item.');
       return res.redirect('/gallery');
     }
 
     const item = await Gallery.findByPk(itemId);
     if (!item) {
-      if (req.file) removeImageFile(`/uploads/gallery/${req.file.filename}`);
       req.flash('error', 'Gallery item not found.');
       return res.redirect('/gallery');
     }
@@ -146,8 +124,8 @@ router.post('/gallery/:id/edit', requireAdmin, handleEditUpload, async (req, res
     item.title = (req.body.title || '').trim() || null;
 
     if (req.file) {
-      removeImageFile(item.imagePath);
-      item.imagePath = `/uploads/gallery/${req.file.filename}`;
+      await deleteMediaByUrl(item.imagePath);
+      item.imagePath = await saveUploadedFile(req.file);
     }
 
     await item.save();
@@ -155,7 +133,6 @@ router.post('/gallery/:id/edit', requireAdmin, handleEditUpload, async (req, res
     return res.redirect('/gallery');
   } catch (error) {
     console.error('Gallery edit error:', error);
-    if (req.file) removeImageFile(`/uploads/gallery/${req.file.filename}`);
     req.flash('error', 'Unable to update gallery image. Please try again.');
     return res.redirect('/gallery');
   }
@@ -176,7 +153,7 @@ router.post('/gallery/:id/delete', requireAdmin, async (req, res) => {
       return res.redirect('/gallery');
     }
 
-    removeImageFile(item.imagePath);
+    await deleteMediaByUrl(item.imagePath);
     await item.destroy();
 
     req.flash('success', 'Gallery image deleted.');

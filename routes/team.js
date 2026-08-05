@@ -1,9 +1,8 @@
 const express = require('express');
-const path = require('path');
-const fs = require('fs');
 const { Chairman, TeamMember } = require('../models');
 const { requireAdmin } = require('../middleware/auth');
-const { teamUpload, ensureTeamUploadDir } = require('../middleware/upload');
+const { teamUpload } = require('../middleware/upload');
+const { saveUploadedFile, deleteMediaByUrl } = require('../utils/media');
 
 const router = express.Router();
 
@@ -17,25 +16,6 @@ const renderPage = (res, view, locals) => {
     ...locals
   });
 };
-
-function removeUploadedFile(imagePath) {
-  if (!imagePath || !String(imagePath).startsWith('/uploads/team/')) return;
-  const absolute = path.join(__dirname, '../public', imagePath.replace(/^\//, ''));
-  if (fs.existsSync(absolute)) {
-    fs.unlinkSync(absolute);
-  }
-}
-
-function cleanupFile(file) {
-  if (file) removeUploadedFile(`/uploads/team/${file.filename}`);
-}
-
-function cleanupFiles(files) {
-  if (!files) return;
-  Object.values(files).forEach((list) => {
-    (list || []).forEach((file) => cleanupFile(file));
-  });
-}
 
 function handleChairmanUpload(req, res, next) {
   teamUpload.fields([
@@ -64,6 +44,11 @@ function firstFile(files, field) {
   return files && files[field] && files[field][0] ? files[field][0] : null;
 }
 
+function safeReturnTo(value, fallback = '/team') {
+  const allowed = ['/team', '/about-us'];
+  return allowed.includes(value) ? value : fallback;
+}
+
 async function loadTeamPageData() {
   const [chairman, boardMembers, volunteers] = await Promise.all([
     Chairman.findOne({ order: [['id', 'ASC']] }),
@@ -82,7 +67,6 @@ async function loadTeamPageData() {
 
 router.get('/team', async (req, res) => {
   try {
-    ensureTeamUploadDir();
     const data = await loadTeamPageData();
 
     renderPage(res, 'team', {
@@ -107,11 +91,6 @@ router.get('/team', async (req, res) => {
   }
 });
 
-function safeReturnTo(value, fallback = '/team') {
-  const allowed = ['/team', '/about-us'];
-  return allowed.includes(value) ? value : fallback;
-}
-
 router.post('/team/chairman', requireAdmin, handleChairmanUpload, async (req, res) => {
   const returnTo = safeReturnTo(req.body.returnTo);
   try {
@@ -122,7 +101,6 @@ router.post('/team/chairman', requireAdmin, handleChairmanUpload, async (req, re
     const signatureFile = firstFile(req.files, 'signature');
 
     if (!name || !message) {
-      cleanupFiles(req.files);
       req.flash('error', 'Chairman name and message are required.');
       return res.redirect(returnTo);
     }
@@ -131,7 +109,6 @@ router.post('/team/chairman', requireAdmin, handleChairmanUpload, async (req, re
 
     if (!chairman) {
       if (!photoFile) {
-        cleanupFiles(req.files);
         req.flash('error', 'Chairman photo is required.');
         return res.redirect(returnTo);
       }
@@ -140,8 +117,8 @@ router.post('/team/chairman', requireAdmin, handleChairmanUpload, async (req, re
         name,
         role,
         message,
-        photoPath: `/uploads/team/${photoFile.filename}`,
-        signaturePath: signatureFile ? `/uploads/team/${signatureFile.filename}` : null
+        photoPath: await saveUploadedFile(photoFile),
+        signaturePath: signatureFile ? await saveUploadedFile(signatureFile) : null
       });
     } else {
       chairman.name = name;
@@ -149,13 +126,13 @@ router.post('/team/chairman', requireAdmin, handleChairmanUpload, async (req, re
       chairman.message = message;
 
       if (photoFile) {
-        removeUploadedFile(chairman.photoPath);
-        chairman.photoPath = `/uploads/team/${photoFile.filename}`;
+        await deleteMediaByUrl(chairman.photoPath);
+        chairman.photoPath = await saveUploadedFile(photoFile);
       }
 
       if (signatureFile) {
-        removeUploadedFile(chairman.signaturePath);
-        chairman.signaturePath = `/uploads/team/${signatureFile.filename}`;
+        await deleteMediaByUrl(chairman.signaturePath);
+        chairman.signaturePath = await saveUploadedFile(signatureFile);
       }
 
       await chairman.save();
@@ -165,7 +142,6 @@ router.post('/team/chairman', requireAdmin, handleChairmanUpload, async (req, re
     return res.redirect(returnTo);
   } catch (error) {
     console.error('Chairman update error:', error);
-    cleanupFiles(req.files);
     req.flash('error', 'Unable to update chairman section.');
     return res.redirect(returnTo);
   }
@@ -179,13 +155,11 @@ router.post('/team/members', requireAdmin, handleMemberUpload, async (req, res) 
     const sortOrder = Number(req.body.sortOrder) || 0;
 
     if (!name) {
-      cleanupFile(req.file);
       req.flash('error', 'Name is required.');
       return res.redirect('/team');
     }
 
     if (category === 'board' && !designation) {
-      cleanupFile(req.file);
       req.flash('error', 'Designation is required for board members.');
       return res.redirect('/team');
     }
@@ -198,7 +172,7 @@ router.post('/team/members', requireAdmin, handleMemberUpload, async (req, res) 
     await TeamMember.create({
       name,
       designation: category === 'board' ? designation : null,
-      imagePath: `/uploads/team/${req.file.filename}`,
+      imagePath: await saveUploadedFile(req.file),
       category,
       sortOrder
     });
@@ -207,7 +181,6 @@ router.post('/team/members', requireAdmin, handleMemberUpload, async (req, res) 
     return res.redirect('/team');
   } catch (error) {
     console.error('Team member create error:', error);
-    cleanupFile(req.file);
     req.flash('error', 'Unable to add team member.');
     return res.redirect('/team');
   }
@@ -217,14 +190,12 @@ router.post('/team/members/:id/edit', requireAdmin, handleMemberUpload, async (r
   try {
     const memberId = Number(req.params.id);
     if (!memberId || Number.isNaN(memberId)) {
-      cleanupFile(req.file);
       req.flash('error', 'Invalid team member.');
       return res.redirect('/team');
     }
 
     const member = await TeamMember.findByPk(memberId);
     if (!member) {
-      cleanupFile(req.file);
       req.flash('error', 'Team member not found.');
       return res.redirect('/team');
     }
@@ -235,13 +206,11 @@ router.post('/team/members/:id/edit', requireAdmin, handleMemberUpload, async (r
     const category = member.category;
 
     if (!name) {
-      cleanupFile(req.file);
       req.flash('error', 'Name is required.');
       return res.redirect('/team');
     }
 
     if (category === 'board' && !designation) {
-      cleanupFile(req.file);
       req.flash('error', 'Designation is required for board members.');
       return res.redirect('/team');
     }
@@ -253,8 +222,8 @@ router.post('/team/members/:id/edit', requireAdmin, handleMemberUpload, async (r
     }
 
     if (req.file) {
-      removeUploadedFile(member.imagePath);
-      member.imagePath = `/uploads/team/${req.file.filename}`;
+      await deleteMediaByUrl(member.imagePath);
+      member.imagePath = await saveUploadedFile(req.file);
     }
 
     await member.save();
@@ -262,7 +231,6 @@ router.post('/team/members/:id/edit', requireAdmin, handleMemberUpload, async (r
     return res.redirect('/team');
   } catch (error) {
     console.error('Team member edit error:', error);
-    cleanupFile(req.file);
     req.flash('error', 'Unable to update team member.');
     return res.redirect('/team');
   }
@@ -282,7 +250,7 @@ router.post('/team/members/:id/delete', requireAdmin, async (req, res) => {
       return res.redirect('/team');
     }
 
-    removeUploadedFile(member.imagePath);
+    await deleteMediaByUrl(member.imagePath);
     await member.destroy();
 
     req.flash('success', 'Team member deleted.');

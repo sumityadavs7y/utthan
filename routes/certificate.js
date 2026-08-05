@@ -1,9 +1,8 @@
 const express = require('express');
-const path = require('path');
-const fs = require('fs');
 const { Certificate } = require('../models');
 const { requireAdmin } = require('../middleware/auth');
-const { certificateUpload, ensureCertificateUploadDir } = require('../middleware/upload');
+const { certificateUpload } = require('../middleware/upload');
+const { saveUploadedFile, saveUploadedFiles, deleteMediaByUrl } = require('../utils/media');
 
 const router = express.Router();
 const MAX_IMAGES = 20;
@@ -18,19 +17,6 @@ const renderPage = (res, view, locals) => {
     ...locals
   });
 };
-
-function removeImageFile(imagePath) {
-  if (!imagePath) return;
-  if (!String(imagePath).startsWith('/uploads/certificates/')) return;
-  const absolute = path.join(__dirname, '../public', imagePath.replace(/^\//, ''));
-  if (fs.existsSync(absolute)) {
-    fs.unlinkSync(absolute);
-  }
-}
-
-function cleanupUploadedFiles(files) {
-  (files || []).forEach((file) => removeImageFile(`/uploads/certificates/${file.filename}`));
-}
 
 function handleUpload(req, res, next) {
   certificateUpload.array('images', MAX_IMAGES)(req, res, (err) => {
@@ -54,7 +40,6 @@ function handleEditUpload(req, res, next) {
 
 router.get('/certificates', async (req, res) => {
   try {
-    ensureCertificateUploadDir();
     const items = await Certificate.findAll({
       order: [['id', 'DESC']]
     });
@@ -103,19 +88,19 @@ router.post('/certificates', requireAdmin, handleUpload, async (req, res) => {
       return res.redirect('/certificates');
     }
 
+    const urls = await saveUploadedFiles(files);
     await Certificate.bulkCreate(
-      files.map((file) => ({
+      urls.map((imagePath) => ({
         userId: req.session.userId,
         title,
-        imagePath: `/uploads/certificates/${file.filename}`
+        imagePath
       }))
     );
 
-    req.flash('success', files.length === 1 ? 'Certificate uploaded.' : `${files.length} certificates uploaded.`);
+    req.flash('success', urls.length === 1 ? 'Certificate uploaded.' : `${urls.length} certificates uploaded.`);
     return res.redirect('/certificates');
   } catch (error) {
     console.error('Certificate upload error:', error);
-    cleanupUploadedFiles(req.files);
     req.flash('error', 'Unable to upload certificates. Please try again.');
     return res.redirect('/certificates');
   }
@@ -126,14 +111,12 @@ router.post('/certificates/:id/edit', requireAdmin, handleEditUpload, async (req
     const itemId = Number(req.params.id);
 
     if (!itemId || Number.isNaN(itemId)) {
-      if (req.file) removeImageFile(`/uploads/certificates/${req.file.filename}`);
       req.flash('error', 'Invalid certificate.');
       return res.redirect('/certificates');
     }
 
     const item = await Certificate.findByPk(itemId);
     if (!item) {
-      if (req.file) removeImageFile(`/uploads/certificates/${req.file.filename}`);
       req.flash('error', 'Certificate not found.');
       return res.redirect('/certificates');
     }
@@ -141,8 +124,8 @@ router.post('/certificates/:id/edit', requireAdmin, handleEditUpload, async (req
     item.title = (req.body.title || '').trim() || null;
 
     if (req.file) {
-      removeImageFile(item.imagePath);
-      item.imagePath = `/uploads/certificates/${req.file.filename}`;
+      await deleteMediaByUrl(item.imagePath);
+      item.imagePath = await saveUploadedFile(req.file);
     }
 
     await item.save();
@@ -150,7 +133,6 @@ router.post('/certificates/:id/edit', requireAdmin, handleEditUpload, async (req
     return res.redirect('/certificates');
   } catch (error) {
     console.error('Certificate edit error:', error);
-    if (req.file) removeImageFile(`/uploads/certificates/${req.file.filename}`);
     req.flash('error', 'Unable to update certificate. Please try again.');
     return res.redirect('/certificates');
   }
@@ -171,7 +153,7 @@ router.post('/certificates/:id/delete', requireAdmin, async (req, res) => {
       return res.redirect('/certificates');
     }
 
-    removeImageFile(item.imagePath);
+    await deleteMediaByUrl(item.imagePath);
     await item.destroy();
 
     req.flash('success', 'Certificate deleted.');
