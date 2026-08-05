@@ -91,7 +91,7 @@
 												<h1 class="title">Your Donation Can Change the World </h1>
 												<p>Your donation to Utthan Foundation can make a significant difference in the lives of underprivileged children.</p>
 												<div class="d-flex align-items-center">
-													<a class="btn btn-primary btnhover1" href="/donate" data-bs-toggle="modal" data-bs-target="#modalDonate">
+													<a class="btn btn-primary btnhover1" href="/donate">
 														<span>Donate</span>
 														<i class="flaticon-heart ms-3"></i>
 													</a>
@@ -120,7 +120,7 @@
 												<h2 class="title">We Help Surface Innovations</h2>
 												<p>Utthan Foundation is dedicated to empowering underprivileged communities through education.</p>
 												<div class="d-flex align-items-center">
-													<a class="btn btn-primary btnhover1" href="/donate" data-bs-toggle="modal" data-bs-target="#modalDonate">
+													<a class="btn btn-primary btnhover1" href="/donate">
 														<span>Donate</span>
 														<i class="flaticon-heart ms-3"></i>
 													</a>
@@ -745,115 +745,8 @@
 			if (quoteEl) quoteEl.textContent = quote;
 		});
 	</script>
-	<!-- Choose a donation amount -->
-	<div class="modal fade modal-wrapper" id="modalDonate" tabindex="-1" role="dialog" aria-labelledby="modalDonate" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Choose a donation amount</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="flaticon-close"></i></button>
-				</div>
-				<div class="modal-body">
-					<form action="/">
-						<div class="row">
-							<div class="col-lg-12">
-								<div class="tag-donate style-1">
-									<div class="donate-categories">
-										<div class="form-check">
-											<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-											<label class="form-check-label" for="flexRadioDefault1">
-												₹500
-											</label>
-										</div>
-									</div>
-									<div class="donate-categories">
-										<div class="form-check">
-											<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-											<label class="form-check-label" for="flexRadioDefault2">
-												₹1000
-											</label>
-										</div>
-									</div>
-									<div class="donate-categories">
-										<div class="form-check">
-											<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" checked>
-											<label class="form-check-label" for="flexRadioDefault3">
-												₹2000
-											</label>
-										</div>
-									</div>
-									<div class="donate-categories">
-										<div class="form-check">
-											<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4" checked>
-											<label class="form-check-label" for="flexRadioDefault4">
-												₹5000
-											</label>
-										</div>
-									</div>
-									<p>Most Donors donate approx <span>₹1000</span> to this Fundraiser</p>
-								</div>
-							</div>
-							<div class="col-lg-12">
-								<div class="form-group">
-									<label class="form-label">Other Amount</label>
-									<div class="input-group">
-										<input type="number" class="form-control"  placeholder="Other Amount">
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-12">
-								<div class="form-group">
-									<label class="form-label">Name</label>
-									<div class="input-group">
-										<input name="dzName" required="" type="text" class="form-control" placeholder="Jakob Bothman">
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-12">
-								<div class="form-group">
-									<label class="form-label">Email address</label>
-									<div class="input-group">
-										<input name="dzEmail" required type="text" class="form-control" placeholder="info@mail.com">
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-12">
-								<div class="form-group">
-									<label class="form-label">Phone Number</label>
-									<div class="input-group">
-										<input type="number" class="form-control" placeholder="Phone Number">
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-12">
-								<div class="form-group">
-									<label class="form-label">Address</label>
-									<div class="input-group">
-										<input required type="text" class="form-control" placeholder="Address">
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-12">
-								<div class="form-group">
-									<label class="form-label">Pancard</label>
-									<div class="input-group">
-										<input type="number" class="form-control" placeholder="Pancard">
-									</div>
-								</div>
-							</div>
-							<div class="col-lg-12">
-								<div class="form-group mb-0 text-center">
-									<button name="submit" type="submit" value="Submit" class="btn btn-primary btn-block">Proceed To Pay</button>
-								</div>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
 	
-	<button class="scroltop icon-up" type="button"><i class="fas fa-arrow-up"></i></button>
+	<button class="scroltop icon-up" type="button" aria-label="Scroll to top"><i class="fas fa-arrow-up"></i></button>
 </div>
 <%- include('partials/scripts') %>
 </body>
