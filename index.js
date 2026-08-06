@@ -48,6 +48,11 @@ app.use(express.static(__dirname + '/public', {
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
+// Required when behind nginx/load balancer so secure cookies and req.secure work.
+if (!isDevEnvMode()) {
+  app.set('trust proxy', 1);
+}
+
 const sessionStore = new SequelizeStore({
   db: sequelize,
   tableName: 'Sessions'
@@ -61,7 +66,8 @@ app.use(session({
   cookie: {
     httpOnly: true,
     sameSite: 'lax',
-    secure: !isDevEnvMode(),
+    // 'auto' sets Secure only on HTTPS (needs trust proxy behind TLS termination).
+    secure: isDevEnvMode() ? false : 'auto',
     maxAge: 7 * 24 * 60 * 60 * 1000
   }
 }));

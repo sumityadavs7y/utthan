@@ -6,6 +6,7 @@ const {
   requireAdmin,
   redirectIfAuthenticated
 } = require('../middleware/auth');
+const { redirectWithFlash } = require('../utils/redirect');
 
 const router = express.Router();
 
@@ -33,29 +34,24 @@ router.post('/login', redirectIfAuthenticated, async (req, res) => {
     const password = req.body.password || '';
 
     if (!email || !password) {
-      req.flash('error', 'Email and password are required.');
-      return res.redirect('/login');
+      return redirectWithFlash(req, res, '/login', 'error', 'Email and password are required.');
     }
 
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      req.flash('error', 'Invalid email or password.');
-      return res.redirect('/login');
+      return redirectWithFlash(req, res, '/login', 'error', 'Invalid email or password.');
     }
 
     const valid = await bcrypt.compare(password, user.passwordHash);
     if (!valid) {
-      req.flash('error', 'Invalid email or password.');
-      return res.redirect('/login');
+      return redirectWithFlash(req, res, '/login', 'error', 'Invalid email or password.');
     }
 
     req.session.userId = user.id;
-    req.flash('success', `Welcome back, ${user.name}.`);
-    return res.redirect('/account');
+    return redirectWithFlash(req, res, '/account', 'success', `Welcome back, ${user.name}.`);
   } catch (error) {
     console.error('Login error:', error);
-    req.flash('error', 'Unable to log in. Please try again.');
-    return res.redirect('/login');
+    return redirectWithFlash(req, res, '/login', 'error', 'Unable to log in. Please try again.');
   }
 });
 

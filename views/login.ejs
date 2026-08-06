@@ -32,18 +32,18 @@
 							<p class="m-b20">Accounts are created by administrators. Contact an admin if you need access.</p>
 							<%- include('partials/flash') %>
 							<div class="contact-area">
-								<form class="dz-form" method="POST" action="/login">
+								<form class="login-form" method="POST" action="/login" novalidate>
 									<div class="row sp15">
 										<div class="col-md-12 m-b20">
-											<label class="form-label">Email address</label>
+											<label class="form-label" for="login-email">Email address</label>
 											<div class="input-group">
-												<input name="email" required type="email" class="form-control" placeholder="admin@utthan.org" autocomplete="email">
+												<input id="login-email" name="email" required type="email" class="form-control" placeholder="admin@utthan.org" autocomplete="email">
 											</div>
 										</div>
 										<div class="col-md-12 m-b20">
-											<label class="form-label">Password</label>
+											<label class="form-label" for="login-password">Password</label>
 											<div class="input-group">
-												<input name="password" required type="password" class="form-control" placeholder="Enter password" autocomplete="current-password">
+												<input id="login-password" name="password" required type="password" class="form-control" placeholder="Enter password" autocomplete="current-password">
 											</div>
 										</div>
 										<div class="col-md-12">

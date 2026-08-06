@@ -1,20 +1,19 @@
+const { redirectWithFlash } = require('../utils/redirect');
+
 function requireAuth(req, res, next) {
   if (!req.session.userId) {
-    req.flash('error', 'Please log in to continue.');
-    return res.redirect('/login');
+    return redirectWithFlash(req, res, '/login', 'error', 'Please log in to continue.');
   }
   return next();
 }
 
 function requireAdmin(req, res, next) {
   if (!req.session.userId) {
-    req.flash('error', 'Please log in to continue.');
-    return res.redirect('/login');
+    return redirectWithFlash(req, res, '/login', 'error', 'Please log in to continue.');
   }
 
   if (!res.locals.currentUser || res.locals.currentUser.role !== 'admin') {
-    req.flash('error', 'You do not have permission to access that page.');
-    return res.redirect('/account');
+    return redirectWithFlash(req, res, '/account', 'error', 'You do not have permission to access that page.');
   }
 
   return next();
