@@ -38,6 +38,7 @@ app.use(express.json({ limit: '32kb' }));
 app.use(express.urlencoded({ extended: false, limit: '32kb' }));
 
 // Liveness/readiness for Docker healthchecks (registered before session middleware).
+// deploy-autotest marker: deploy-autotest-20260808115638
 app.get('/health', async (req, res) => {
   try {
     await sequelize.authenticate();
