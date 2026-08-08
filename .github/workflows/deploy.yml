@@ -1,0 +1,151 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy production
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      APP_DIR: ${{ vars.EC2_APP_DIR }}
+      DB_NAME: ${{ vars.DB_NAME }}
+      DB_USER: ${{ vars.DB_USER }}
+      ADMIN_EMAIL: ${{ vars.ADMIN_EMAIL }}
+      SITE_URL: ${{ vars.SITE_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set defaults
+        run: |
+          echo "APP_DIR=${APP_DIR:-/opt/utthan}" >> "$GITHUB_ENV"
+          echo "DB_NAME=${DB_NAME:-utthan}" >> "$GITHUB_ENV"
+          echo "DB_USER=${DB_USER:-utthanuser}" >> "$GITHUB_ENV"
+          echo "ADMIN_EMAIL=${ADMIN_EMAIL:-admin@utthan.org}" >> "$GITHUB_ENV"
+          echo "SITE_URL=${SITE_URL:-https://utthanfoundation.in}" >> "$GITHUB_ENV"
+
+      - name: Configure SSH
+        env:
+          EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$EC2_SSH_PRIVATE_KEY" > ~/.ssh/ec2.pem
+          chmod 600 ~/.ssh/ec2.pem
+          ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          cat > ~/.ssh/config <<EOF
+          Host utthan-ec2
+            HostName ${EC2_HOST}
+            User ${EC2_USER}
+            IdentityFile ~/.ssh/ec2.pem
+            StrictHostKeyChecking accept-new
+            ServerAliveInterval 30
+            ServerAliveCountMax 6
+          EOF
+          # Strip leading spaces that YAML indentation may leave in the heredoc body
+          sed -i 's/^[[:space:]]*//' ~/.ssh/config
+          chmod 600 ~/.ssh/config
+
+      - name: Ensure remote app directory
+        run: |
+          set -euo pipefail
+          ssh utthan-ec2 "sudo mkdir -p '${APP_DIR}' && sudo chown \"\$(id -un):\$(id -gn)\" '${APP_DIR}'"
+
+      - name: Sync application files
+        run: |
+          set -euo pipefail
+          rsync -az --delete \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude '.devcontainer/' \
+            --exclude 'node_modules/' \
+            --exclude '.env' \
+            --exclude '.env.*' \
+            --exclude '*.pem' \
+            --exclude 'database/' \
+            --exclude '.cursor/' \
+            --exclude 'deploy/certbot/' \
+            --exclude 'deploy/nginx/.ssl-enabled' \
+            --exclude 'deploy/nginx/ssl/ssl-dhparams.pem' \
+            ./ "utthan-ec2:${APP_DIR}/"
+
+      - name: Write production .env
+        env:
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${DB_PASSWORD}" || -z "${SESSION_SECRET}" || -z "${ADMIN_PASSWORD}" ]]; then
+            echo "Missing required secrets: DB_PASSWORD, SESSION_SECRET, ADMIN_PASSWORD"
+            exit 1
+          fi
+          {
+            echo "PORT=3000"
+            echo "ENV_MODE=production"
+            echo "DB_DIALECT=postgres"
+            echo "DB_HOST=db"
+            echo "DB_PORT=5432"
+            echo "DB_NAME=${DB_NAME}"
+            echo "DB_USER=${DB_USER}"
+            echo "DB_PASSWORD=${DB_PASSWORD}"
+            echo "SESSION_SECRET=${SESSION_SECRET}"
+            echo "ADMIN_EMAIL=${ADMIN_EMAIL}"
+            echo "ADMIN_PASSWORD=${ADMIN_PASSWORD}"
+            echo "SITE_URL=${SITE_URL}"
+          } | ssh utthan-ec2 "cat > '${APP_DIR}/.env' && chmod 600 '${APP_DIR}/.env'"
+
+      - name: Run bootstrap + deploy
+        run: |
+          set -euo pipefail
+          ssh utthan-ec2 "APP_DIR='${APP_DIR}' bash -s" <<'REMOTE'
+          set -euo pipefail
+          cd "${APP_DIR}"
+          chmod +x deploy/*.sh
+          ./deploy/bootstrap.sh
+
+          if docker info >/dev/null 2>&1; then
+            DOCKER=(docker)
+            COMPOSE=(docker compose)
+          else
+            DOCKER=(sudo docker)
+            COMPOSE=(sudo docker compose)
+          fi
+
+          "${COMPOSE[@]}" -p utthan pull db nginx || true
+          "${COMPOSE[@]}" -p utthan up -d --build --remove-orphans
+
+          # Keep HTTPS nginx config if SSL was previously enabled on this host.
+          if [[ -f deploy/nginx/.ssl-enabled ]]; then
+            ./deploy/enable-ssl.sh --nginx-only
+          fi
+
+          "${DOCKER[@]}" image prune -f
+
+          echo "Waiting for health..."
+          for i in $(seq 1 36); do
+            if curl -fsS http://127.0.0.1/health >/dev/null 2>&1; then
+              echo "Healthy"
+              "${COMPOSE[@]}" -p utthan ps
+              exit 0
+            fi
+            sleep 5
+          done
+
+          echo "Deploy did not become healthy in time"
+          "${COMPOSE[@]}" -p utthan ps || true
+          "${COMPOSE[@]}" -p utthan logs --tail=80 app || true
+          exit 1
+          REMOTE

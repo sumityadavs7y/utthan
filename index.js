@@ -5,8 +5,9 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
-const { envConfig, ensureSqliteDir } = require('./config');
+const { envConfig, ensureSqliteDir, ensureUploadsDirs } = require('./config');
 ensureSqliteDir();
+ensureUploadsDirs();
 
 const app = express();
 const { sequelize, testConnection, User } = require('./models');
@@ -35,6 +36,17 @@ app.use(securityHeaders);
 app.use(compression());
 app.use(express.json({ limit: '32kb' }));
 app.use(express.urlencoded({ extended: false, limit: '32kb' }));
+
+// Liveness/readiness for Docker healthchecks (registered before session middleware).
+app.get('/health', async (req, res) => {
+  try {
+    await sequelize.authenticate();
+    return res.status(200).json({ status: 'ok' });
+  } catch (error) {
+    return res.status(503).json({ status: 'error', message: 'database unavailable' });
+  }
+});
+
 app.use(express.static(__dirname + '/public', {
   maxAge: isDevEnvMode() ? 0 : '7d',
   etag: true,

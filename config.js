@@ -33,3 +33,10 @@ exports.ensureSqliteDir = function ensureSqliteDir() {
   if ((process.env.DB_DIALECT || 'postgres') !== 'sqlite') return;
   fs.mkdirSync(path.dirname(sqliteStorage), { recursive: true });
 };
+
+exports.ensureUploadsDirs = function ensureUploadsDirs() {
+  const root = path.join(__dirname, 'public', 'uploads');
+  for (const dir of ['blogs', 'gallery', 'team', 'campaigns', 'certificates']) {
+    fs.mkdirSync(path.join(root, dir), { recursive: true });
+  }
+};
