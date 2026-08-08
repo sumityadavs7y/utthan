@@ -334,6 +334,56 @@
 		.blog-category-filters {
 			margin: 0 0 22px;
 		}
+		.blog-category-filters .site-filters.style-1 .blog-filters-nav {
+			margin-right: -5px;
+			margin-left: -5px;
+			display: flex;
+			flex-wrap: wrap;
+			list-style: none;
+			padding: 0;
+		}
+		.blog-category-filters .site-filters.style-1 .blog-filters-nav li {
+			text-transform: capitalize !important;
+			padding: 0 5px;
+			margin-bottom: 10px;
+			border: 0;
+			border-radius: 0;
+		}
+		.blog-category-filters .site-filters.style-1 .blog-filters-nav li a {
+			display: inline-block;
+			color: var(--primary);
+			background-color: var(--rgba-primary-1);
+			font-size: 14px;
+			margin: 0;
+			border-radius: var(--border-radius-base);
+			padding: 14px 30px;
+			font-weight: 500;
+			text-transform: capitalize;
+			text-decoration: none;
+		}
+		.blog-category-filters .site-filters.style-1 .blog-filters-nav li.active a {
+			color: #fff;
+			background-color: var(--primary);
+		}
+		@media only screen and (max-width: 767px) {
+			.blog-category-filters .site-filters.style-1 .blog-filters-nav {
+				justify-content: center;
+			}
+		}
+		@media only screen and (max-width: 575px) {
+			.blog-category-filters .site-filters.style-1 .blog-filters-nav {
+				margin-right: -3px;
+				margin-left: -3px;
+			}
+			.blog-category-filters .site-filters.style-1 .blog-filters-nav li {
+				padding: 0 3px;
+				margin-bottom: 6px;
+			}
+			.blog-category-filters .site-filters.style-1 .blog-filters-nav li a {
+				font-size: 13px;
+				padding: 10px 15px;
+			}
+		}
 		@media (max-width: 575px) {
 			.feed-composer,
 			.feed-card {
@@ -374,14 +424,12 @@
 					<% if (categories && categories.length) { %>
 						<div class="blog-category-filters">
 							<div class="site-filters style-1 clearfix">
-								<ul class="filters" data-bs-toggle="buttons">
-									<li class="btn <%= !activeCategory ? 'active' : '' %>">
-										<input type="radio" <%= !activeCategory ? 'checked' : '' %>>
+								<ul class="blog-filters-nav">
+									<li class="<%= !activeCategory ? 'active' : '' %>">
 										<a href="/blog">All Posts</a>
 									</li>
 									<% categories.forEach(function(category) { %>
-										<li class="btn <%= activeCategory === category ? 'active' : '' %>">
-											<input type="radio" <%= activeCategory === category ? 'checked' : '' %>>
+										<li class="<%= activeCategory === category ? 'active' : '' %>">
 											<a href="/blog?category=<%= encodeURIComponent(category) %>"><%= category %></a>
 										</li>
 									<% }) %>
