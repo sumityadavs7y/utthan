@@ -1,15 +1,14 @@
 const express = require('express');
-const { Op } = require('sequelize');
 const { Post, User } = require('../models');
 const { requireAuth, canManagePost } = require('../middleware/auth');
 const { upload } = require('../middleware/upload');
 const { saveUploadedFiles, deleteMediaByUrls } = require('../utils/media');
-const { parseIstDateTimeInput } = require('../utils/helpers');
+const { parseIstDateTimeInput, formatDateIst } = require('../utils/helpers');
 
 const router = express.Router();
-const PAGE_SIZE = 10;
 const MAX_IMAGES = 10;
 const CATEGORIES = ['Education', 'Medical', 'Rescue', 'Donations', 'Charity', 'Health'];
+const PLACEHOLDER_IMAGE = '/images/blog/blog-grid/pic1.jpg';
 
 const renderPage = (res, view, locals) => {
   res.render(view, {
@@ -26,12 +25,6 @@ function normalizeCategory(value) {
   const raw = (value || '').trim();
   const match = CATEGORIES.find((item) => item.toLowerCase() === raw.toLowerCase());
   return match || 'Charity';
-}
-
-function normalizeCategoryFilter(value) {
-  const raw = (value || '').trim();
-  if (!raw) return null;
-  return CATEGORIES.find((item) => item.toLowerCase() === raw.toLowerCase()) || null;
 }
 
 function parseImages(imagePath) {
@@ -55,6 +48,15 @@ function serializeImages(paths) {
   return JSON.stringify(paths);
 }
 
+function truncateText(text, max = 140) {
+  const value = String(text || '').trim();
+  if (!value) return '';
+  if (value.length <= max) return value;
+  const cut = value.slice(0, max);
+  const lastSpace = cut.lastIndexOf(' ');
+  return `${(lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).trimEnd()}…`;
+}
+
 function isAdminUser(user) {
   return Boolean(user && user.role === 'admin');
 }
@@ -63,13 +65,20 @@ function serializePost(post, currentUser) {
   const author = post.author || {};
   const showAuthor = Boolean(currentUser);
   const category = post.category || 'Charity';
+  const images = parseImages(post.imagePath);
+  const title = String(post.title || '').trim() || truncateText(post.content, 72) || 'Untitled Post';
+
   return {
     id: post.id,
+    title,
     content: post.content,
+    excerpt: truncateText(post.content, 140),
     category,
     filterClass: String(category).replace(/\s+/g, ''),
-    images: parseImages(post.imagePath),
+    images,
+    coverImage: images[0] || PLACEHOLDER_IMAGE,
     createdAt: post.createdAt,
+    dateDisplay: formatDateIst(post.createdAt),
     author: showAuthor
       ? {
           id: author.id,
@@ -114,52 +123,29 @@ function resolveCreatedAt(req) {
   return parsed;
 }
 
-async function loadUsedCategories() {
-  const rows = await Post.findAll({
-    attributes: ['category'],
-    group: ['category'],
-    order: [['category', 'ASC']]
-  });
-  return rows.map((row) => row.category).filter(Boolean);
+function resolveTitle(req) {
+  const title = (req.body.title || '').trim();
+  if (!title) {
+    const error = new Error('Post title is required.');
+    error.status = 400;
+    throw error;
+  }
+  return title.slice(0, 255);
 }
 
-async function fetchPostsPage({ beforeCreatedAt, beforeId, limit = PAGE_SIZE, currentUser, category = null }) {
-  const where = {};
-
-  if (category) {
-    where.category = category;
-  }
-
-  if (beforeCreatedAt && beforeId) {
-    const cursorDate = new Date(beforeCreatedAt);
-    const cursorId = Number(beforeId);
-
-    if (!Number.isNaN(cursorDate.getTime()) && !Number.isNaN(cursorId)) {
-      where[Op.or] = [
-        { createdAt: { [Op.lt]: cursorDate } },
-        {
-          createdAt: cursorDate,
-          id: { [Op.lt]: cursorId }
-        }
-      ];
-    }
-  }
-
-  const rows = await Post.findAll({
-    where,
-    include: [{
-      model: User,
-      as: 'author',
-      attributes: ['id', 'name']
-    }],
-    order: [['createdAt', 'DESC'], ['id', 'DESC']],
-    limit: limit + 1
-  });
-
-  const hasMore = rows.length > limit;
-  const posts = rows.slice(0, limit).map((post) => serializePost(post, currentUser));
-  return { posts, hasMore };
-}
+const blogPageAssets = {
+  extraCss: [
+    '/vendor/magnific-popup/magnific-popup.min.css',
+    '/vendor/bootstrap-select/css/bootstrap-select.min.css'
+  ],
+  extraJs: [
+    '/vendor/bootstrap-select/js/bootstrap-select.min.js',
+    '/vendor/magnific-popup/magnific-popup.js',
+    '/vendor/masonry/masonry-4.2.2.js',
+    '/vendor/masonry/isotope.pkgd.min.js',
+    '/vendor/imagesloaded/imagesloaded.js'
+  ]
+};
 
 function handleUpload(req, res, next) {
   upload.array('images', MAX_IMAGES)(req, res, (err) => {
@@ -174,23 +160,29 @@ function handleUpload(req, res, next) {
 router.get('/blog', async (req, res) => {
   try {
     const currentUser = res.locals.currentUser;
-    const activeCategory = normalizeCategoryFilter(req.query.category);
-    const [{ posts, hasMore }, authors, categories] = await Promise.all([
-      fetchPostsPage({ currentUser, category: activeCategory }),
-      isAdminUser(currentUser) ? loadAuthorOptions() : Promise.resolve([]),
-      loadUsedCategories()
+    const [rows, authors] = await Promise.all([
+      Post.findAll({
+        include: [{
+          model: User,
+          as: 'author',
+          attributes: ['id', 'name']
+        }],
+        order: [['createdAt', 'DESC'], ['id', 'DESC']]
+      }),
+      isAdminUser(currentUser) ? loadAuthorOptions() : Promise.resolve([])
     ]);
+
+    const posts = rows.map((post) => serializePost(post, currentUser));
+    const categories = [...new Set(posts.map((item) => item.category))].sort();
 
     renderPage(res, 'blog-list', {
       title: 'Blogs & Media - Utthan Foundation',
       currentPage: 'blog',
       posts,
-      hasMore,
-      pageSize: PAGE_SIZE,
       authors,
       categories,
       categoryOptions: CATEGORIES,
-      activeCategory
+      ...blogPageAssets
     });
   } catch (error) {
     console.error('Blog feed error:', error);
@@ -199,43 +191,11 @@ router.get('/blog', async (req, res) => {
       title: 'Blogs & Media - Utthan Foundation',
       currentPage: 'blog',
       posts: [],
-      hasMore: false,
-      pageSize: PAGE_SIZE,
       authors: [],
       categories: [],
       categoryOptions: CATEGORIES,
-      activeCategory: null
+      ...blogPageAssets
     });
-  }
-});
-
-router.get('/blog/api/posts', async (req, res) => {
-  try {
-    const beforeId = req.query.beforeId ? Number(req.query.beforeId) : null;
-    const beforeCreatedAt = req.query.beforeCreatedAt || null;
-    const category = normalizeCategoryFilter(req.query.category);
-    const limit = Math.min(Number(req.query.limit) || PAGE_SIZE, 20);
-
-    if (beforeId !== null && Number.isNaN(beforeId)) {
-      return res.status(400).json({ error: 'Invalid beforeId' });
-    }
-
-    if (beforeCreatedAt && Number.isNaN(new Date(beforeCreatedAt).getTime())) {
-      return res.status(400).json({ error: 'Invalid beforeCreatedAt' });
-    }
-
-    const result = await fetchPostsPage({
-      beforeCreatedAt,
-      beforeId,
-      limit,
-      category,
-      currentUser: res.locals.currentUser
-    });
-
-    return res.json(result);
-  } catch (error) {
-    console.error('Blog API error:', error);
-    return res.status(500).json({ error: 'Unable to load posts' });
   }
 });
 
@@ -243,10 +203,11 @@ router.post('/blog', requireAuth, handleUpload, async (req, res) => {
   try {
     const content = (req.body.content || '').trim();
     if (!content) {
-      req.flash('error', 'Post text is required.');
+      req.flash('error', 'Post description is required.');
       return res.redirect('/blog');
     }
 
+    const title = resolveTitle(req);
     const currentUser = res.locals.currentUser;
     const userId = await resolveAuthorUserId(req, currentUser);
     const createdAt = resolveCreatedAt(req);
@@ -255,6 +216,7 @@ router.post('/blog', requireAuth, handleUpload, async (req, res) => {
 
     const payload = {
       userId,
+      title,
       content,
       category,
       imagePath: serializeImages(imageUrls)
@@ -287,7 +249,7 @@ router.post('/blog/:id/edit', requireAuth, handleUpload, async (req, res) => {
     }
 
     if (!content) {
-      req.flash('error', 'Post text is required.');
+      req.flash('error', 'Post description is required.');
       return res.redirect('/blog');
     }
 
@@ -303,6 +265,7 @@ router.post('/blog/:id/edit', requireAuth, handleUpload, async (req, res) => {
       return res.redirect('/blog');
     }
 
+    post.title = resolveTitle(req);
     post.content = content;
     post.category = normalizeCategory(req.body.category);
 

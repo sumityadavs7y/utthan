@@ -3,396 +3,71 @@
 <head>
 	<%- include('partials/head') %>
 	<style>
-		.blog-feed-wrap {
-			max-width: 680px;
-			margin: 0 auto;
-		}
-		.feed-composer,
-		.feed-card {
-			background: #fff;
-			border: 1px solid #e6eef1;
-			border-radius: 16px;
-			box-shadow: 0 10px 28px rgba(0, 59, 74, 0.06);
-			margin-bottom: 20px;
-		}
-		.feed-composer {
-			padding: 22px;
-		}
-		.feed-composer-head {
+		.blog-admin-bar {
 			display: flex;
-			align-items: center;
-			gap: 12px;
-			margin-bottom: 14px;
+			justify-content: flex-end;
+			margin-bottom: 18px;
 		}
-		.feed-avatar {
-			width: 44px;
-			height: 44px;
+		.blog-card-wrap {
+			position: relative;
+		}
+		.blog-card-actions {
+			position: absolute;
+			top: 12px;
+			right: 12px;
+			z-index: 5;
+			display: flex;
+			gap: 6px;
+		}
+		.blog-admin-btn {
+			width: 34px;
+			height: 34px;
+			border: 0;
 			border-radius: 50%;
-			background: #e8f4f6;
-			color: #003b4a;
+			background: rgba(255, 255, 255, 0.94);
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
-			font-weight: 700;
-			flex-shrink: 0;
-			overflow: hidden;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+			cursor: pointer;
 		}
-		.feed-avatar img {
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-		}
-		.feed-composer textarea {
-			width: 100%;
-			min-height: 110px;
-			border: 1px solid #d9e4e8;
-			border-radius: 12px;
-			padding: 14px 16px;
-			resize: vertical;
-			background: #f8fbfc;
-		}
-		.feed-composer textarea:focus {
-			outline: none;
-			border-color: #003b4a;
+		.blog-admin-btn.edit { color: #003b4a; }
+		.blog-admin-btn.delete { color: #c0392b; }
+		.blog-empty {
+			text-align: center;
+			padding: 48px 16px;
+			color: #6c7a80;
+			border: 1px dashed #d9e4e8;
+			border-radius: 16px;
+			margin-bottom: 20px;
 			background: #fff;
 		}
-		.feed-composer-actions {
+		.dz-card.style-2 .dz-media img {
+			width: 100%;
+			aspect-ratio: 16 / 10;
+			object-fit: cover;
+		}
+		.blog-card-excerpt {
+			color: #5b6b71;
+			font-size: 14px;
+			line-height: 1.6;
+			margin: 0 0 14px;
+			min-height: 3.2em;
+		}
+		.blog-card-meta {
 			display: flex;
 			flex-wrap: wrap;
-			align-items: center;
-			justify-content: space-between;
-			gap: 12px;
-			margin-top: 14px;
-		}
-		.feed-composer-actions .image-picker {
-			display: inline-flex;
-			align-items: center;
-			gap: 8px;
-			color: #003b4a;
-			font-weight: 600;
-			cursor: pointer;
-		}
-		.feed-composer-actions .image-picker input {
-			display: none;
-		}
-		.feed-image-preview-grid {
-			display: none;
-			grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-			gap: 10px;
-			margin-top: 14px;
-		}
-		.feed-image-preview-grid.is-visible {
-			display: grid;
-		}
-		.feed-image-preview-grid .preview-item {
-			position: relative;
-			border-radius: 10px;
-			overflow: hidden;
-			border: 1px solid #e6eef1;
-			aspect-ratio: 1;
-			background: #f2f6f7;
-		}
-		.feed-image-preview-grid .preview-item img {
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-			display: block;
-		}
-		.feed-card-header {
-			display: flex;
-			align-items: flex-start;
-			justify-content: space-between;
-			gap: 12px;
-			padding: 18px 18px 0;
-		}
-		.feed-card-author {
-			display: flex;
-			align-items: center;
-			gap: 12px;
-		}
-		.feed-card-author strong {
-			display: block;
-			color: #003b4a;
-			font-size: 16px;
-		}
-		.feed-card-author span {
+			gap: 8px 14px;
+			padding-top: 4px;
+			border-top: 1px solid #eef3f5;
 			color: #6c7a80;
 			font-size: 13px;
 		}
-		.feed-card-body {
-			padding: 14px 18px 18px;
-		}
-		.feed-card-body .feed-text {
-			white-space: pre-wrap;
-			word-break: break-word;
-			color: #24353a;
-			margin: 0;
-			line-height: 1.6;
-			font-size: 15px;
-		}
-		.feed-read-more {
-			display: inline-block;
-			margin-top: 6px;
-			padding: 0;
-			border: 0;
-			background: none;
-			color: #003b4a;
-			font-weight: 600;
-			font-size: 14px;
-			cursor: pointer;
-		}
-		.feed-read-more:hover {
-			text-decoration: underline;
-		}
-		.feed-card-media {
-			margin-top: 14px;
-			border-radius: 12px;
-			overflow: hidden;
-			background: #f2f6f7;
-		}
-		.feed-card-media.media-single .media-open,
-		.feed-card-media.media-single img {
-			width: 100%;
-			display: block;
-			max-height: 520px;
-			object-fit: cover;
-		}
-		.feed-card-media .media-open {
-			display: block;
-			padding: 0;
-			border: 0;
-			background: none;
-			cursor: zoom-in;
-			width: 100%;
-			height: 100%;
-			position: relative;
-		}
-		.feed-card-media.media-grid {
-			display: grid;
-			gap: 4px;
-		}
-		.feed-card-media.media-grid.cols-2 {
-			grid-template-columns: 1fr 1fr;
-		}
-		.feed-card-media.media-grid.cols-3 {
-			grid-template-columns: 1fr 1fr;
-		}
-		.feed-card-media.media-grid.cols-3 .media-item:first-child {
-			grid-column: 1 / -1;
-		}
-		.feed-card-media.media-grid.cols-4 {
-			grid-template-columns: 1fr 1fr;
-		}
-		.feed-card-media .media-item {
-			position: relative;
-			overflow: hidden;
-			background: #e8eef0;
-			min-height: 140px;
-		}
-		.feed-card-media .media-item img {
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-			display: block;
-			aspect-ratio: 4 / 3;
-		}
-		.feed-card-media.media-grid.cols-3 .media-item:first-child img {
-			aspect-ratio: 16 / 9;
-		}
-		.feed-card-media .media-more {
-			position: absolute;
-			inset: 0;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			background: rgba(0, 59, 74, 0.55);
-			color: #fff;
-			font-size: 28px;
-			font-weight: 700;
-			pointer-events: none;
-		}
-		.feed-card-actions .btn {
-			padding: 6px 10px;
-		}
-		.feed-empty {
-			text-align: center;
-			padding: 56px 20px;
-			color: #6c7a80;
-			border: 1px solid #e6eef1;
-			border-radius: 16px;
-			background: #fff;
-		}
-		.feed-load-more-wrap {
-			text-align: center;
-			padding: 10px 0 30px;
-		}
-		.feed-load-more-wrap.is-hidden {
-			display: none;
-		}
-		.feed-sentinel {
-			height: 1px;
-		}
-		.feed-loading {
-			display: none;
-			text-align: center;
-			color: #6c7a80;
-			padding: 8px 0 20px;
-		}
-		.feed-loading.is-visible {
-			display: block;
-		}
-		.feed-lightbox {
-			position: fixed;
-			inset: 0;
-			z-index: 9999;
-			display: none;
-			align-items: center;
-			justify-content: center;
-			background: rgba(0, 20, 28, 0.88);
-			padding: 24px;
-		}
-		.feed-lightbox.is-open {
-			display: flex;
-		}
-		.feed-lightbox img {
-			max-width: min(960px, 92vw);
-			max-height: 84vh;
-			object-fit: contain;
-			border-radius: 8px;
-			box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
-		}
-		.feed-lightbox .lb-close,
-		.feed-lightbox .lb-prev,
-		.feed-lightbox .lb-next {
-			position: absolute;
-			border: 0;
-			background: rgba(255, 255, 255, 0.12);
-			color: #fff;
-			width: 44px;
-			height: 44px;
-			border-radius: 50%;
-			cursor: pointer;
-			font-size: 18px;
-		}
-		.feed-lightbox .lb-close {
-			top: 20px;
-			right: 20px;
-		}
-		.feed-lightbox .lb-prev {
-			left: 20px;
-			top: 50%;
-			transform: translateY(-50%);
-		}
-		.feed-lightbox .lb-next {
-			right: 20px;
-			top: 50%;
-			transform: translateY(-50%);
-		}
-		.feed-lightbox .lb-counter {
-			position: absolute;
-			bottom: 22px;
-			left: 50%;
-			transform: translateX(-50%);
-			color: #fff;
-			font-size: 14px;
-			opacity: 0.9;
-		}
-		.feed-composer-meta {
-			display: grid;
-			grid-template-columns: 1fr;
-			gap: 12px;
-			margin: 0 0 12px;
-		}
-		@media (min-width: 640px) {
-			.feed-composer-meta {
-				grid-template-columns: 1fr 1fr;
-			}
-		}
-		.feed-composer-meta .form-label {
-			font-size: 13px;
-			font-weight: 600;
-			margin-bottom: 4px;
-		}
-		.feed-composer-meta .form-hint {
+		.blog-form-hint {
 			display: block;
 			margin-top: 4px;
 			font-size: 12px;
 			color: #6c757d;
-		}
-		.feed-category-badge {
-			display: inline-block;
-			margin: 0 0 8px;
-			padding: 2px 10px;
-			border-radius: 999px;
-			background: #e8f3f1;
-			color: #0b5c4d;
-			font-size: 11px;
-			font-weight: 700;
-			letter-spacing: 0.04em;
-			text-transform: uppercase;
-		}
-		.blog-category-filters {
-			margin: 0 0 22px;
-		}
-		.blog-category-filters .site-filters.style-1 .blog-filters-nav {
-			margin-right: -5px;
-			margin-left: -5px;
-			display: flex;
-			flex-wrap: wrap;
-			list-style: none;
-			padding: 0;
-		}
-		.blog-category-filters .site-filters.style-1 .blog-filters-nav li {
-			text-transform: capitalize !important;
-			padding: 0 5px;
-			margin-bottom: 10px;
-			border: 0;
-			border-radius: 0;
-		}
-		.blog-category-filters .site-filters.style-1 .blog-filters-nav li a {
-			display: inline-block;
-			color: var(--primary);
-			background-color: var(--rgba-primary-1);
-			font-size: 14px;
-			margin: 0;
-			border-radius: var(--border-radius-base);
-			padding: 14px 30px;
-			font-weight: 500;
-			text-transform: capitalize;
-			text-decoration: none;
-		}
-		.blog-category-filters .site-filters.style-1 .blog-filters-nav li.active a {
-			color: #fff;
-			background-color: var(--primary);
-		}
-		@media only screen and (max-width: 767px) {
-			.blog-category-filters .site-filters.style-1 .blog-filters-nav {
-				justify-content: center;
-			}
-		}
-		@media only screen and (max-width: 575px) {
-			.blog-category-filters .site-filters.style-1 .blog-filters-nav {
-				margin-right: -3px;
-				margin-left: -3px;
-			}
-			.blog-category-filters .site-filters.style-1 .blog-filters-nav li {
-				padding: 0 3px;
-				margin-bottom: 6px;
-			}
-			.blog-category-filters .site-filters.style-1 .blog-filters-nav li a {
-				font-size: 13px;
-				padding: 10px 15px;
-			}
-		}
-		@media (max-width: 575px) {
-			.feed-composer,
-			.feed-card {
-				border-radius: 12px;
-			}
-			.feed-lightbox .lb-prev,
-			.feed-lightbox .lb-next {
-				display: none;
-			}
 		}
 	</style>
 </head>
@@ -401,7 +76,7 @@
 <div class="page-wraper">
 	<%- include('partials/header') %>
 
-<div id="main-content" class="page-content bg-white">
+	<div id="main-content" class="page-content bg-white">
 		<div class="dz-bnr-inr dz-bnr-inr-sm style-1 text-center overlay-primary-dark" style="background-image:url('/images/banner/bnr5.jpg');">
 			<div class="container">
 				<div class="dz-bnr-inr-entry">
@@ -418,107 +93,54 @@
 
 		<section class="content-inner-2">
 			<div class="container">
-				<div class="blog-feed-wrap">
-					<%- include('partials/flash') %>
+				<%- include('partials/flash') %>
 
-					<% if (categories && categories.length) { %>
-						<div class="blog-category-filters">
+				<% if (typeof currentUser !== 'undefined' && currentUser) { %>
+					<div class="blog-admin-bar">
+						<button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modalAddPost">
+							<i class="fa-solid fa-plus me-2"></i>Add Post
+						</button>
+					</div>
+				<% } %>
+
+				<% if (categories && categories.length) { %>
+					<div class="row m-b30">
+						<div class="col-12">
 							<div class="site-filters style-1 clearfix">
-								<ul class="blog-filters-nav">
-									<li class="<%= !activeCategory ? 'active' : '' %>">
-										<a href="/blog">All Posts</a>
+								<ul class="filters" data-bs-toggle="buttons">
+									<li class="btn active">
+										<input type="radio">
+										<a href="javascript:void(0);">All Posts</a>
 									</li>
 									<% categories.forEach(function(category) { %>
-										<li class="<%= activeCategory === category ? 'active' : '' %>">
-											<a href="/blog?category=<%= encodeURIComponent(category) %>"><%= category %></a>
+										<li data-filter=".<%= String(category).replace(/\s+/g, '') %>" class="btn">
+											<input type="radio">
+											<a href="javascript:void(0);"><%= category %></a>
 										</li>
 									<% }) %>
 								</ul>
 							</div>
 						</div>
-					<% } %>
+					</div>
+				<% } %>
 
-					<% if (typeof currentUser !== 'undefined' && currentUser) { %>
-						<div class="feed-composer">
-							<div class="feed-composer-head">
-								<span class="feed-avatar"><%= currentUser.name.trim().charAt(0).toUpperCase() %></span>
-								<div>
-									<strong><%= currentUser.name %></strong>
-									<div class="text-muted" style="font-size:13px;">Share an update from Utthan Foundation</div>
-								</div>
-							</div>
-							<form method="POST" action="/blog" enctype="multipart/form-data" id="composerForm">
-								<textarea name="content" required placeholder="What's happening at Utthan?" maxlength="5000"></textarea>
-								<div class="feed-composer-meta">
-									<div>
-										<label class="form-label" for="composerCategory">Category</label>
-										<select name="category" id="composerCategory" class="form-control form-select" required>
-											<% (categoryOptions || []).forEach(function(option) { %>
-												<option value="<%= option %>" <%= option === 'Charity' ? 'selected' : '' %>><%= option %></option>
-											<% }) %>
-										</select>
-									</div>
-									<div>
-										<label class="form-label" for="composerCreatedAt">Post date (IST)</label>
-										<input type="datetime-local" name="createdAt" id="composerCreatedAt" class="form-control" step="60">
-										<span class="form-hint">Leave blank for now. Use any past year for historical posts.</span>
-									</div>
-									<% if (currentUser.role === 'admin') { %>
-										<div>
-											<label class="form-label" for="composerAuthor">Added by</label>
-											<select name="userId" id="composerAuthor" class="form-control form-select">
-												<% (authors || []).forEach(function(author) { %>
-													<option value="<%= author.id %>" <%= author.id === currentUser.id ? 'selected' : '' %>><%= author.name %></option>
-												<% }) %>
-											</select>
-											<span class="form-hint">Only admins can change the author.</span>
-										</div>
-									<% } %>
-								</div>
-								<div class="feed-image-preview-grid" id="composerPreview"></div>
-								<div class="feed-composer-actions">
-									<label class="image-picker">
-										<input type="file" name="images" id="composerImages" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
-										<i class="fa-regular fa-image"></i>
-										<span>Add photos</span>
-									</label>
-									<button type="submit" class="btn btn-secondary">Post</button>
-								</div>
-							</form>
-						</div>
-					<% } %>
-
-					<div id="feedList">
-						<% if (posts && posts.length) { %>
+				<% if (posts && posts.length) { %>
+					<div class="clearfix">
+						<ul id="masonry" class="row">
 							<% posts.forEach(function(post) { %>
 								<% const images = post.images || []; %>
-								<% const isLoggedIn = typeof currentUser !== 'undefined' && currentUser; %>
-								<article class="feed-card" data-post-id="<%= post.id %>" data-created-at="<%= post.createdAt.toISOString ? post.createdAt.toISOString() : post.createdAt %>" data-category="<%= post.category %>">
-									<div class="feed-card-header">
-										<div class="feed-card-author">
-											<% if (isLoggedIn && post.author) { %>
-												<span class="feed-avatar"><%= (post.author.name || '?').trim().charAt(0).toUpperCase() %></span>
-												<div>
-													<strong><%= post.author.name %></strong>
-													<span data-created-at="<%= post.createdAt.toISOString ? post.createdAt.toISOString() : post.createdAt %>"><%= formatDateTimeIst(post.createdAt) %></span>
-												</div>
-											<% } else { %>
-												<span class="feed-avatar"><img src="/images/logo.png" alt="Utthan Foundation"></span>
-												<div>
-													<strong>Utthan Foundation</strong>
-													<span data-created-at="<%= post.createdAt.toISOString ? post.createdAt.toISOString() : post.createdAt %>"><%= formatDateTimeIst(post.createdAt) %></span>
-												</div>
-											<% } %>
-										</div>
+								<li class="card-container col-xl-4 col-lg-6 col-md-6 col-sm-12 <%= post.filterClass %> m-b30">
+									<div class="dz-card style-2 overlay-skew blog-card-wrap">
 										<% if (post.canManage) { %>
-											<div class="feed-card-actions">
+											<div class="blog-card-actions">
 												<button
 													type="button"
-													class="btn btn-sm btn-outline-secondary btn-edit-post"
+													class="blog-admin-btn edit"
 													title="Edit"
 													data-bs-toggle="modal"
 													data-bs-target="#modalEditPost"
 													data-post-id="<%= post.id %>"
+													data-post-title="<%= encodeURIComponent(post.title) %>"
 													data-post-content="<%= encodeURIComponent(post.content) %>"
 													data-post-images="<%= encodeURIComponent(JSON.stringify(images)) %>"
 													data-post-created-at="<%= toDatetimeLocalIst(post.createdAt) %>"
@@ -529,7 +151,7 @@
 												</button>
 												<button
 													type="button"
-													class="btn btn-sm btn-outline-danger btn-delete-post"
+													class="blog-admin-btn delete"
 													title="Delete"
 													data-bs-toggle="modal"
 													data-bs-target="#modalDeletePost"
@@ -539,63 +161,147 @@
 												</button>
 											</div>
 										<% } %>
+										<div class="dz-media">
+											<a href="javascript:void(0);" class="blog-open-post"
+												data-bs-toggle="modal"
+												data-bs-target="#modalViewPost"
+												data-post-title="<%= encodeURIComponent(post.title) %>"
+												data-post-content="<%= encodeURIComponent(post.content) %>"
+												data-post-category="<%= encodeURIComponent(post.category || '') %>"
+												data-post-date="<%= encodeURIComponent(post.dateDisplay || '') %>"
+												data-post-author="<%= encodeURIComponent(post.author ? post.author.name : 'Utthan Foundation') %>"
+												data-post-image="<%= encodeURIComponent(post.coverImage) %>"
+											>
+												<img src="<%= post.coverImage %>" alt="<%= post.title %>" loading="lazy">
+											</a>
+										</div>
+										<div class="dz-info">
+											<ul class="dz-category">
+												<li><a href="javascript:void(0);"><%= String(post.category || '').toUpperCase() %></a></li>
+											</ul>
+											<h5 class="dz-title">
+												<a href="javascript:void(0);" class="blog-open-post"
+													data-bs-toggle="modal"
+													data-bs-target="#modalViewPost"
+													data-post-title="<%= encodeURIComponent(post.title) %>"
+													data-post-content="<%= encodeURIComponent(post.content) %>"
+													data-post-category="<%= encodeURIComponent(post.category || '') %>"
+													data-post-date="<%= encodeURIComponent(post.dateDisplay || '') %>"
+													data-post-author="<%= encodeURIComponent(post.author ? post.author.name : 'Utthan Foundation') %>"
+													data-post-image="<%= encodeURIComponent(post.coverImage) %>"
+												><%= post.title %></a>
+											</h5>
+											<p class="blog-card-excerpt"><%= post.excerpt %></p>
+											<div class="blog-card-meta">
+												<span><i class="far fa-calendar-alt me-1"></i><%= post.dateDisplay %></span>
+												<% if (typeof currentUser !== 'undefined' && currentUser && post.author) { %>
+													<span><i class="far fa-user me-1"></i><%= post.author.name %></span>
+												<% } %>
+											</div>
+										</div>
 									</div>
-									<div class="feed-card-body">
-										<% if (post.category) { %>
-											<span class="feed-category-badge"><%= post.category %></span>
-										<% } %>
-										<p class="feed-text" data-full-text="<%= encodeURIComponent(post.content) %>"></p>
-										<% if (images.length) { %>
-											<% const visible = images.slice(0, 4); %>
-											<% const extra = images.length - visible.length; %>
-											<% if (images.length === 1) { %>
-												<div class="feed-card-media media-single" data-gallery="<%= encodeURIComponent(JSON.stringify(images)) %>">
-													<button type="button" class="media-open" data-index="0">
-														<img src="<%= images[0] %>" alt="Utthan Foundation update photo">
-													</button>
-												</div>
-											<% } else { %>
-												<% const gridClass = images.length === 2 ? 'cols-2' : (images.length === 3 ? 'cols-3' : 'cols-4'); %>
-												<div class="feed-card-media media-grid <%= gridClass %>" data-gallery="<%= encodeURIComponent(JSON.stringify(images)) %>">
-													<% visible.forEach(function(src, idx) { %>
-														<div class="media-item">
-															<button type="button" class="media-open" data-index="<%= idx %>">
-																<img src="<%= src %>" alt="Utthan Foundation update photo">
-																<% if (extra > 0 && idx === visible.length - 1) { %>
-																	<span class="media-more">+<%= extra %></span>
-																<% } %>
-															</button>
-														</div>
-													<% }) %>
-												</div>
-											<% } %>
-										<% } %>
-									</div>
-								</article>
+								</li>
 							<% }) %>
-						<% } else { %>
-							<div class="feed-empty" id="feedEmpty">
-								<i class="fa-regular fa-newspaper fa-2x mb-3 d-block"></i>
-								Updates from Utthan Foundation will appear here.
-							</div>
-						<% } %>
+						</ul>
 					</div>
-
-					<div class="feed-loading" id="feedLoading">Loading more posts...</div>
-					<div class="feed-sentinel" id="feedSentinel"></div>
-					<div class="feed-load-more-wrap <%= hasMore ? '' : 'is-hidden' %>" id="feedLoadMoreWrap">
-						<button type="button" class="btn btn-outline-secondary" id="feedLoadMore">Load more</button>
+				<% } else { %>
+					<div class="blog-empty">
+						<p class="mb-0">No blog posts yet<% if (typeof currentUser !== 'undefined' && currentUser) { %>. Add the first one above.<% } else { %>.<% } %></p>
 					</div>
-				</div>
+				<% } %>
 			</div>
 		</section>
+	</div>
+
+	<%- include('partials/related-links') %>
+	<%- include('partials/newsletter') %>
+	<%- include('partials/footer') %>
+	<button class="scroltop icon-up" type="button"><i class="fas fa-arrow-up"></i></button>
 </div>
 
-	<%- include('partials/footer') %>
+<div class="modal fade modal-wrapper" id="modalViewPost" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="viewPostTitle">Post</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="flaticon-close"></i></button>
+			</div>
+			<div class="modal-body">
+				<img src="" alt="" id="viewPostImage" class="w-100 mb-3 rounded" style="max-height: 360px; object-fit: cover;">
+				<div class="d-flex flex-wrap gap-3 text-muted small mb-3">
+					<span id="viewPostCategory"></span>
+					<span id="viewPostDate"></span>
+					<span id="viewPostAuthor"></span>
+				</div>
+				<p id="viewPostContent" class="mb-0" style="white-space: pre-wrap; line-height: 1.7;"></p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 
-	<% if (typeof currentUser !== 'undefined' && currentUser) { %>
+<% if (typeof currentUser !== 'undefined' && currentUser) { %>
+	<div class="modal fade modal-wrapper" id="modalAddPost" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Add Post</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="flaticon-close"></i></button>
+				</div>
+				<form method="POST" action="/blog" enctype="multipart/form-data">
+					<div class="modal-body">
+						<div class="form-group mb-3">
+							<label class="form-label">Title</label>
+							<input type="text" name="title" class="form-control" required maxlength="255" placeholder="Post title">
+						</div>
+						<div class="form-group mb-3">
+							<label class="form-label">Description</label>
+							<textarea name="content" class="form-control" rows="5" required maxlength="5000" placeholder="Write the post description..."></textarea>
+						</div>
+						<div class="row">
+							<div class="col-md-6 form-group mb-3">
+								<label class="form-label">Category</label>
+								<select name="category" class="form-select" required>
+									<% (categoryOptions || []).forEach(function(option) { %>
+										<option value="<%= option %>" <%= option === 'Charity' ? 'selected' : '' %>><%= option %></option>
+									<% }) %>
+								</select>
+							</div>
+							<div class="col-md-6 form-group mb-3">
+								<label class="form-label">Post date (IST)</label>
+								<input type="datetime-local" name="createdAt" class="form-control" step="60">
+								<span class="blog-form-hint">Leave blank for now. Use any past year for historical posts.</span>
+							</div>
+						</div>
+						<% if (currentUser.role === 'admin') { %>
+							<div class="form-group mb-3">
+								<label class="form-label">Added by</label>
+								<select name="userId" class="form-select">
+									<% (authors || []).forEach(function(author) { %>
+										<option value="<%= author.id %>" <%= author.id === currentUser.id ? 'selected' : '' %>><%= author.name %></option>
+									<% }) %>
+								</select>
+								<span class="blog-form-hint">Only admins can change the author.</span>
+							</div>
+						<% } %>
+						<div class="form-group mb-0">
+							<label class="form-label">Photos (optional)</label>
+							<input type="file" name="images" class="form-control" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-secondary">Publish</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
 	<div class="modal fade modal-wrapper" id="modalEditPost" tabindex="-1" aria-hidden="true">
-		<div class="modal-dialog" role="document">
+		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title">Edit Post</h5>
@@ -604,34 +310,37 @@
 				<form method="POST" id="formEditPost" action="#" enctype="multipart/form-data">
 					<div class="modal-body">
 						<div class="form-group mb-3">
-							<label class="form-label">Text</label>
+							<label class="form-label">Title</label>
+							<input type="text" name="title" id="editPostTitle" class="form-control" required maxlength="255">
+						</div>
+						<div class="form-group mb-3">
+							<label class="form-label">Description</label>
 							<textarea name="content" id="editPostContent" class="form-control" rows="5" required maxlength="5000"></textarea>
 						</div>
-						<div class="feed-composer-meta mb-3">
-							<div>
-								<label class="form-label" for="editPostCategory">Category</label>
-								<select name="category" id="editPostCategory" class="form-control form-select" required>
+						<div class="row">
+							<div class="col-md-6 form-group mb-3">
+								<label class="form-label">Category</label>
+								<select name="category" id="editPostCategory" class="form-select" required>
 									<% (categoryOptions || []).forEach(function(option) { %>
 										<option value="<%= option %>"><%= option %></option>
 									<% }) %>
 								</select>
 							</div>
-							<div>
-								<label class="form-label" for="editPostCreatedAt">Post date (IST)</label>
+							<div class="col-md-6 form-group mb-3">
+								<label class="form-label">Post date (IST)</label>
 								<input type="datetime-local" name="createdAt" id="editPostCreatedAt" class="form-control" step="60">
-								<span class="form-hint">Shown in India Standard Time.</span>
 							</div>
-							<% if (currentUser.role === 'admin') { %>
-								<div>
-									<label class="form-label" for="editPostAuthor">Added by</label>
-									<select name="userId" id="editPostAuthor" class="form-control form-select">
-										<% (authors || []).forEach(function(author) { %>
-											<option value="<%= author.id %>"><%= author.name %></option>
-										<% }) %>
-									</select>
-								</div>
-							<% } %>
 						</div>
+						<% if (currentUser.role === 'admin') { %>
+							<div class="form-group mb-3">
+								<label class="form-label">Added by</label>
+								<select name="userId" id="editPostAuthor" class="form-select">
+									<% (authors || []).forEach(function(author) { %>
+										<option value="<%= author.id %>"><%= author.name %></option>
+									<% }) %>
+								</select>
+							</div>
+						<% } %>
 						<div class="form-group mb-2">
 							<label class="form-label">Replace photos (optional)</label>
 							<input type="file" name="images" class="form-control" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
@@ -640,7 +349,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-						<button type="submit" class="btn btn-secondary">Save Changes</button>
+						<button type="submit" class="btn btn-secondary">Save changes</button>
 					</div>
 				</form>
 			</div>
@@ -666,334 +375,33 @@
 			</div>
 		</div>
 	</div>
-	<% } %>
+<% } %>
 
-	<div class="feed-lightbox" id="feedLightbox" aria-hidden="true">
-		<button type="button" class="lb-close" id="lbClose" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
-		<button type="button" class="lb-prev" id="lbPrev" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button>
-		<img src="" alt="Expanded post image" id="lbImage">
-		<button type="button" class="lb-next" id="lbNext" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button>
-		<div class="lb-counter" id="lbCounter"></div>
-	</div>
-
-	<button class="scroltop icon-up" type="button"><i class="fas fa-arrow-up"></i></button>
-</div>
 <%- include('partials/scripts') %>
 <script>
 (function () {
-	var READ_MORE_LIMIT = 280;
-	var hasMore = <%= hasMore ? 'true' : 'false' %>;
-	var loading = false;
-	var activeCategory = <%- JSON.stringify(activeCategory || null) %>;
-	var feedList = document.getElementById('feedList');
-	var loadMoreWrap = document.getElementById('feedLoadMoreWrap');
-	var loadMoreBtn = document.getElementById('feedLoadMore');
-	var sentinel = document.getElementById('feedSentinel');
-	var loadingEl = document.getElementById('feedLoading');
-	var isLoggedIn = <%= (typeof currentUser !== 'undefined' && currentUser) ? 'true' : 'false' %>;
-
-	function toDatetimeLocalIst(value) {
+	function decodeAttr(value) {
 		try {
-			var date = new Date(value);
-			if (Number.isNaN(date.getTime())) return '';
-			var parts = {};
-			new Intl.DateTimeFormat('en-GB', {
-				timeZone: 'Asia/Kolkata',
-				year: 'numeric',
-				month: '2-digit',
-				day: '2-digit',
-				hour: '2-digit',
-				minute: '2-digit',
-				hour12: false
-			}).formatToParts(date).forEach(function (part) {
-				if (part.type !== 'literal') parts[part.type] = part.value;
-			});
-			var hour = parts.hour === '24' ? '00' : parts.hour;
-			return parts.year + '-' + parts.month + '-' + parts.day + 'T' + hour + ':' + parts.minute;
+			return decodeURIComponent(value || '');
 		} catch (e) {
-			return '';
+			return value || '';
 		}
 	}
 
-	var lightbox = document.getElementById('feedLightbox');
-	var lbImage = document.getElementById('lbImage');
-	var lbCounter = document.getElementById('lbCounter');
-	var galleryImages = [];
-	var galleryIndex = 0;
-
-	function escapeHtml(value) {
-		return String(value == null ? '' : value)
-			.replace(/&/g, '&amp;')
-			.replace(/</g, '&lt;')
-			.replace(/>/g, '&gt;')
-			.replace(/"/g, '&quot;')
-			.replace(/'/g, '&#39;');
-	}
-
-	function formatDate(value) {
-		try {
-			return new Date(value).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
-		} catch (e) {
-			return value;
-		}
-	}
-
-	function truncateText(text) {
-		if (!text || text.length <= READ_MORE_LIMIT) {
-			return { preview: text || '', needsMore: false };
-		}
-		var cut = text.slice(0, READ_MORE_LIMIT);
-		var lastSpace = cut.lastIndexOf(' ');
-		if (lastSpace > READ_MORE_LIMIT * 0.6) cut = cut.slice(0, lastSpace);
-		return { preview: cut + '…', needsMore: true };
-	}
-
-	function setupTextBlock(textEl) {
-		if (!textEl) return;
-		var full = '';
-		try {
-			full = decodeURIComponent(textEl.getAttribute('data-full-text') || '');
-		} catch (e) {
-			full = textEl.getAttribute('data-full-text') || '';
-		}
-		var truncated = truncateText(full);
-		textEl.textContent = truncated.preview;
-
-		var existing = textEl.parentNode.querySelector('.feed-read-more');
-		if (existing) existing.remove();
-
-		if (!truncated.needsMore) return;
-
-		var btn = document.createElement('button');
-		btn.type = 'button';
-		btn.className = 'feed-read-more';
-		btn.textContent = 'Read more';
-		btn.addEventListener('click', function () {
-			var expanded = textEl.getAttribute('data-expanded') === '1';
-			if (expanded) {
-				textEl.textContent = truncated.preview;
-				textEl.setAttribute('data-expanded', '0');
-				btn.textContent = 'Read more';
-			} else {
-				textEl.textContent = full;
-				textEl.setAttribute('data-expanded', '1');
-				btn.textContent = 'Show less';
-			}
-		});
-		textEl.insertAdjacentElement('afterend', btn);
-	}
-
-	function enhanceFeedTexts(root) {
-		(root || feedList).querySelectorAll('.feed-text[data-full-text]').forEach(setupTextBlock);
-	}
-
-	function openLightbox(images, index) {
-		galleryImages = images || [];
-		galleryIndex = index || 0;
-		if (!galleryImages.length) return;
-		updateLightbox();
-		lightbox.classList.add('is-open');
-		lightbox.setAttribute('aria-hidden', 'false');
-		document.body.style.overflow = 'hidden';
-	}
-
-	function closeLightbox() {
-		lightbox.classList.remove('is-open');
-		lightbox.setAttribute('aria-hidden', 'true');
-		document.body.style.overflow = '';
-		galleryImages = [];
-	}
-
-	function updateLightbox() {
-		lbImage.src = galleryImages[galleryIndex];
-		lbCounter.textContent = (galleryIndex + 1) + ' / ' + galleryImages.length;
-		document.getElementById('lbPrev').style.visibility = galleryImages.length > 1 ? 'visible' : 'hidden';
-		document.getElementById('lbNext').style.visibility = galleryImages.length > 1 ? 'visible' : 'hidden';
-	}
-
-	function stepLightbox(delta) {
-		if (galleryImages.length < 2) return;
-		galleryIndex = (galleryIndex + delta + galleryImages.length) % galleryImages.length;
-		updateLightbox();
-	}
-
-	feedList.addEventListener('click', function (event) {
-		var openBtn = event.target.closest('.media-open');
-		if (!openBtn) return;
-		var media = openBtn.closest('[data-gallery]');
-		if (!media) return;
-		var images = [];
-		try {
-			images = JSON.parse(decodeURIComponent(media.getAttribute('data-gallery') || '[]'));
-		} catch (e) {
-			images = [];
-		}
-		var index = Number(openBtn.getAttribute('data-index') || 0);
-		openLightbox(images, index);
-	});
-
-	document.getElementById('lbClose').addEventListener('click', closeLightbox);
-	document.getElementById('lbPrev').addEventListener('click', function () { stepLightbox(-1); });
-	document.getElementById('lbNext').addEventListener('click', function () { stepLightbox(1); });
-	lightbox.addEventListener('click', function (event) {
-		if (event.target === lightbox) closeLightbox();
-	});
-	document.addEventListener('keydown', function (event) {
-		if (!lightbox.classList.contains('is-open')) return;
-		if (event.key === 'Escape') closeLightbox();
-		if (event.key === 'ArrowLeft') stepLightbox(-1);
-		if (event.key === 'ArrowRight') stepLightbox(1);
-	});
-
-	function renderMedia(images) {
-		if (!images || !images.length) return '';
-		var encoded = encodeURIComponent(JSON.stringify(images));
-		if (images.length === 1) {
-			return '<div class="feed-card-media media-single" data-gallery="' + encoded + '"><button type="button" class="media-open" data-index="0"><img src="' + escapeHtml(images[0]) + '" alt="Utthan Foundation update photo"></button></div>';
-		}
-		var visible = images.slice(0, 4);
-		var extra = images.length - visible.length;
-		var gridClass = images.length === 2 ? 'cols-2' : (images.length === 3 ? 'cols-3' : 'cols-4');
-		var html = '<div class="feed-card-media media-grid ' + gridClass + '" data-gallery="' + encoded + '">';
-		visible.forEach(function (src, idx) {
-			html += '<div class="media-item"><button type="button" class="media-open" data-index="' + idx + '"><img src="' + escapeHtml(src) + '" alt="Utthan Foundation update photo">';
-			if (extra > 0 && idx === visible.length - 1) {
-				html += '<span class="media-more">+' + extra + '</span>';
-			}
-			html += '</button></div>';
-		});
-		html += '</div>';
-		return html;
-	}
-
-	function renderPostCard(post) {
-		var images = post.images || [];
-		var actions = '';
-		var authorBlock;
-
-		if (isLoggedIn && post.author) {
-			var initial = (post.author.name || '?').trim().charAt(0).toUpperCase();
-			authorBlock =
-				'<span class="feed-avatar">' + escapeHtml(initial) + '</span>' +
-				'<div><strong>' + escapeHtml(post.author.name) + '</strong>' +
-				'<span data-created-at="' + escapeHtml(post.createdAt) + '">' + escapeHtml(formatDate(post.createdAt)) + '</span></div>';
-		} else {
-			authorBlock =
-				'<span class="feed-avatar"><img src="/images/logo.png" alt="Utthan Foundation"></span>' +
-				'<div><strong>Utthan Foundation</strong>' +
-				'<span data-created-at="' + escapeHtml(post.createdAt) + '">' + escapeHtml(formatDate(post.createdAt)) + '</span></div>';
-		}
-
-		if (post.canManage) {
-			actions = '<div class="feed-card-actions">';
-			actions += '<button type="button" class="btn btn-sm btn-outline-secondary btn-edit-post" title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditPost" data-post-id="' + post.id + '" data-post-content="' + encodeURIComponent(post.content) + '" data-post-images="' + encodeURIComponent(JSON.stringify(images)) + '" data-post-created-at="' + escapeHtml(toDatetimeLocalIst(post.createdAt)) + '" data-post-author-id="' + (post.author && post.author.id ? post.author.id : '') + '" data-post-category="' + encodeURIComponent(post.category || '') + '"><i class="fa-solid fa-pen"></i></button> ';
-			actions += '<button type="button" class="btn btn-sm btn-outline-danger btn-delete-post" title="Delete" data-bs-toggle="modal" data-bs-target="#modalDeletePost" data-post-id="' + post.id + '"><i class="fa-solid fa-trash"></i></button></div>';
-		}
-
-		var categoryBadge = post.category
-			? '<span class="feed-category-badge">' + escapeHtml(post.category) + '</span>'
-			: '';
-
-		return (
-			'<article class="feed-card" data-post-id="' + post.id + '" data-created-at="' + escapeHtml(post.createdAt) + '" data-category="' + escapeHtml(post.category || '') + '">' +
-				'<div class="feed-card-header">' +
-					'<div class="feed-card-author">' + authorBlock + '</div>' +
-					actions +
-				'</div>' +
-				'<div class="feed-card-body">' +
-					categoryBadge +
-					'<p class="feed-text" data-full-text="' + encodeURIComponent(post.content) + '"></p>' +
-					renderMedia(images) +
-				'</div>' +
-			'</article>'
-		);
-	}
-
-	function getOldestCursor() {
-		var cards = feedList.querySelectorAll('.feed-card[data-post-id]');
-		if (!cards.length) return null;
-		var last = cards[cards.length - 1];
-		return {
-			id: last.getAttribute('data-post-id'),
-			createdAt: last.getAttribute('data-created-at')
-		};
-	}
-
-	function setHasMore(next) {
-		hasMore = !!next;
-		if (hasMore) {
-			loadMoreWrap.classList.remove('is-hidden');
-		} else {
-			loadMoreWrap.classList.add('is-hidden');
-		}
-	}
-
-	function loadMore() {
-		if (loading || !hasMore) return;
-		var cursor = getOldestCursor();
-		if (!cursor || !cursor.id || !cursor.createdAt) {
-			setHasMore(false);
-			return;
-		}
-
-		loading = true;
-		loadingEl.classList.add('is-visible');
-
-		fetch('/blog/api/posts?beforeId=' + encodeURIComponent(cursor.id) + '&beforeCreatedAt=' + encodeURIComponent(cursor.createdAt) + '&limit=10' + (activeCategory ? '&category=' + encodeURIComponent(activeCategory) : ''))
-			.then(function (res) { return res.json(); })
-			.then(function (data) {
-				var empty = document.getElementById('feedEmpty');
-				if (empty) empty.remove();
-
-				(data.posts || []).forEach(function (post) {
-					feedList.insertAdjacentHTML('beforeend', renderPostCard(post));
-				});
-				enhanceFeedTexts(feedList);
-				setHasMore(data.hasMore);
-			})
-			.catch(function () {
-				setHasMore(true);
-			})
-			.finally(function () {
-				loading = false;
-				loadingEl.classList.remove('is-visible');
-			});
-	}
-
-	if (loadMoreBtn) {
-		loadMoreBtn.addEventListener('click', loadMore);
-	}
-
-	if (sentinel && 'IntersectionObserver' in window) {
-		var observer = new IntersectionObserver(function (entries) {
-			entries.forEach(function (entry) {
-				if (entry.isIntersecting) loadMore();
-			});
-		}, { rootMargin: '200px' });
-		observer.observe(sentinel);
-	}
-
-	var composerImages = document.getElementById('composerImages');
-	var composerPreview = document.getElementById('composerPreview');
-
-	if (composerImages && composerPreview) {
-		composerImages.addEventListener('change', function () {
-			composerPreview.innerHTML = '';
-			var files = Array.prototype.slice.call(composerImages.files || []);
-			if (!files.length) {
-				composerPreview.classList.remove('is-visible');
-				return;
-			}
-			files.slice(0, 10).forEach(function (file) {
-				var item = document.createElement('div');
-				item.className = 'preview-item';
-				var img = document.createElement('img');
-				img.src = URL.createObjectURL(file);
-				img.alt = 'Preview';
-				item.appendChild(img);
-				composerPreview.appendChild(item);
-			});
-			composerPreview.classList.add('is-visible');
+	var viewModal = document.getElementById('modalViewPost');
+	if (viewModal) {
+		viewModal.addEventListener('show.bs.modal', function (event) {
+			var button = event.relatedTarget;
+			if (!button) return;
+			document.getElementById('viewPostTitle').textContent = decodeAttr(button.getAttribute('data-post-title'));
+			document.getElementById('viewPostContent').textContent = decodeAttr(button.getAttribute('data-post-content'));
+			document.getElementById('viewPostCategory').textContent = decodeAttr(button.getAttribute('data-post-category'));
+			document.getElementById('viewPostDate').textContent = decodeAttr(button.getAttribute('data-post-date'));
+			document.getElementById('viewPostAuthor').textContent = decodeAttr(button.getAttribute('data-post-author'));
+			var image = document.getElementById('viewPostImage');
+			var imageSrc = decodeAttr(button.getAttribute('data-post-image'));
+			image.src = imageSrc;
+			image.alt = decodeAttr(button.getAttribute('data-post-title'));
 		});
 	}
 
@@ -1002,32 +410,21 @@
 	var editForm = document.getElementById('formEditPost');
 	var deleteForm = document.getElementById('formDeletePost');
 
-	if (editModal) {
+	if (editModal && editForm) {
 		editModal.addEventListener('show.bs.modal', function (event) {
 			var button = event.relatedTarget;
 			if (!button) return;
-			var postId = button.getAttribute('data-post-id');
-			editForm.action = '/blog/' + postId + '/edit';
-			document.getElementById('editPostContent').value = decodeURIComponent(button.getAttribute('data-post-content') || '');
-			var createdAtInput = document.getElementById('editPostCreatedAt');
-			if (createdAtInput) {
-				createdAtInput.value = button.getAttribute('data-post-created-at') || '';
-			}
+			editForm.action = '/blog/' + button.getAttribute('data-post-id') + '/edit';
+			document.getElementById('editPostTitle').value = decodeAttr(button.getAttribute('data-post-title'));
+			document.getElementById('editPostContent').value = decodeAttr(button.getAttribute('data-post-content'));
+			document.getElementById('editPostCreatedAt').value = button.getAttribute('data-post-created-at') || '';
 			var categorySelect = document.getElementById('editPostCategory');
-			if (categorySelect) {
-				try {
-					categorySelect.value = decodeURIComponent(button.getAttribute('data-post-category') || '');
-				} catch (e) {
-					categorySelect.value = button.getAttribute('data-post-category') || '';
-				}
-			}
+			if (categorySelect) categorySelect.value = decodeAttr(button.getAttribute('data-post-category'));
 			var authorSelect = document.getElementById('editPostAuthor');
-			if (authorSelect) {
-				authorSelect.value = button.getAttribute('data-post-author-id') || '';
-			}
+			if (authorSelect) authorSelect.value = button.getAttribute('data-post-author-id') || '';
 			var images = [];
 			try {
-				images = JSON.parse(decodeURIComponent(button.getAttribute('data-post-images') || '[]'));
+				images = JSON.parse(decodeAttr(button.getAttribute('data-post-images') || '[]'));
 			} catch (e) {
 				images = [];
 			}
@@ -1037,15 +434,13 @@
 		});
 	}
 
-	if (deleteModal) {
+	if (deleteModal && deleteForm) {
 		deleteModal.addEventListener('show.bs.modal', function (event) {
 			var button = event.relatedTarget;
 			if (!button) return;
 			deleteForm.action = '/blog/' + button.getAttribute('data-post-id') + '/delete';
 		});
 	}
-
-	enhanceFeedTexts(feedList);
 })();
 </script>
 </body>

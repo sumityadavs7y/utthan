@@ -69,11 +69,12 @@ function serializeHomePost(post, currentUser) {
   const createdAt = post.createdAt || new Date();
   const author = post.author || {};
   const showAuthor = Boolean(currentUser && author.name);
+  const title = String(post.title || '').trim() || truncateText(post.content, 72) || 'Latest update';
 
   return {
     id: post.id,
     excerpt: truncateText(post.content, 120),
-    title: truncateText(post.content, 72) || 'Latest update',
+    title,
     imagePath: images[0] || '/images/blog/blog-grid/pic1.jpg',
     category: post.category || 'Charity',
     day: formatDayIst(createdAt),
@@ -288,7 +289,7 @@ router.get('/feed.xml', async (req, res) => {
     const posts = await Post.findAll({
       order: [['createdAt', 'DESC'], ['id', 'DESC']],
       limit: 20,
-      attributes: ['id', 'content', 'createdAt']
+      attributes: ['id', 'title', 'content', 'createdAt']
     });
     res.type('application/rss+xml').send(buildBlogRssXml(posts, res.locals.site));
   } catch (error) {

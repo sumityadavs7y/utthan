@@ -372,7 +372,7 @@ function escapeXml(value) {
 
 function buildBlogRssXml(posts = [], site = {}) {
   const items = posts.map((post) => {
-    const title = escapeXml((post.content || 'Utthan Foundation update').slice(0, 80));
+    const title = escapeXml((post.title || post.content || 'Utthan Foundation update').slice(0, 80));
     const description = escapeXml((post.content || '').slice(0, 300));
     const link = absoluteUrl('/blog');
     const pubDate = post.createdAt ? new Date(post.createdAt).toUTCString() : new Date().toUTCString();

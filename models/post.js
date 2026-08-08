@@ -15,6 +15,11 @@ const Post = sequelize.define('Post', {
     type: DataTypes.TEXT,
     allowNull: false
   },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'Untitled Post'
+  },
   category: {
     type: DataTypes.STRING,
     allowNull: false,
