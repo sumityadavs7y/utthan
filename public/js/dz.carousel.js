@@ -21,12 +21,15 @@ jQuery(window).on('load', function() {
 	// Main Slider
 	if(jQuery('.main-slider').length > 0){
 		var swiperMain = new Swiper('.main-slider', {
-			speed: 1500,
+			speed: 1200,
 			effect: "fade",
+			fadeEffect: {
+				crossFade: true
+			},
 			slidesPerView: 1,
 			loop:true,
 			autoplay: {
-			   delay: 3000,
+			   delay: 4000,
 			},
 			pagination: {
 				el: '.main-pagination',

@@ -2,6 +2,151 @@
 <html lang="en-IN">
 <head>
 	<%- include('partials/head') %>
+	<style>
+		/* Keep hero slides aligned as the main slider fades between them. */
+		.main-bnr-two .banner-inner > .container-fluid,
+		.main-bnr-two .banner-inner > .container-fluid > .row {
+			height: 100%;
+		}
+		.main-bnr-two .banner-inner > .container-fluid > .row {
+			align-items: flex-end;
+		}
+		.main-bnr-two .banner-inner > .container-fluid > .row > [class*="col-"] {
+			display: flex;
+			height: 100%;
+		}
+		.main-bnr-two .banner-media,
+		.main-bnr-two .banner-media2 {
+			width: 100%;
+			padding: 0 60px 0 30px;
+			margin: 50px 0 var(--spacing-bnr-two-sub);
+			opacity: 0;
+			transition: opacity 0.7s ease;
+			display: flex;
+			align-items: flex-end;
+			justify-content: center;
+			height: 100%;
+			position: relative;
+			z-index: 1;
+		}
+		.main-bnr-two .banner-media img,
+		.main-bnr-two .banner-media2 img {
+			width: auto;
+			max-width: 100%;
+			height: auto;
+			max-height: min(620px, calc(100% - 20px));
+			object-fit: contain;
+			object-position: bottom center;
+		}
+		.main-bnr-two .swiper-slide-active .banner-media,
+		.main-bnr-two .swiper-slide-active .banner-media2,
+		.main-bnr-two .swiper-slide-duplicate-active .banner-media,
+		.main-bnr-two .swiper-slide-duplicate-active .banner-media2 {
+			opacity: 1;
+		}
+		.main-bnr-two .banner-content {
+			width: 100%;
+			max-width: 650px;
+			margin-left: 0;
+			padding-bottom: var(--spacing-bnr-two);
+			display: flex;
+			align-items: center;
+		}
+		.main-bnr-two .banner-content .top-content {
+			width: 100%;
+		}
+		.main-bnr-two .banner-content .sub-title {
+			min-height: 1.4em;
+			margin-bottom: 12px;
+		}
+		.main-bnr-two .banner-content .title {
+			min-height: 2.45em;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+		}
+		.main-bnr-two .banner-content p {
+			min-height: 3.2em;
+			max-width: 540px;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+		}
+		.main-bnr-two .banner-content .banner-actions {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: 12px 20px;
+			min-height: 54px;
+		}
+		.main-bnr-two .banner-content .banner-actions .btn {
+			margin-right: 0;
+		}
+		@media only screen and (max-width: 1680px) {
+			.main-bnr-two .banner-media,
+			.main-bnr-two .banner-media2 {
+				padding: 0 60px 0 30px;
+			}
+		}
+		@media only screen and (max-width: 1191px) {
+			.main-bnr-two .banner-media,
+			.main-bnr-two .banner-media2 {
+				padding: 0 20px;
+			}
+			.main-bnr-two .banner-media img,
+			.main-bnr-two .banner-media2 img {
+				max-height: min(480px, calc(100% - 10px));
+			}
+		}
+		@media only screen and (max-width: 991px) {
+			.main-bnr-two .banner-media,
+			.main-bnr-two .banner-media2 {
+				margin-top: 0;
+				margin-bottom: 0;
+			}
+			.main-bnr-two .banner-content {
+				padding-bottom: 0;
+			}
+			.main-bnr-two .banner-content .title {
+				min-height: 2.4em;
+			}
+		}
+		@media only screen and (max-width: 767px) {
+			.main-bnr-two .banner-inner > .container-fluid > .row {
+				align-items: stretch;
+				flex-direction: column-reverse;
+				height: auto;
+			}
+			.main-bnr-two .banner-inner > .container-fluid > .row > [class*="col-"] {
+				height: auto;
+			}
+			.main-bnr-two .banner-media,
+			.main-bnr-two .banner-media2 {
+				padding: 20px 0 0;
+				max-width: 280px;
+				margin-left: auto;
+				margin-right: auto;
+				height: auto;
+			}
+			.main-bnr-two .banner-media img,
+			.main-bnr-two .banner-media2 img {
+				max-height: 280px;
+			}
+			.main-bnr-two .banner-content {
+				align-items: flex-start;
+				padding-top: 10px;
+			}
+			.main-bnr-two .banner-content .title,
+			.main-bnr-two .banner-content p {
+				min-height: 0;
+				-webkit-line-clamp: unset;
+				display: block;
+				overflow: visible;
+			}
+		}
+	</style>
 </head>
 <body id="bg" class="data-typography-2">
 <%- include('partials/loader') %>
@@ -88,9 +233,9 @@
 										<div class="banner-content">
 											<div class="top-content">
 												<h5 class="sub-title text-primary">GIVE A HAND TO MAKE</h5>
-												<h1 class="title">Your Donation Can Change the World </h1>
+												<h1 class="title">Your Donation Can Change the World</h1>
 												<p>Your donation to Utthan Foundation can make a significant difference in the lives of underprivileged children.</p>
-												<div class="d-flex align-items-center">
+												<div class="banner-actions">
 													<a class="btn btn-primary btnhover1" href="/donate">
 														<span>Donate</span>
 														<i class="flaticon-heart ms-3"></i>
@@ -109,7 +254,7 @@
 							<div class="container-fluid">
 								<div class="row">
 									<div class="col-xl-6 col-md-5">
-										<div class="banner-media2">
+										<div class="banner-media">
 											<img src="/images/main-slider/slider2/pic2.png" alt="Utthan Foundation community education and innovation programs">
 										</div>
 									</div>
@@ -117,9 +262,9 @@
 										<div class="banner-content">
 											<div class="top-content">
 												<h5 class="sub-title text-primary">INNOVATIONS IN TECHNOLOGY</h5>
-												<h2 class="title">We Help Surface Innovations</h2>
+												<h1 class="title">We Help Surface Innovations</h1>
 												<p>Utthan Foundation is dedicated to empowering underprivileged communities through education.</p>
-												<div class="d-flex align-items-center">
+												<div class="banner-actions">
 													<a class="btn btn-primary btnhover1" href="/donate">
 														<span>Donate</span>
 														<i class="flaticon-heart ms-3"></i>
