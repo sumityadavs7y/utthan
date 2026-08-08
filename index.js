@@ -28,7 +28,14 @@ const {
   buildBreadcrumbJsonLd,
   buildLocalBusinessJsonLd
 } = require('./utils/seo');
-const { isDevEnvMode } = require('./utils/helpers');
+const {
+  isDevEnvMode,
+  formatDateTimeIst,
+  formatDateIst,
+  formatDayIst,
+  formatMonthIst,
+  toDatetimeLocalIst
+} = require('./utils/helpers');
 const compression = require('compression');
 const { securityHeaders } = require('./middleware/security');
 
@@ -90,6 +97,11 @@ app.use(flash());
 app.use((req, res, next) => {
   res.locals.currentPath = req.path || '/';
   res.locals.canonicalPath = req.path || '/';
+  res.locals.formatDateTimeIst = formatDateTimeIst;
+  res.locals.formatDateIst = formatDateIst;
+  res.locals.formatDayIst = formatDayIst;
+  res.locals.formatMonthIst = formatMonthIst;
+  res.locals.toDatetimeLocalIst = toDatetimeLocalIst;
   res.locals.seoHelpers = {
     resolvePageSeo,
     buildOrganizationJsonLd,

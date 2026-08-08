@@ -89,7 +89,7 @@
 									<span><a href="mailto:<%= item.email %>"><%= item.email %></a></span>
 									<% if (item.phone) { %><span><%= item.phone %></span><% } %>
 									<span>via <%= item.source %></span>
-									<span><%= new Date(item.createdAt).toLocaleString() %></span>
+									<span><%= formatDateTimeIst(item.createdAt) %></span>
 									<% if (!item.isRead) { %><span class="badge bg-primary">New</span><% } %>
 								</div>
 								<p class="inbox-message"><%= item.message %></p>
@@ -120,7 +120,7 @@
 									<span><a href="mailto:<%= item.email %>"><%= item.email %></a></span>
 									<% if (item.phone) { %><span><%= item.phone %></span><% } %>
 									<% if (item.company) { %><span><%= item.company %></span><% } %>
-									<span><%= new Date(item.createdAt).toLocaleString() %></span>
+									<span><%= formatDateTimeIst(item.createdAt) %></span>
 									<% if (!item.isRead) { %><span class="badge bg-primary">New</span><% } %>
 								</div>
 								<p class="inbox-message"><%= item.message %></p>
@@ -159,7 +159,7 @@
 										<tr>
 											<td><a href="mailto:<%= item.email %>"><%= item.email %></a></td>
 											<td><%= item.source || '—' %></td>
-											<td><%= new Date(item.createdAt).toLocaleString() %></td>
+											<td><%= formatDateTimeIst(item.createdAt) %></td>
 											<td class="text-end">
 												<form method="POST" action="/admin/inbox/subscribers/<%= item.id %>/delete" class="m-0" onsubmit="return confirm('Remove this subscriber?');">
 													<button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>

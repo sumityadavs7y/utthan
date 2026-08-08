@@ -4,6 +4,7 @@ const { Post, User } = require('../models');
 const { requireAuth, canManagePost } = require('../middleware/auth');
 const { upload } = require('../middleware/upload');
 const { saveUploadedFiles, deleteMediaByUrls } = require('../utils/media');
+const { parseIstDateTimeInput } = require('../utils/helpers');
 
 const router = express.Router();
 const PAGE_SIZE = 10;
@@ -41,6 +42,10 @@ function serializeImages(paths) {
   return JSON.stringify(paths);
 }
 
+function isAdminUser(user) {
+  return Boolean(user && user.role === 'admin');
+}
+
 function serializePost(post, currentUser) {
   const author = post.author || {};
   const showAuthor = Boolean(currentUser);
@@ -59,10 +64,56 @@ function serializePost(post, currentUser) {
   };
 }
 
-async function fetchPostsPage({ beforeId, limit = PAGE_SIZE, currentUser }) {
+async function loadAuthorOptions() {
+  return User.findAll({
+    attributes: ['id', 'name'],
+    order: [['name', 'ASC'], ['id', 'ASC']]
+  });
+}
+
+async function resolveAuthorUserId(req, currentUser) {
+  if (!isAdminUser(currentUser)) {
+    return currentUser.id;
+  }
+
+  const requestedId = Number(req.body.userId);
+  if (!requestedId || Number.isNaN(requestedId)) {
+    return currentUser.id;
+  }
+
+  const author = await User.findByPk(requestedId, { attributes: ['id'] });
+  return author ? author.id : currentUser.id;
+}
+
+function resolveCreatedAt(req) {
+  const raw = (req.body.createdAt || '').trim();
+  if (!raw) return null;
+
+  const parsed = parseIstDateTimeInput(raw);
+  if (!parsed) {
+    const error = new Error('Invalid post date.');
+    error.status = 400;
+    throw error;
+  }
+  return parsed;
+}
+
+async function fetchPostsPage({ beforeCreatedAt, beforeId, limit = PAGE_SIZE, currentUser }) {
   const where = {};
-  if (beforeId) {
-    where.id = { [Op.lt]: Number(beforeId) };
+
+  if (beforeCreatedAt && beforeId) {
+    const cursorDate = new Date(beforeCreatedAt);
+    const cursorId = Number(beforeId);
+
+    if (!Number.isNaN(cursorDate.getTime()) && !Number.isNaN(cursorId)) {
+      where[Op.or] = [
+        { createdAt: { [Op.lt]: cursorDate } },
+        {
+          createdAt: cursorDate,
+          id: { [Op.lt]: cursorId }
+        }
+      ];
+    }
   }
 
   const rows = await Post.findAll({
@@ -72,7 +123,7 @@ async function fetchPostsPage({ beforeId, limit = PAGE_SIZE, currentUser }) {
       as: 'author',
       attributes: ['id', 'name']
     }],
-    order: [['id', 'DESC']],
+    order: [['createdAt', 'DESC'], ['id', 'DESC']],
     limit: limit + 1
   });
 
@@ -93,16 +144,19 @@ function handleUpload(req, res, next) {
 
 router.get('/blog', async (req, res) => {
   try {
-    const { posts, hasMore } = await fetchPostsPage({
-      currentUser: res.locals.currentUser
-    });
+    const currentUser = res.locals.currentUser;
+    const [{ posts, hasMore }, authors] = await Promise.all([
+      fetchPostsPage({ currentUser }),
+      isAdminUser(currentUser) ? loadAuthorOptions() : Promise.resolve([])
+    ]);
 
     renderPage(res, 'blog-list', {
       title: 'Blogs & Media - Utthan Foundation',
       currentPage: 'blog',
       posts,
       hasMore,
-      pageSize: PAGE_SIZE
+      pageSize: PAGE_SIZE,
+      authors
     });
   } catch (error) {
     console.error('Blog feed error:', error);
@@ -112,7 +166,8 @@ router.get('/blog', async (req, res) => {
       currentPage: 'blog',
       posts: [],
       hasMore: false,
-      pageSize: PAGE_SIZE
+      pageSize: PAGE_SIZE,
+      authors: []
     });
   }
 });
@@ -120,13 +175,19 @@ router.get('/blog', async (req, res) => {
 router.get('/blog/api/posts', async (req, res) => {
   try {
     const beforeId = req.query.beforeId ? Number(req.query.beforeId) : null;
+    const beforeCreatedAt = req.query.beforeCreatedAt || null;
     const limit = Math.min(Number(req.query.limit) || PAGE_SIZE, 20);
 
     if (beforeId !== null && Number.isNaN(beforeId)) {
       return res.status(400).json({ error: 'Invalid beforeId' });
     }
 
+    if (beforeCreatedAt && Number.isNaN(new Date(beforeCreatedAt).getTime())) {
+      return res.status(400).json({ error: 'Invalid beforeCreatedAt' });
+    }
+
     const result = await fetchPostsPage({
+      beforeCreatedAt,
       beforeId,
       limit,
       currentUser: res.locals.currentUser
@@ -147,18 +208,29 @@ router.post('/blog', requireAuth, handleUpload, async (req, res) => {
       return res.redirect('/blog');
     }
 
+    const currentUser = res.locals.currentUser;
+    const userId = await resolveAuthorUserId(req, currentUser);
+    const createdAt = resolveCreatedAt(req);
     const imageUrls = await saveUploadedFiles(req.files);
-    await Post.create({
-      userId: req.session.userId,
+
+    const payload = {
+      userId,
       content,
       imagePath: serializeImages(imageUrls)
-    });
+    };
+
+    if (createdAt) {
+      payload.createdAt = createdAt;
+      payload.updatedAt = createdAt;
+    }
+
+    await Post.create(payload);
 
     req.flash('success', 'Your post was published.');
     return res.redirect('/blog');
   } catch (error) {
     console.error('Create post error:', error);
-    req.flash('error', 'Unable to create post. Please try again.');
+    req.flash('error', error.status === 400 ? error.message : 'Unable to create post. Please try again.');
     return res.redirect('/blog');
   }
 });
@@ -184,12 +256,23 @@ router.post('/blog/:id/edit', requireAuth, handleUpload, async (req, res) => {
       return res.redirect('/blog');
     }
 
-    if (!canManagePost(res.locals.currentUser, post) || res.locals.currentUser.id !== post.userId) {
-      req.flash('error', 'You can only edit your own posts.');
+    const currentUser = res.locals.currentUser;
+    if (!canManagePost(currentUser, post)) {
+      req.flash('error', 'You do not have permission to edit this post.');
       return res.redirect('/blog');
     }
 
     post.content = content;
+
+    if (isAdminUser(currentUser)) {
+      post.userId = await resolveAuthorUserId(req, currentUser);
+    }
+
+    const createdAt = resolveCreatedAt(req);
+    if (createdAt) {
+      post.setDataValue('createdAt', createdAt);
+      post.changed('createdAt', true);
+    }
 
     if (req.files && req.files.length) {
       await deleteMediaByUrls(parseImages(post.imagePath));
@@ -197,12 +280,12 @@ router.post('/blog/:id/edit', requireAuth, handleUpload, async (req, res) => {
       post.imagePath = serializeImages(imageUrls);
     }
 
-    await post.save();
+    await post.save({ silent: false });
     req.flash('success', 'Post updated.');
     return res.redirect('/blog');
   } catch (error) {
     console.error('Edit post error:', error);
-    req.flash('error', 'Unable to update post. Please try again.');
+    req.flash('error', error.status === 400 ? error.message : 'Unable to update post. Please try again.');
     return res.redirect('/blog');
   }
 });

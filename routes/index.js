@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Chairman, Campaign, TeamMember, Post, User, ImpactStat, Testimonial } = require('../models');
+const { formatDayIst, formatMonthIst } = require('../utils/helpers');
 
 const HOME_CAMPAIGN_LIMIT = 8;
 const HOME_POST_LIMIT = 6;
@@ -65,7 +66,7 @@ function serializeHomeCampaign(campaign) {
 
 function serializeHomePost(post, currentUser) {
   const images = parseImages(post.imagePath);
-  const createdAt = post.createdAt ? new Date(post.createdAt) : new Date();
+  const createdAt = post.createdAt || new Date();
   const author = post.author || {};
   const showAuthor = Boolean(currentUser && author.name);
 
@@ -74,8 +75,8 @@ function serializeHomePost(post, currentUser) {
     excerpt: truncateText(post.content, 120),
     title: truncateText(post.content, 72) || 'Latest update',
     imagePath: images[0] || '/images/blog/blog-grid/pic1.jpg',
-    day: String(createdAt.getDate()).padStart(2, '0'),
-    month: createdAt.toLocaleString('en-US', { month: 'long' }),
+    day: formatDayIst(createdAt),
+    month: formatMonthIst(createdAt),
     authorName: showAuthor ? author.name : 'Utthan Foundation'
   };
 }
@@ -119,7 +120,7 @@ router.get('/', async (req, res) => {
           as: 'author',
           attributes: ['id', 'name']
         }],
-        order: [['id', 'DESC']],
+        order: [['createdAt', 'DESC'], ['id', 'DESC']],
         limit: HOME_POST_LIMIT
       }),
       ImpactStat.findAll({ order: [['sortOrder', 'ASC'], ['id', 'ASC']] }),
@@ -284,7 +285,7 @@ router.get('/feed.xml', async (req, res) => {
     const { Post } = require('../models');
     const { buildBlogRssXml } = require('../utils/seo');
     const posts = await Post.findAll({
-      order: [['id', 'DESC']],
+      order: [['createdAt', 'DESC'], ['id', 'DESC']],
       limit: 20,
       attributes: ['id', 'content', 'createdAt']
     });

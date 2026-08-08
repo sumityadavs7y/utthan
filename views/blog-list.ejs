@@ -297,6 +297,28 @@
 			font-size: 14px;
 			opacity: 0.9;
 		}
+		.feed-composer-meta {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 12px;
+			margin: 0 0 12px;
+		}
+		@media (min-width: 640px) {
+			.feed-composer-meta {
+				grid-template-columns: 1fr 1fr;
+			}
+		}
+		.feed-composer-meta .form-label {
+			font-size: 13px;
+			font-weight: 600;
+			margin-bottom: 4px;
+		}
+		.feed-composer-meta .form-hint {
+			display: block;
+			margin-top: 4px;
+			font-size: 12px;
+			color: #6c757d;
+		}
 		@media (max-width: 575px) {
 			.feed-composer,
 			.feed-card {
@@ -345,6 +367,24 @@
 							</div>
 							<form method="POST" action="/blog" enctype="multipart/form-data" id="composerForm">
 								<textarea name="content" required placeholder="What's happening at Utthan?" maxlength="5000"></textarea>
+								<div class="feed-composer-meta">
+									<div>
+										<label class="form-label" for="composerCreatedAt">Post date (IST)</label>
+										<input type="datetime-local" name="createdAt" id="composerCreatedAt" class="form-control" step="60">
+										<span class="form-hint">Leave blank for now. Use any past year for historical posts.</span>
+									</div>
+									<% if (currentUser.role === 'admin') { %>
+										<div>
+											<label class="form-label" for="composerAuthor">Added by</label>
+											<select name="userId" id="composerAuthor" class="form-control form-select">
+												<% (authors || []).forEach(function(author) { %>
+													<option value="<%= author.id %>" <%= author.id === currentUser.id ? 'selected' : '' %>><%= author.name %></option>
+												<% }) %>
+											</select>
+											<span class="form-hint">Only admins can change the author.</span>
+										</div>
+									<% } %>
+								</div>
 								<div class="feed-image-preview-grid" id="composerPreview"></div>
 								<div class="feed-composer-actions">
 									<label class="image-picker">
@@ -363,39 +403,39 @@
 							<% posts.forEach(function(post) { %>
 								<% const images = post.images || []; %>
 								<% const isLoggedIn = typeof currentUser !== 'undefined' && currentUser; %>
-								<article class="feed-card" data-post-id="<%= post.id %>">
+								<article class="feed-card" data-post-id="<%= post.id %>" data-created-at="<%= post.createdAt.toISOString ? post.createdAt.toISOString() : post.createdAt %>">
 									<div class="feed-card-header">
 										<div class="feed-card-author">
 											<% if (isLoggedIn && post.author) { %>
 												<span class="feed-avatar"><%= (post.author.name || '?').trim().charAt(0).toUpperCase() %></span>
 												<div>
 													<strong><%= post.author.name %></strong>
-													<span data-created-at="<%= post.createdAt.toISOString ? post.createdAt.toISOString() : post.createdAt %>"><%= new Date(post.createdAt).toLocaleString() %></span>
+													<span data-created-at="<%= post.createdAt.toISOString ? post.createdAt.toISOString() : post.createdAt %>"><%= formatDateTimeIst(post.createdAt) %></span>
 												</div>
 											<% } else { %>
 												<span class="feed-avatar"><img src="/images/logo.png" alt="Utthan Foundation"></span>
 												<div>
 													<strong>Utthan Foundation</strong>
-													<span data-created-at="<%= post.createdAt.toISOString ? post.createdAt.toISOString() : post.createdAt %>"><%= new Date(post.createdAt).toLocaleString() %></span>
+													<span data-created-at="<%= post.createdAt.toISOString ? post.createdAt.toISOString() : post.createdAt %>"><%= formatDateTimeIst(post.createdAt) %></span>
 												</div>
 											<% } %>
 										</div>
 										<% if (post.canManage) { %>
 											<div class="feed-card-actions">
-												<% if (currentUser && post.author && currentUser.id === post.author.id) { %>
-													<button
-														type="button"
-														class="btn btn-sm btn-outline-secondary btn-edit-post"
-														title="Edit"
-														data-bs-toggle="modal"
-														data-bs-target="#modalEditPost"
-														data-post-id="<%= post.id %>"
-														data-post-content="<%= encodeURIComponent(post.content) %>"
-														data-post-images="<%= encodeURIComponent(JSON.stringify(images)) %>"
-													>
-														<i class="fa-solid fa-pen"></i>
-													</button>
-												<% } %>
+												<button
+													type="button"
+													class="btn btn-sm btn-outline-secondary btn-edit-post"
+													title="Edit"
+													data-bs-toggle="modal"
+													data-bs-target="#modalEditPost"
+													data-post-id="<%= post.id %>"
+													data-post-content="<%= encodeURIComponent(post.content) %>"
+													data-post-images="<%= encodeURIComponent(JSON.stringify(images)) %>"
+													data-post-created-at="<%= toDatetimeLocalIst(post.createdAt) %>"
+													data-post-author-id="<%= post.author ? post.author.id : '' %>"
+												>
+													<i class="fa-solid fa-pen"></i>
+												</button>
 												<button
 													type="button"
 													class="btn btn-sm btn-outline-danger btn-delete-post"
@@ -473,6 +513,23 @@
 							<label class="form-label">Text</label>
 							<textarea name="content" id="editPostContent" class="form-control" rows="5" required maxlength="5000"></textarea>
 						</div>
+						<div class="feed-composer-meta mb-3">
+							<div>
+								<label class="form-label" for="editPostCreatedAt">Post date (IST)</label>
+								<input type="datetime-local" name="createdAt" id="editPostCreatedAt" class="form-control" step="60">
+								<span class="form-hint">Shown in India Standard Time.</span>
+							</div>
+							<% if (currentUser.role === 'admin') { %>
+								<div>
+									<label class="form-label" for="editPostAuthor">Added by</label>
+									<select name="userId" id="editPostAuthor" class="form-control form-select">
+										<% (authors || []).forEach(function(author) { %>
+											<option value="<%= author.id %>"><%= author.name %></option>
+										<% }) %>
+									</select>
+								</div>
+							<% } %>
+						</div>
 						<div class="form-group mb-2">
 							<label class="form-label">Replace photos (optional)</label>
 							<input type="file" name="images" class="form-control" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
@@ -530,8 +587,30 @@
 	var loadMoreBtn = document.getElementById('feedLoadMore');
 	var sentinel = document.getElementById('feedSentinel');
 	var loadingEl = document.getElementById('feedLoading');
-	var currentUserId = <%= (typeof currentUser !== 'undefined' && currentUser) ? currentUser.id : 'null' %>;
 	var isLoggedIn = <%= (typeof currentUser !== 'undefined' && currentUser) ? 'true' : 'false' %>;
+
+	function toDatetimeLocalIst(value) {
+		try {
+			var date = new Date(value);
+			if (Number.isNaN(date.getTime())) return '';
+			var parts = {};
+			new Intl.DateTimeFormat('en-GB', {
+				timeZone: 'Asia/Kolkata',
+				year: 'numeric',
+				month: '2-digit',
+				day: '2-digit',
+				hour: '2-digit',
+				minute: '2-digit',
+				hour12: false
+			}).formatToParts(date).forEach(function (part) {
+				if (part.type !== 'literal') parts[part.type] = part.value;
+			});
+			var hour = parts.hour === '24' ? '00' : parts.hour;
+			return parts.year + '-' + parts.month + '-' + parts.day + 'T' + hour + ':' + parts.minute;
+		} catch (e) {
+			return '';
+		}
+	}
 
 	var lightbox = document.getElementById('feedLightbox');
 	var lbImage = document.getElementById('lbImage');
@@ -550,7 +629,7 @@
 
 	function formatDate(value) {
 		try {
-			return new Date(value).toLocaleString();
+			return new Date(value).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 		} catch (e) {
 			return value;
 		}
@@ -704,14 +783,12 @@
 
 		if (post.canManage) {
 			actions = '<div class="feed-card-actions">';
-			if (currentUserId && post.author && post.author.id === currentUserId) {
-				actions += '<button type="button" class="btn btn-sm btn-outline-secondary btn-edit-post" title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditPost" data-post-id="' + post.id + '" data-post-content="' + encodeURIComponent(post.content) + '" data-post-images="' + encodeURIComponent(JSON.stringify(images)) + '"><i class="fa-solid fa-pen"></i></button> ';
-			}
+			actions += '<button type="button" class="btn btn-sm btn-outline-secondary btn-edit-post" title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditPost" data-post-id="' + post.id + '" data-post-content="' + encodeURIComponent(post.content) + '" data-post-images="' + encodeURIComponent(JSON.stringify(images)) + '" data-post-created-at="' + escapeHtml(toDatetimeLocalIst(post.createdAt)) + '" data-post-author-id="' + (post.author && post.author.id ? post.author.id : '') + '"><i class="fa-solid fa-pen"></i></button> ';
 			actions += '<button type="button" class="btn btn-sm btn-outline-danger btn-delete-post" title="Delete" data-bs-toggle="modal" data-bs-target="#modalDeletePost" data-post-id="' + post.id + '"><i class="fa-solid fa-trash"></i></button></div>';
 		}
 
 		return (
-			'<article class="feed-card" data-post-id="' + post.id + '">' +
+			'<article class="feed-card" data-post-id="' + post.id + '" data-created-at="' + escapeHtml(post.createdAt) + '">' +
 				'<div class="feed-card-header">' +
 					'<div class="feed-card-author">' + authorBlock + '</div>' +
 					actions +
@@ -724,10 +801,14 @@
 		);
 	}
 
-	function getOldestId() {
+	function getOldestCursor() {
 		var cards = feedList.querySelectorAll('.feed-card[data-post-id]');
 		if (!cards.length) return null;
-		return cards[cards.length - 1].getAttribute('data-post-id');
+		var last = cards[cards.length - 1];
+		return {
+			id: last.getAttribute('data-post-id'),
+			createdAt: last.getAttribute('data-created-at')
+		};
 	}
 
 	function setHasMore(next) {
@@ -741,8 +822,8 @@
 
 	function loadMore() {
 		if (loading || !hasMore) return;
-		var beforeId = getOldestId();
-		if (!beforeId) {
+		var cursor = getOldestCursor();
+		if (!cursor || !cursor.id || !cursor.createdAt) {
 			setHasMore(false);
 			return;
 		}
@@ -750,7 +831,7 @@
 		loading = true;
 		loadingEl.classList.add('is-visible');
 
-		fetch('/blog/api/posts?beforeId=' + encodeURIComponent(beforeId) + '&limit=10')
+		fetch('/blog/api/posts?beforeId=' + encodeURIComponent(cursor.id) + '&beforeCreatedAt=' + encodeURIComponent(cursor.createdAt) + '&limit=10')
 			.then(function (res) { return res.json(); })
 			.then(function (data) {
 				var empty = document.getElementById('feedEmpty');
@@ -820,6 +901,14 @@
 			var postId = button.getAttribute('data-post-id');
 			editForm.action = '/blog/' + postId + '/edit';
 			document.getElementById('editPostContent').value = decodeURIComponent(button.getAttribute('data-post-content') || '');
+			var createdAtInput = document.getElementById('editPostCreatedAt');
+			if (createdAtInput) {
+				createdAtInput.value = button.getAttribute('data-post-created-at') || '';
+			}
+			var authorSelect = document.getElementById('editPostAuthor');
+			if (authorSelect) {
+				authorSelect.value = button.getAttribute('data-post-author-id') || '';
+			}
 			var images = [];
 			try {
 				images = JSON.parse(decodeURIComponent(button.getAttribute('data-post-images') || '[]'));
