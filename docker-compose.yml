@@ -38,7 +38,7 @@ services:
       SESSION_SECRET: ${SESSION_SECRET:?SESSION_SECRET is required}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@utthan.org}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ADMIN_PASSWORD is required}
-      SITE_URL: ${SITE_URL:-https://utthanfoundation.in}
+      SITE_URL: ${SITE_URL:-https://theutthanfoundation.in}
     volumes:
       - uploads_data:/app/public/uploads
     depends_on:

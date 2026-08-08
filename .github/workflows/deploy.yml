@@ -31,7 +31,7 @@ jobs:
           echo "DB_NAME=${DB_NAME:-utthan}" >> "$GITHUB_ENV"
           echo "DB_USER=${DB_USER:-utthanuser}" >> "$GITHUB_ENV"
           echo "ADMIN_EMAIL=${ADMIN_EMAIL:-admin@utthan.org}" >> "$GITHUB_ENV"
-          echo "SITE_URL=${SITE_URL:-https://utthanfoundation.in}" >> "$GITHUB_ENV"
+          echo "SITE_URL=${SITE_URL:-https://theutthanfoundation.in}" >> "$GITHUB_ENV"
 
       - name: Configure SSH
         env:

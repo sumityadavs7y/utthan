@@ -27,7 +27,7 @@ Create a repository Environment named **`production`**, then add:
 | `DB_NAME` | `utthan` |
 | `DB_USER` | `utthanuser` |
 | `ADMIN_EMAIL` | `admin@utthan.org` |
-| `SITE_URL` | `https://utthanfoundation.in` |
+| `SITE_URL` | `https://theutthanfoundation.in` |
 
 Do **not** store a personal GitHub PAT for this deploy flow. Checkout uses the workflow `GITHUB_TOKEN`.
 
@@ -45,7 +45,13 @@ cd /opt/utthan
 ./deploy/enable-ssl.sh
 ```
 
-That issues a Let's Encrypt cert for `utthanfoundation.in` + `www`, switches Nginx to [`default.ssl.conf`](nginx/default.ssl.conf), writes `deploy/nginx/.ssl-enabled`, and installs a renew cron. Later deploys detect `.ssl-enabled` and keep HTTPS config.
+That issues a Let's Encrypt cert for `theutthanfoundation.in`, switches Nginx to [`default.ssl.conf`](nginx/default.ssl.conf), writes `deploy/nginx/.ssl-enabled`, and installs a renew cron. Later deploys detect `.ssl-enabled` and keep HTTPS config.
+
+For `www`, point its DNS A record to the same EC2 IP first, then re-run:
+
+```bash
+INCLUDE_WWW=1 ./deploy/enable-ssl.sh
+```
 
 ## Watchdog
 

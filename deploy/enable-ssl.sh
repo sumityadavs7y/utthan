@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
-# Run on the EC2 host AFTER DNS for utthanfoundation.in (+ www) points here
-# and security group allows 80/443.
+# Run on the EC2 host AFTER DNS for the domain points here and SG allows 80/443.
 #
 #   cd /opt/utthan && ./deploy/enable-ssl.sh
+#
+# Defaults to theutthanfoundation.in (apex only). Set INCLUDE_WWW=1 after www
+# also points to this EC2.
 #
 set -euo pipefail
 
 APP_DIR="${APP_DIR:-/opt/utthan}"
-DOMAIN="${DOMAIN:-utthanfoundation.in}"
-EMAIL="${CERTBOT_EMAIL:-admin@utthan.org}"
+DOMAIN="${DOMAIN:-theutthanfoundation.in}"
+EMAIL="${CERTBOT_EMAIL:-help@theutthanfoundation.in}"
+INCLUDE_WWW="${INCLUDE_WWW:-0}"
 PROJECT_NAME="utthan"
 COMPOSE="docker compose -f ${APP_DIR}/docker-compose.yml -p ${PROJECT_NAME}"
 NGINX_ONLY="${1:-}"
@@ -21,24 +24,46 @@ if [[ ! -f docker-compose.yml ]]; then
 fi
 
 apply_ssl_nginx() {
-  cp "${APP_DIR}/deploy/nginx/default.ssl.conf" "${APP_DIR}/deploy/nginx/default.conf"
+  # Prefer checked-in SSL template; rewrite paths if DOMAIN differs.
+  sed "s/theutthanfoundation\\.in/${DOMAIN}/g" \
+    "${APP_DIR}/deploy/nginx/default.ssl.conf" \
+    > "${APP_DIR}/deploy/nginx/default.conf"
   touch "${APP_DIR}/deploy/nginx/.ssl-enabled"
+  echo "${DOMAIN}" > "${APP_DIR}/deploy/nginx/.ssl-domain"
 }
 
 if [[ "${NGINX_ONLY}" == "--nginx-only" ]]; then
   echo "==> Restoring HTTPS nginx config (certs already issued)"
+  if [[ -f "${APP_DIR}/deploy/nginx/.ssl-domain" ]]; then
+    DOMAIN="$(cat "${APP_DIR}/deploy/nginx/.ssl-domain")"
+  fi
   apply_ssl_nginx
   ${COMPOSE} up -d nginx
   ${COMPOSE} exec -T nginx nginx -t
   ${COMPOSE} exec -T nginx nginx -s reload
-  echo "==> Nginx HTTPS config restored"
+  echo "==> Nginx HTTPS config restored for ${DOMAIN}"
   exit 0
 fi
 
-# Ensure stack (and ACME webroot volume) is up
+# Ensure HTTP nginx has ACME location before requesting cert
+cp "${APP_DIR}/deploy/nginx/default.conf" "${APP_DIR}/deploy/nginx/default.conf.bak" 2>/dev/null || true
+# Make sure HTTP config is active (not SSL) during issuance if coming from fresh
+if [[ ! -f "${APP_DIR}/deploy/nginx/.ssl-enabled" ]]; then
+  # Keep current HTTP default.conf from deploy
+  ${COMPOSE} up -d nginx
+  ${COMPOSE} exec -T nginx nginx -s reload || true
+fi
+
 ${COMPOSE} up -d
 
-echo "==> Requesting Let's Encrypt certificate for ${DOMAIN} and www.${DOMAIN}"
+CERT_ARGS=(-d "${DOMAIN}")
+if [[ "${INCLUDE_WWW}" == "1" ]]; then
+  CERT_ARGS+=(-d "www.${DOMAIN}")
+  echo "==> Requesting Let's Encrypt certificate for ${DOMAIN} and www.${DOMAIN}"
+else
+  echo "==> Requesting Let's Encrypt certificate for ${DOMAIN} (apex only; set INCLUDE_WWW=1 when www DNS points here)"
+fi
+
 docker run --rm \
   -v "${PROJECT_NAME}_certbot_www:/var/www/certbot" \
   -v "${PROJECT_NAME}_certbot_certs:/etc/letsencrypt" \
@@ -47,9 +72,8 @@ docker run --rm \
     --email "${EMAIL}" \
     --agree-tos \
     --no-eff-email \
-    --keep-until-expiry \
-    -d "${DOMAIN}" \
-    -d "www.${DOMAIN}"
+    --non-interactive \
+    "${CERT_ARGS[@]}"
 
 echo "==> Generating DH params if missing"
 docker run --rm \
