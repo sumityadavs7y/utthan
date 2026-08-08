@@ -75,6 +75,7 @@ function serializeHomePost(post, currentUser) {
     excerpt: truncateText(post.content, 120),
     title: truncateText(post.content, 72) || 'Latest update',
     imagePath: images[0] || '/images/blog/blog-grid/pic1.jpg',
+    category: post.category || 'Charity',
     day: formatDayIst(createdAt),
     month: formatMonthIst(createdAt),
     authorName: showAuthor ? author.name : 'Utthan Foundation'

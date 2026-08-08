@@ -319,6 +319,21 @@
 			font-size: 12px;
 			color: #6c757d;
 		}
+		.feed-category-badge {
+			display: inline-block;
+			margin: 0 0 8px;
+			padding: 2px 10px;
+			border-radius: 999px;
+			background: #e8f3f1;
+			color: #0b5c4d;
+			font-size: 11px;
+			font-weight: 700;
+			letter-spacing: 0.04em;
+			text-transform: uppercase;
+		}
+		.blog-category-filters {
+			margin: 0 0 22px;
+		}
 		@media (max-width: 575px) {
 			.feed-composer,
 			.feed-card {
@@ -356,6 +371,25 @@
 				<div class="blog-feed-wrap">
 					<%- include('partials/flash') %>
 
+					<% if (categories && categories.length) { %>
+						<div class="blog-category-filters">
+							<div class="site-filters style-1 clearfix">
+								<ul class="filters" data-bs-toggle="buttons">
+									<li class="btn <%= !activeCategory ? 'active' : '' %>">
+										<input type="radio" <%= !activeCategory ? 'checked' : '' %>>
+										<a href="/blog">All Posts</a>
+									</li>
+									<% categories.forEach(function(category) { %>
+										<li class="btn <%= activeCategory === category ? 'active' : '' %>">
+											<input type="radio" <%= activeCategory === category ? 'checked' : '' %>>
+											<a href="/blog?category=<%= encodeURIComponent(category) %>"><%= category %></a>
+										</li>
+									<% }) %>
+								</ul>
+							</div>
+						</div>
+					<% } %>
+
 					<% if (typeof currentUser !== 'undefined' && currentUser) { %>
 						<div class="feed-composer">
 							<div class="feed-composer-head">
@@ -368,6 +402,14 @@
 							<form method="POST" action="/blog" enctype="multipart/form-data" id="composerForm">
 								<textarea name="content" required placeholder="What's happening at Utthan?" maxlength="5000"></textarea>
 								<div class="feed-composer-meta">
+									<div>
+										<label class="form-label" for="composerCategory">Category</label>
+										<select name="category" id="composerCategory" class="form-control form-select" required>
+											<% (categoryOptions || []).forEach(function(option) { %>
+												<option value="<%= option %>" <%= option === 'Charity' ? 'selected' : '' %>><%= option %></option>
+											<% }) %>
+										</select>
+									</div>
 									<div>
 										<label class="form-label" for="composerCreatedAt">Post date (IST)</label>
 										<input type="datetime-local" name="createdAt" id="composerCreatedAt" class="form-control" step="60">
@@ -403,7 +445,7 @@
 							<% posts.forEach(function(post) { %>
 								<% const images = post.images || []; %>
 								<% const isLoggedIn = typeof currentUser !== 'undefined' && currentUser; %>
-								<article class="feed-card" data-post-id="<%= post.id %>" data-created-at="<%= post.createdAt.toISOString ? post.createdAt.toISOString() : post.createdAt %>">
+								<article class="feed-card" data-post-id="<%= post.id %>" data-created-at="<%= post.createdAt.toISOString ? post.createdAt.toISOString() : post.createdAt %>" data-category="<%= post.category %>">
 									<div class="feed-card-header">
 										<div class="feed-card-author">
 											<% if (isLoggedIn && post.author) { %>
@@ -433,6 +475,7 @@
 													data-post-images="<%= encodeURIComponent(JSON.stringify(images)) %>"
 													data-post-created-at="<%= toDatetimeLocalIst(post.createdAt) %>"
 													data-post-author-id="<%= post.author ? post.author.id : '' %>"
+													data-post-category="<%= encodeURIComponent(post.category || '') %>"
 												>
 													<i class="fa-solid fa-pen"></i>
 												</button>
@@ -450,6 +493,9 @@
 										<% } %>
 									</div>
 									<div class="feed-card-body">
+										<% if (post.category) { %>
+											<span class="feed-category-badge"><%= post.category %></span>
+										<% } %>
 										<p class="feed-text" data-full-text="<%= encodeURIComponent(post.content) %>"></p>
 										<% if (images.length) { %>
 											<% const visible = images.slice(0, 4); %>
@@ -514,6 +560,14 @@
 							<textarea name="content" id="editPostContent" class="form-control" rows="5" required maxlength="5000"></textarea>
 						</div>
 						<div class="feed-composer-meta mb-3">
+							<div>
+								<label class="form-label" for="editPostCategory">Category</label>
+								<select name="category" id="editPostCategory" class="form-control form-select" required>
+									<% (categoryOptions || []).forEach(function(option) { %>
+										<option value="<%= option %>"><%= option %></option>
+									<% }) %>
+								</select>
+							</div>
 							<div>
 								<label class="form-label" for="editPostCreatedAt">Post date (IST)</label>
 								<input type="datetime-local" name="createdAt" id="editPostCreatedAt" class="form-control" step="60">
@@ -582,6 +636,7 @@
 	var READ_MORE_LIMIT = 280;
 	var hasMore = <%= hasMore ? 'true' : 'false' %>;
 	var loading = false;
+	var activeCategory = <%- JSON.stringify(activeCategory || null) %>;
 	var feedList = document.getElementById('feedList');
 	var loadMoreWrap = document.getElementById('feedLoadMoreWrap');
 	var loadMoreBtn = document.getElementById('feedLoadMore');
@@ -783,17 +838,22 @@
 
 		if (post.canManage) {
 			actions = '<div class="feed-card-actions">';
-			actions += '<button type="button" class="btn btn-sm btn-outline-secondary btn-edit-post" title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditPost" data-post-id="' + post.id + '" data-post-content="' + encodeURIComponent(post.content) + '" data-post-images="' + encodeURIComponent(JSON.stringify(images)) + '" data-post-created-at="' + escapeHtml(toDatetimeLocalIst(post.createdAt)) + '" data-post-author-id="' + (post.author && post.author.id ? post.author.id : '') + '"><i class="fa-solid fa-pen"></i></button> ';
+			actions += '<button type="button" class="btn btn-sm btn-outline-secondary btn-edit-post" title="Edit" data-bs-toggle="modal" data-bs-target="#modalEditPost" data-post-id="' + post.id + '" data-post-content="' + encodeURIComponent(post.content) + '" data-post-images="' + encodeURIComponent(JSON.stringify(images)) + '" data-post-created-at="' + escapeHtml(toDatetimeLocalIst(post.createdAt)) + '" data-post-author-id="' + (post.author && post.author.id ? post.author.id : '') + '" data-post-category="' + encodeURIComponent(post.category || '') + '"><i class="fa-solid fa-pen"></i></button> ';
 			actions += '<button type="button" class="btn btn-sm btn-outline-danger btn-delete-post" title="Delete" data-bs-toggle="modal" data-bs-target="#modalDeletePost" data-post-id="' + post.id + '"><i class="fa-solid fa-trash"></i></button></div>';
 		}
 
+		var categoryBadge = post.category
+			? '<span class="feed-category-badge">' + escapeHtml(post.category) + '</span>'
+			: '';
+
 		return (
-			'<article class="feed-card" data-post-id="' + post.id + '" data-created-at="' + escapeHtml(post.createdAt) + '">' +
+			'<article class="feed-card" data-post-id="' + post.id + '" data-created-at="' + escapeHtml(post.createdAt) + '" data-category="' + escapeHtml(post.category || '') + '">' +
 				'<div class="feed-card-header">' +
 					'<div class="feed-card-author">' + authorBlock + '</div>' +
 					actions +
 				'</div>' +
 				'<div class="feed-card-body">' +
+					categoryBadge +
 					'<p class="feed-text" data-full-text="' + encodeURIComponent(post.content) + '"></p>' +
 					renderMedia(images) +
 				'</div>' +
@@ -831,7 +891,7 @@
 		loading = true;
 		loadingEl.classList.add('is-visible');
 
-		fetch('/blog/api/posts?beforeId=' + encodeURIComponent(cursor.id) + '&beforeCreatedAt=' + encodeURIComponent(cursor.createdAt) + '&limit=10')
+		fetch('/blog/api/posts?beforeId=' + encodeURIComponent(cursor.id) + '&beforeCreatedAt=' + encodeURIComponent(cursor.createdAt) + '&limit=10' + (activeCategory ? '&category=' + encodeURIComponent(activeCategory) : ''))
 			.then(function (res) { return res.json(); })
 			.then(function (data) {
 				var empty = document.getElementById('feedEmpty');
@@ -904,6 +964,14 @@
 			var createdAtInput = document.getElementById('editPostCreatedAt');
 			if (createdAtInput) {
 				createdAtInput.value = button.getAttribute('data-post-created-at') || '';
+			}
+			var categorySelect = document.getElementById('editPostCategory');
+			if (categorySelect) {
+				try {
+					categorySelect.value = decodeURIComponent(button.getAttribute('data-post-category') || '');
+				} catch (e) {
+					categorySelect.value = button.getAttribute('data-post-category') || '';
+				}
 			}
 			var authorSelect = document.getElementById('editPostAuthor');
 			if (authorSelect) {

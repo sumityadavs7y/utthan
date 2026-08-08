@@ -633,6 +633,9 @@
 								<div class="swiper-slide">
 									<div class="dz-card style-4 wow fadeInUp" data-wow-delay="<%= ((index % 3) * 0.2 + 0.2).toFixed(1) %>s" style="background-image:url('<%= post.imagePath %>');">
 										<div class="dz-info">
+											<ul class="dz-category">
+												<li><a href="/blog?category=<%= encodeURIComponent(post.category) %>"><%= String(post.category || '').toUpperCase() %></a></li>
+											</ul>
 											<div class="dz-meta">
 												<ul>
 													<li class="post-author">
@@ -644,9 +647,9 @@
 													</li>
 												</ul>
 											</div>
-											<h5 class="dz-title"><a href="/blog" class="text-white"><%= post.title %></a></h5>
+											<h5 class="dz-title"><a href="/blog?category=<%= encodeURIComponent(post.category) %>" class="text-white"><%= post.title %></a></h5>
 											<p><%= post.excerpt %></p>
-											<a href="/blog" class="btn btn-primary">Read More</a>
+											<a href="/blog?category=<%= encodeURIComponent(post.category) %>" class="btn btn-primary">Read More</a>
 										</div>
 									</div>
 								</div>

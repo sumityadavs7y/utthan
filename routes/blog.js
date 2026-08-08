@@ -9,6 +9,7 @@ const { parseIstDateTimeInput } = require('../utils/helpers');
 const router = express.Router();
 const PAGE_SIZE = 10;
 const MAX_IMAGES = 10;
+const CATEGORIES = ['Education', 'Medical', 'Rescue', 'Donations', 'Charity', 'Health'];
 
 const renderPage = (res, view, locals) => {
   res.render(view, {
@@ -20,6 +21,18 @@ const renderPage = (res, view, locals) => {
     ...locals
   });
 };
+
+function normalizeCategory(value) {
+  const raw = (value || '').trim();
+  const match = CATEGORIES.find((item) => item.toLowerCase() === raw.toLowerCase());
+  return match || 'Charity';
+}
+
+function normalizeCategoryFilter(value) {
+  const raw = (value || '').trim();
+  if (!raw) return null;
+  return CATEGORIES.find((item) => item.toLowerCase() === raw.toLowerCase()) || null;
+}
 
 function parseImages(imagePath) {
   if (!imagePath) return [];
@@ -49,9 +62,12 @@ function isAdminUser(user) {
 function serializePost(post, currentUser) {
   const author = post.author || {};
   const showAuthor = Boolean(currentUser);
+  const category = post.category || 'Charity';
   return {
     id: post.id,
     content: post.content,
+    category,
+    filterClass: String(category).replace(/\s+/g, ''),
     images: parseImages(post.imagePath),
     createdAt: post.createdAt,
     author: showAuthor
@@ -98,8 +114,21 @@ function resolveCreatedAt(req) {
   return parsed;
 }
 
-async function fetchPostsPage({ beforeCreatedAt, beforeId, limit = PAGE_SIZE, currentUser }) {
+async function loadUsedCategories() {
+  const rows = await Post.findAll({
+    attributes: ['category'],
+    group: ['category'],
+    order: [['category', 'ASC']]
+  });
+  return rows.map((row) => row.category).filter(Boolean);
+}
+
+async function fetchPostsPage({ beforeCreatedAt, beforeId, limit = PAGE_SIZE, currentUser, category = null }) {
   const where = {};
+
+  if (category) {
+    where.category = category;
+  }
 
   if (beforeCreatedAt && beforeId) {
     const cursorDate = new Date(beforeCreatedAt);
@@ -145,9 +174,11 @@ function handleUpload(req, res, next) {
 router.get('/blog', async (req, res) => {
   try {
     const currentUser = res.locals.currentUser;
-    const [{ posts, hasMore }, authors] = await Promise.all([
-      fetchPostsPage({ currentUser }),
-      isAdminUser(currentUser) ? loadAuthorOptions() : Promise.resolve([])
+    const activeCategory = normalizeCategoryFilter(req.query.category);
+    const [{ posts, hasMore }, authors, categories] = await Promise.all([
+      fetchPostsPage({ currentUser, category: activeCategory }),
+      isAdminUser(currentUser) ? loadAuthorOptions() : Promise.resolve([]),
+      loadUsedCategories()
     ]);
 
     renderPage(res, 'blog-list', {
@@ -156,7 +187,10 @@ router.get('/blog', async (req, res) => {
       posts,
       hasMore,
       pageSize: PAGE_SIZE,
-      authors
+      authors,
+      categories,
+      categoryOptions: CATEGORIES,
+      activeCategory
     });
   } catch (error) {
     console.error('Blog feed error:', error);
@@ -167,7 +201,10 @@ router.get('/blog', async (req, res) => {
       posts: [],
       hasMore: false,
       pageSize: PAGE_SIZE,
-      authors: []
+      authors: [],
+      categories: [],
+      categoryOptions: CATEGORIES,
+      activeCategory: null
     });
   }
 });
@@ -176,6 +213,7 @@ router.get('/blog/api/posts', async (req, res) => {
   try {
     const beforeId = req.query.beforeId ? Number(req.query.beforeId) : null;
     const beforeCreatedAt = req.query.beforeCreatedAt || null;
+    const category = normalizeCategoryFilter(req.query.category);
     const limit = Math.min(Number(req.query.limit) || PAGE_SIZE, 20);
 
     if (beforeId !== null && Number.isNaN(beforeId)) {
@@ -190,6 +228,7 @@ router.get('/blog/api/posts', async (req, res) => {
       beforeCreatedAt,
       beforeId,
       limit,
+      category,
       currentUser: res.locals.currentUser
     });
 
@@ -211,11 +250,13 @@ router.post('/blog', requireAuth, handleUpload, async (req, res) => {
     const currentUser = res.locals.currentUser;
     const userId = await resolveAuthorUserId(req, currentUser);
     const createdAt = resolveCreatedAt(req);
+    const category = normalizeCategory(req.body.category);
     const imageUrls = await saveUploadedFiles(req.files);
 
     const payload = {
       userId,
       content,
+      category,
       imagePath: serializeImages(imageUrls)
     };
 
@@ -263,6 +304,7 @@ router.post('/blog/:id/edit', requireAuth, handleUpload, async (req, res) => {
     }
 
     post.content = content;
+    post.category = normalizeCategory(req.body.category);
 
     if (isAdminUser(currentUser)) {
       post.userId = await resolveAuthorUserId(req, currentUser);

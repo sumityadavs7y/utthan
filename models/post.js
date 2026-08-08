@@ -15,6 +15,11 @@ const Post = sequelize.define('Post', {
     type: DataTypes.TEXT,
     allowNull: false
   },
+  category: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'Charity'
+  },
   imagePath: {
     type: DataTypes.STRING,
     allowNull: true
