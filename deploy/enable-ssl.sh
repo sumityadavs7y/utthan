@@ -38,9 +38,9 @@ if [[ "${NGINX_ONLY}" == "--nginx-only" ]]; then
     DOMAIN="$(cat "${APP_DIR}/deploy/nginx/.ssl-domain")"
   fi
   apply_ssl_nginx
-  ${COMPOSE} up -d nginx
+  # Recreate so bind-mounted default.conf picks up a replaced inode.
+  ${COMPOSE} up -d --force-recreate nginx
   ${COMPOSE} exec -T nginx nginx -t
-  ${COMPOSE} exec -T nginx nginx -s reload
   echo "==> Nginx HTTPS config restored for ${DOMAIN}"
   exit 0
 fi
@@ -92,9 +92,8 @@ echo "==> Writing HTTPS nginx config"
 apply_ssl_nginx
 
 echo "==> Reloading nginx"
-${COMPOSE} up -d nginx
+${COMPOSE} up -d --force-recreate nginx
 ${COMPOSE} exec -T nginx nginx -t
-${COMPOSE} exec -T nginx nginx -s reload
 
 CRON_LINE="0 3,15 * * * cd ${APP_DIR} && docker run --rm -v ${PROJECT_NAME}_certbot_www:/var/www/certbot -v ${PROJECT_NAME}_certbot_certs:/etc/letsencrypt certbot/certbot renew --webroot -w /var/www/certbot --quiet && docker compose -p ${PROJECT_NAME} exec -T nginx nginx -s reload >> /var/log/utthan-certbot.log 2>&1"
 TMP_CRON="$(mktemp)"
