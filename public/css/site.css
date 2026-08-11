@@ -110,6 +110,15 @@ p { margin: 0 0 1rem; }
   gap: 0.7rem;
   text-decoration: none;
   color: var(--ink);
+  flex-shrink: 0;
+}
+
+.brand__logo {
+  display: block;
+  height: 44px;
+  width: auto;
+  max-width: min(200px, 48vw);
+  object-fit: contain;
 }
 
 .brand__mark {
