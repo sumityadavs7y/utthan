@@ -173,8 +173,8 @@ p { margin: 0 0 1rem; }
   line-height: 1.2;
 }
 
-.site-nav > a.is-active,
-.site-nav > a:hover,
+.site-nav > a:not(.btn).is-active,
+.site-nav > a:not(.btn):hover,
 .nav-link.is-active,
 .nav-link:hover {
   color: var(--accent);
@@ -362,8 +362,28 @@ p { margin: 0 0 1rem; }
   background: var(--accent);
   color: #fff;
   padding: 0.55rem 1rem;
+  font-weight: 700;
 }
-.btn--donate:hover { background: #9a4204; color: #fff; }
+
+.btn--donate:hover {
+  background: #9a4204;
+  color: #fff;
+}
+
+/* Beat .site-nav > a reset so the header CTA stays highlighted */
+.site-nav > a.btn--donate {
+  background: var(--accent);
+  color: #fff;
+  padding: 0.55rem 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.site-nav > a.btn--donate:hover,
+.site-nav > a.btn--donate:focus-visible {
+  background: #9a4204;
+  color: #fff;
+}
 .btn--block { width: 100%; }
 
 .flash {
@@ -1078,7 +1098,7 @@ textarea:focus {
 
   .site-nav.is-open { display: flex; }
 
-  .site-nav > a,
+  .site-nav > a:not(.btn),
   .nav-link--button {
     width: 100%;
     justify-content: space-between;
@@ -1088,7 +1108,7 @@ textarea:focus {
     min-height: 44px;
   }
 
-  .site-nav > a:hover,
+  .site-nav > a:not(.btn):hover,
   .nav-link--button:hover {
     background: var(--bg-tint);
   }
@@ -1135,10 +1155,22 @@ textarea:focus {
     margin-left: 0.35rem;
   }
 
-  .site-nav .btn--donate {
+  .site-nav > a.btn--donate {
+    width: 100%;
     margin-top: 0.25rem;
     text-align: center;
     justify-content: center;
+    border-radius: 999px;
+    padding: 0.85rem 1rem;
+    min-height: 48px;
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .site-nav > a.btn--donate:hover,
+  .site-nav > a.btn--donate:focus-visible {
+    background: #9a4204;
+    color: #fff;
   }
 
   .donate-panel { position: static; }
