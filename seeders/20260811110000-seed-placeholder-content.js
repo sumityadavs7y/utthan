@@ -1,24 +1,11 @@
 'use strict';
 
-const bcrypt = require('bcryptjs');
-
 const IMG = '/images';
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface) {
     const now = new Date();
-    const passwordHash = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'admin123', 10);
-
-    await queryInterface.bulkInsert('Users', [{
-      id: 1,
-      name: 'Utthan Admin',
-      email: process.env.ADMIN_EMAIL || 'admin@utthan.org',
-      passwordHash,
-      role: 'admin',
-      createdAt: now,
-      updatedAt: now
-    }]);
 
     await queryInterface.bulkInsert('SiteConfigs', [{
       phone: '+91 90000 00000',
@@ -226,7 +213,6 @@ module.exports = {
 
     await queryInterface.bulkInsert('Posts', [
       {
-        userId: 1,
         title: 'How a community kitchen feeds hope',
         category: 'Impact',
         content: 'Placeholder blog post. Neighbors line up for a warm meal while volunteers ladle rice and dal. Replace this story with a real field update from The Utthan Foundation.',
@@ -235,7 +221,6 @@ module.exports = {
         updatedAt: now
       },
       {
-        userId: 1,
         title: 'Notebooks that open classroom doors',
         category: 'Education',
         content: 'Placeholder blog post about school supply distribution day — Hindi, Maths, and Science books reaching children in a mud-walled classroom.',
@@ -244,7 +229,6 @@ module.exports = {
         updatedAt: now
       },
       {
-        userId: 1,
         title: 'Planting tomorrow with village youth',
         category: 'Environment',
         content: 'Placeholder blog post describing a sunset plantation drive where elders and schoolchildren plant mango saplings together.',
@@ -256,7 +240,6 @@ module.exports = {
 
     await queryInterface.bulkInsert('Galleries', [
       {
-        userId: 1,
         title: 'Meal service',
         caption: 'Hot meal distribution in the neighborhood (placeholder)',
         imagePath: `${IMG}/hot-meal-distribution.jpg`,
@@ -265,7 +248,6 @@ module.exports = {
         updatedAt: now
       },
       {
-        userId: 1,
         title: 'Winter kit',
         caption: 'Winter clothing for children (placeholder)',
         imagePath: `${IMG}/winter-clothing-donation.jpg`,
@@ -274,7 +256,6 @@ module.exports = {
         updatedAt: now
       },
       {
-        userId: 1,
         title: 'Classroom',
         caption: 'Rural classroom teaching session (placeholder)',
         imagePath: `${IMG}/rural-classroom-teaching.jpg`,
@@ -283,7 +264,6 @@ module.exports = {
         updatedAt: now
       },
       {
-        userId: 1,
         title: 'Cleanup',
         caption: 'Community street sanitation drive (placeholder)',
         imagePath: `${IMG}/community-street-cleanup.jpg`,
@@ -292,7 +272,6 @@ module.exports = {
         updatedAt: now
       },
       {
-        userId: 1,
         title: 'Workshop',
         caption: 'Women sewing livelihood workshop (placeholder)',
         imagePath: `${IMG}/women-sewing-workshop.jpg`,
@@ -301,7 +280,6 @@ module.exports = {
         updatedAt: now
       },
       {
-        userId: 1,
         title: 'Animal care',
         caption: 'Street dog feeding program (placeholder)',
         imagePath: `${IMG}/street-dog-feeding.jpg`,
@@ -427,6 +405,5 @@ module.exports = {
     await queryInterface.bulkDelete('Campaigns', null, {});
     await queryInterface.bulkDelete('ImpactStats', null, {});
     await queryInterface.bulkDelete('SiteConfigs', null, {});
-    await queryInterface.bulkDelete('Users', null, {});
   }
 };

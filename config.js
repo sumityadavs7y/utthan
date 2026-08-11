@@ -36,7 +36,7 @@ exports.ensureSqliteDir = function ensureSqliteDir() {
 
 exports.ensureUploadsDirs = function ensureUploadsDirs() {
   const root = path.join(__dirname, 'public', 'uploads');
-  for (const dir of ['blogs', 'gallery', 'team', 'campaigns', 'certificates']) {
+  for (const dir of ['blogs', 'gallery', 'team', 'campaigns']) {
     fs.mkdirSync(path.join(root, dir), { recursive: true });
   }
 };

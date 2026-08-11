@@ -23,10 +23,8 @@ module.exports = {
   galleryUpload: upload,
   teamUpload: upload,
   campaignUpload: upload,
-  certificateUpload: upload,
   ensureUploadDir() {},
   ensureGalleryUploadDir() {},
   ensureTeamUploadDir() {},
-  ensureCampaignUploadDir() {},
-  ensureCertificateUploadDir() {}
+  ensureCampaignUploadDir() {}
 };
