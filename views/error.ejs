@@ -1,0 +1,12 @@
+<%- include('partials/head-open') %>
+
+<section class="section">
+  <div class="container error-page">
+    <p class="eyebrow">Error <%= statusCode || 500 %></p>
+    <h1><%= statusCode === 404 ? 'Page not found' : 'Something went wrong' %></h1>
+    <p class="lede"><%= message %></p>
+    <a class="btn btn--primary" href="/">Back home</a>
+  </div>
+</section>
+
+<%- include('partials/head-close') %>

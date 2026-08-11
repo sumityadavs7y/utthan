@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { Sequelize } = require('sequelize');
 const { Umzug, SequelizeStorage } = require('umzug');
 const path = require('path');

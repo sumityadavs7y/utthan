@@ -1,0 +1,67 @@
+<%- include('partials/head-open') %>
+
+<section class="page-hero page-hero--compact">
+  <div class="container">
+    <p class="eyebrow"><%= campaign.category %> · <%= campaign.status %></p>
+    <h1><%= campaign.title %></h1>
+    <p class="lede"><%= campaign.summary %></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container detail-layout">
+    <div>
+      <figure class="media-frame">
+        <img src="<%= campaign.imagePath %>" alt="<%= campaign.title %>">
+      </figure>
+
+      <div class="prose">
+        <h2>About this campaign</h2>
+        <p><%= campaign.description %></p>
+        <% if (campaign.location) { %><p><strong>Location:</strong> <%= campaign.location %></p><% } %>
+        <% if (campaign.startDate || campaign.endDate) { %>
+          <p><strong>Dates:</strong> <%= campaign.startDate || 'TBD' %> → <%= campaign.endDate || 'TBD' %></p>
+        <% } %>
+      </div>
+
+      <% if (campaign.timelineItems && campaign.timelineItems.length) { %>
+        <div class="timeline">
+          <h2>Timeline</h2>
+          <ol>
+            <% campaign.timelineItems.forEach(function(item) { %>
+              <li>
+                <time><%= item.date %></time>
+                <strong><%= item.title %></strong>
+                <p><%= item.detail %></p>
+              </li>
+            <% }) %>
+          </ol>
+        </div>
+      <% } %>
+
+      <% if (campaign.photos && campaign.photos.length) { %>
+        <div class="photo-strip">
+          <h2>Photos</h2>
+          <div class="photo-strip__grid">
+            <% campaign.photos.forEach(function(src) { %>
+              <img src="<%= src %>" alt="<%= campaign.title %> photo">
+            <% }) %>
+          </div>
+        </div>
+      <% } %>
+    </div>
+
+    <aside class="donate-panel">
+      <h2>Support this drive</h2>
+      <div class="progress progress--lg">
+        <div class="progress__bar" style="width: <%= campaign.progress %>%"></div>
+      </div>
+      <p class="progress__meta"><%= campaign.raisedFormatted %> raised of <%= campaign.goalFormatted %> (<%= campaign.progress %>%)</p>
+      <p class="note">Raised totals are placeholders. Live payment gateway comes later.</p>
+      <a class="btn btn--primary btn--block" href="/donate?campaign=<%= campaign.slug %>">Donate toward this campaign</a>
+      <a class="btn btn--secondary btn--block" href="/campaigns">All campaigns</a>
+    </aside>
+  </div>
+</section>
+
+<%- include('partials/head-close') %>

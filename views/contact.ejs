@@ -1,0 +1,83 @@
+<%- include('partials/head-open') %>
+
+<section class="page-hero">
+  <div class="container">
+    <p class="eyebrow">Contact Us</p>
+    <h1>Talk with Utthan</h1>
+    <p class="lede">Reach our UP office (placeholder address) or send a message. Join as a volunteer or member below.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container contact-layout">
+    <div>
+      <h2>UP office address (placeholder)</h2>
+      <% if (siteConfig) { %>
+        <p><%= siteConfig.address %></p>
+        <p><a href="tel:<%= siteConfig.phone.replace(/\s/g, '') %>"><%= siteConfig.phone %></a></p>
+        <p><a href="mailto:<%= siteConfig.email %>"><%= siteConfig.email %></a></p>
+      <% } %>
+
+      <form class="form" method="post" action="/contact" novalidate>
+        <h2>Send a message</h2>
+        <div class="form-row">
+          <label>
+            First name *
+            <input type="text" name="firstName" required value="<%= form.firstName || '' %>">
+          </label>
+          <label>
+            Last name
+            <input type="text" name="lastName" value="<%= form.lastName || '' %>">
+          </label>
+        </div>
+        <div class="form-row">
+          <label>
+            Email *
+            <input type="email" name="email" required value="<%= form.email || '' %>">
+          </label>
+          <label>
+            Phone
+            <input type="tel" name="phone" value="<%= form.phone || '' %>">
+          </label>
+        </div>
+        <label>
+          Message *
+          <textarea name="message" rows="5" required><%= form.message || '' %></textarea>
+        </label>
+        <button class="btn btn--primary" type="submit">Send message</button>
+      </form>
+    </div>
+
+    <div id="join">
+      <h2>Join us</h2>
+      <p>Volunteer in campaigns or apply for membership. <%= siteConfig && siteConfig.memberFeeNote ? siteConfig.memberFeeNote : '' %></p>
+
+      <form class="form" method="post" action="/join/volunteer" novalidate>
+        <h3>Volunteer / member interest</h3>
+        <label>
+          Full name *
+          <input type="text" name="name" required>
+        </label>
+        <label>
+          Email *
+          <input type="email" name="email" required>
+        </label>
+        <label>
+          Phone
+          <input type="tel" name="phone">
+        </label>
+        <label>
+          Organization / college (optional)
+          <input type="text" name="company">
+        </label>
+        <label>
+          How would you like to help? *
+          <textarea name="message" rows="4" required placeholder="Volunteer shifts, membership, skills you can offer…"></textarea>
+        </label>
+        <button class="btn btn--primary" type="submit">Submit interest</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/head-close') %>

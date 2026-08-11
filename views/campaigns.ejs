@@ -1,0 +1,47 @@
+<%- include('partials/head-open') %>
+
+<section class="page-hero">
+  <div class="container">
+    <p class="eyebrow">Campaigns</p>
+    <h1>Field drives &amp; community action</h1>
+    <p class="lede">Browse ongoing, completed, and upcoming campaigns. Totals are placeholders until a payment gateway is connected.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="tabs" role="tablist">
+      <a class="tabs__item <%= status === 'ongoing' ? 'is-active' : '' %>" href="/campaigns?status=ongoing">Ongoing</a>
+      <a class="tabs__item <%= status === 'completed' ? 'is-active' : '' %>" href="/campaigns?status=completed">Completed</a>
+      <a class="tabs__item <%= status === 'upcoming' ? 'is-active' : '' %>" href="/campaigns?status=upcoming">Upcoming</a>
+    </div>
+
+    <% if (campaigns.length) { %>
+      <div class="campaign-grid">
+        <% campaigns.forEach(function(c) { %>
+          <article>
+            <a href="/campaigns/<%= c.slug %>" class="campaign-card">
+              <div class="campaign-card__media">
+                <img src="<%= c.imagePath %>" alt="<%= c.title %>">
+                <span class="badge"><%= c.status %></span>
+              </div>
+              <div class="campaign-card__body">
+                <p class="eyebrow"><%= c.category %></p>
+                <h3><%= c.title %></h3>
+                <p><%= c.summary %></p>
+                <div class="progress">
+                  <div class="progress__bar" style="width: <%= c.progress %>%"></div>
+                </div>
+                <p class="progress__meta"><%= c.raisedFormatted %> / <%= c.goalFormatted %> · <%= c.progress %>%</p>
+              </div>
+            </a>
+          </article>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <p class="muted">No <%= status %> campaigns right now.</p>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/head-close') %>

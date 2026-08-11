@@ -23,8 +23,12 @@ const TeamMember = sequelize.define('TeamMember', {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
-      isIn: [['board', 'volunteer']]
+      isIn: [['board', 'volunteer', 'advisory']]
     }
+  },
+  bio: {
+    type: DataTypes.TEXT,
+    allowNull: true
   },
   sortOrder: {
     type: DataTypes.INTEGER,

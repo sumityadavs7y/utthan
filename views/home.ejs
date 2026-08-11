@@ -1,0 +1,151 @@
+<%- include('partials/head-open') %>
+
+<section class="hero">
+  <div class="hero__media" aria-hidden="true">
+    <img src="/images/food-aid-kit-handover.jpg" alt="">
+  </div>
+  <div class="hero__overlay"></div>
+  <div class="container hero__content">
+    <p class="eyebrow">The Utthan Foundation</p>
+    <h1>Neighbors rising together</h1>
+    <p class="lede">Food, learning, livelihood, and care — starting in Uttar Pradesh. Placeholder home copy.</p>
+    <div class="hero__actions">
+      <a class="btn btn--primary" href="/donate">Donate Now</a>
+      <a class="btn btn--ghost" href="/campaigns">See Campaigns</a>
+    </div>
+  </div>
+</section>
+
+<% if (stats && stats.length) { %>
+<section class="stats-strip">
+  <div class="container stats-grid">
+    <% stats.forEach(function(stat) { %>
+      <div class="stat">
+        <strong><%= stat.prefix || '' %><%= Number(stat.value).toLocaleString('en-IN') %><%= stat.suffix || '' %></strong>
+        <span><%= stat.label %></span>
+      </div>
+    <% }) %>
+  </div>
+</section>
+<% } %>
+
+<section class="section">
+  <div class="container">
+    <div class="section-heading">
+      <h2>Ongoing campaigns</h2>
+      <p>Support active drives in the field. Numbers are placeholders.</p>
+    </div>
+    <% if (ongoingCampaigns.length) { %>
+      <div class="slider" data-slider>
+        <div class="slider__track" data-slider-track>
+          <% ongoingCampaigns.forEach(function(c) { %>
+            <article class="campaign-slide">
+              <a href="/campaigns/<%= c.slug %>" class="campaign-card">
+                <div class="campaign-card__media">
+                  <img src="<%= c.imagePath %>" alt="<%= c.title %>">
+                  <span class="badge"><%= c.status %></span>
+                </div>
+                <div class="campaign-card__body">
+                  <h3><%= c.title %></h3>
+                  <p><%= c.summary %></p>
+                  <div class="progress">
+                    <div class="progress__bar" style="width: <%= c.progress %>%"></div>
+                  </div>
+                  <p class="progress__meta"><%= c.raisedFormatted %> raised of <%= c.goalFormatted %></p>
+                </div>
+              </a>
+            </article>
+          <% }) %>
+        </div>
+        <div class="slider__controls">
+          <button type="button" data-slider-prev aria-label="Previous">‹</button>
+          <button type="button" data-slider-next aria-label="Next">›</button>
+        </div>
+      </div>
+    <% } else { %>
+      <p class="muted">No ongoing campaigns yet.</p>
+    <% } %>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="container">
+    <div class="section-heading">
+      <h2>What we do</h2>
+      <p>Short overview of our focus areas — placeholder descriptions.</p>
+    </div>
+    <div class="feature-grid">
+      <article class="feature">
+        <img src="/images/hot-meal-distribution.jpg" alt="">
+        <h3>Food security</h3>
+        <p>Community kitchens and grocery kits for families facing hunger.</p>
+      </article>
+      <article class="feature">
+        <img src="/images/rural-classroom-teaching.jpg" alt="">
+        <h3>Education</h3>
+        <p>School kits, classroom support, and community libraries.</p>
+      </article>
+      <article class="feature">
+        <img src="/images/women-sewing-workshop.jpg" alt="">
+        <h3>Livelihood</h3>
+        <p>Skills workshops so women can earn with dignity.</p>
+      </article>
+      <article class="feature">
+        <img src="/images/community-street-cleanup.jpg" alt="">
+        <h3>Community care</h3>
+        <p>Sanitation drives, relief distribution, and neighborhood action.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container join-band">
+    <div>
+      <h2>Join us</h2>
+      <p>Volunteer in the field or become a member. Fees and roles are placeholders.</p>
+      <% if (siteConfig && siteConfig.memberFeeNote) { %>
+        <p class="note"><%= siteConfig.memberFeeNote %></p>
+      <% } %>
+    </div>
+    <div class="join-band__actions">
+      <a class="btn btn--primary" href="/contact#join">Join as Volunteer</a>
+      <a class="btn btn--secondary" href="/contact#join">Join as Member</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="container">
+    <div class="section-heading">
+      <h2>Success stories</h2>
+      <p>Voices from neighbors we serve — placeholder quotes.</p>
+    </div>
+    <div class="story-grid">
+      <% testimonials.forEach(function(t) { %>
+        <blockquote class="story">
+          <img src="<%= t.imagePath %>" alt="">
+          <p>“<%= t.quote %>”</p>
+          <footer>
+            <strong><%= t.name %></strong>
+            <% if (t.role) { %><span><%= t.role %></span><% } %>
+          </footer>
+        </blockquote>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-heading">
+      <h2>Our partners</h2>
+      <p>Partner logos coming soon.</p>
+    </div>
+    <div class="partners-placeholder">
+      <span>Partners — coming soon</span>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/head-close') %>

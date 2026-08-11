@@ -15,9 +15,17 @@ const Gallery = sequelize.define('Gallery', {
     type: DataTypes.STRING,
     allowNull: true
   },
+  caption: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   imagePath: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  mediaDate: {
+    type: DataTypes.DATEONLY,
+    allowNull: true
   }
 }, {
   tableName: 'Galleries'

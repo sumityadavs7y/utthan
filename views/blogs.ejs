@@ -1,0 +1,56 @@
+<%- include('partials/head-open') %>
+
+<section class="page-hero">
+  <div class="container">
+    <p class="eyebrow">Blogs &amp; Media</p>
+    <h1>Stories from the field</h1>
+    <p class="lede">Photo essays and updates — placeholder posts and gallery captions.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-heading">
+      <h2>Blogs</h2>
+      <p>Photo, text, and date.</p>
+    </div>
+    <div class="blog-grid">
+      <% posts.forEach(function(post) { %>
+        <article class="blog-card">
+          <% if (post.imagePath) { %>
+            <img src="<%= post.imagePath %>" alt="<%= post.title %>">
+          <% } %>
+          <div>
+            <p class="eyebrow"><%= post.category %> · <%= new Date(post.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) %></p>
+            <h3><%= post.title %></h3>
+            <p><%= post.content %></p>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="container">
+    <div class="section-heading">
+      <h2>Media</h2>
+      <p>Photos auto-adjust to fit. Captions and dates included.</p>
+    </div>
+    <div class="media-grid">
+      <% media.forEach(function(item) { %>
+        <figure class="media-tile">
+          <img src="<%= item.imagePath %>" alt="<%= item.caption || item.title || 'Media photo' %>">
+          <figcaption>
+            <span><%= item.caption || item.title || 'Untitled' %></span>
+            <% if (item.mediaDate) { %>
+              <time><%= item.mediaDate %></time>
+            <% } %>
+          </figcaption>
+        </figure>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/head-close') %>

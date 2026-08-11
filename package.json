@@ -10,9 +10,11 @@
     "migrate:undo": "npx sequelize-cli db:migrate:undo",
     "migrate:status": "npx sequelize-cli db:migrate:status",
     "migrate:create": "npx sequelize-cli migration:generate --name",
-    "migrate:run": "node -e \"require('./utils/migrate').runMigrations().then(() => process.exit(0)).catch(err => { console.error(err); process.exit(1); })\"",
-    "migrate:rollback": "node -e \"require('./utils/migrate').rollbackMigration().then(() => process.exit(0)).catch(err => { console.error(err); process.exit(1); })\"",
-    "migrate:check": "node -e \"require('./utils/migrate').checkMigrationStatus().then(() => process.exit(0)).catch(err => { console.error(err); process.exit(1); })\""
+    "migrate:run": "node -r dotenv/config -e \"require('./utils/migrate').runMigrations().then(() => process.exit(0)).catch(err => { console.error(err); process.exit(1); })\"",
+    "migrate:rollback": "node -r dotenv/config -e \"require('./utils/migrate').rollbackMigration().then(() => process.exit(0)).catch(err => { console.error(err); process.exit(1); })\"",
+    "migrate:check": "node -r dotenv/config -e \"require('./utils/migrate').checkMigrationStatus().then(() => process.exit(0)).catch(err => { console.error(err); process.exit(1); })\"",
+    "seed": "npx sequelize-cli db:seed:all",
+    "seed:undo": "npx sequelize-cli db:seed:undo:all"
   },
   "keywords": [
     "ngo",

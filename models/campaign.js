@@ -11,13 +11,42 @@ const Campaign = sequelize.define('Campaign', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  slug: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
   category: {
     type: DataTypes.STRING,
     allowNull: false
   },
+  status: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'ongoing',
+    validate: {
+      isIn: [['ongoing', 'completed', 'upcoming']]
+    }
+  },
+  summary: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
   imagePath: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  photoPaths: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+  timeline: {
+    type: DataTypes.TEXT,
+    allowNull: true
   },
   goalAmount: {
     type: DataTypes.INTEGER,
@@ -39,6 +68,14 @@ const Campaign = sequelize.define('Campaign', {
   },
   location: {
     type: DataTypes.STRING,
+    allowNull: true
+  },
+  startDate: {
+    type: DataTypes.DATEONLY,
+    allowNull: true
+  },
+  endDate: {
+    type: DataTypes.DATEONLY,
     allowNull: true
   },
   sortOrder: {

@@ -1,0 +1,31 @@
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <p class="footer-brand">The Utthan Foundation</p>
+      <p class="muted">Placeholder mission: uniting neighbors for food security, education, livelihood, and care across Uttar Pradesh.</p>
+    </div>
+    <div>
+      <h3>Explore</h3>
+      <ul class="footer-links">
+        <li><a href="/about">About Us</a></li>
+        <li><a href="/campaigns">Campaigns</a></li>
+        <li><a href="/blogs">Blogs &amp; Media</a></li>
+        <li><a href="/donate">Donate</a></li>
+        <li><a href="/contact">Contact / Join</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>UP Office (placeholder)</h3>
+      <% if (siteConfig) { %>
+        <p><%= siteConfig.address %></p>
+        <p><a href="tel:<%= siteConfig.phone.replace(/\s/g, '') %>"><%= siteConfig.phone %></a></p>
+        <p><a href="mailto:<%= siteConfig.email %>"><%= siteConfig.email %></a></p>
+      <% } else { %>
+        <p>Address and contact details coming soon.</p>
+      <% } %>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>&copy; <%= new Date().getFullYear() %> The Utthan Foundation. Placeholder site — replace with registered legal text.</p>
+  </div>
+</footer>

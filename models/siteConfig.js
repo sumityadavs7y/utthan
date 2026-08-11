@@ -46,6 +46,38 @@ const SiteConfig = sequelize.define('SiteConfig', {
   youtubeUrl: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  upiId: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  bankName: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  accountName: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  accountNumber: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  ifsc: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  qrImagePath: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  donationLink: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  memberFeeNote: {
+    type: DataTypes.TEXT,
+    allowNull: true
   }
 }, {
   tableName: 'SiteConfigs'

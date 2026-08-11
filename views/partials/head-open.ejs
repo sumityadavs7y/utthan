@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title ? title + ' · ' : '' %><%= siteName %></title>
+  <meta name="description" content="The Utthan Foundation — community relief, education, and dignity across Uttar Pradesh.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+  <%- include('header') %>
+  <main id="main">
+    <% if (typeof success !== 'undefined' && success && success.length) { %>
+      <div class="flash flash--success" role="status"><%= success[0] %></div>
+    <% } %>
+    <% if (typeof error !== 'undefined' && error && error.length) { %>
+      <div class="flash flash--error" role="alert"><%= error[0] %></div>
+    <% } %>
