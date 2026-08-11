@@ -824,6 +824,41 @@ p { margin: 0 0 1rem; }
 .donate-panel {
   position: sticky;
   top: calc(var(--header-h) + 1rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1.35rem 1.25rem 1.4rem;
+}
+
+.donate-panel h2 {
+  margin: 0;
+}
+
+.donate-panel .progress {
+  margin: 0.15rem 0 0;
+}
+
+.donate-panel .progress__meta,
+.donate-panel .note {
+  margin: 0;
+}
+
+.donate-panel .btn {
+  margin: 0;
+}
+
+.donate-panel__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.donate-panel__actions .btn {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.9rem 1.25rem;
+  min-height: 3rem;
 }
 
 .blog-card {
