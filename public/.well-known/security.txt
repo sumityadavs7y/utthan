@@ -1,3 +1,0 @@
-Contact: mailto:help@utthanfoundation.in
-Preferred-Languages: en, hi
-Canonical: https://utthanfoundation.in/.well-known/security.txt
