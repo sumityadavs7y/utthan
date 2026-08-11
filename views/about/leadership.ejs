@@ -1,0 +1,48 @@
+<%- include('../partials/head-open') %>
+
+<section class="page-hero page-hero--compact">
+  <div class="container">
+    <p class="eyebrow">About Us</p>
+    <h1>Leadership</h1>
+    <p class="lede">People guiding programs and ethics — placeholder copy.</p>
+    <%- include('../partials/about-nav') %>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <% if (chairman) { %>
+      <div class="split leadership-note">
+        <figure class="media-frame media-frame--portrait">
+          <img src="<%= chairman.photoPath %>" alt="<%= chairman.name %>">
+        </figure>
+        <div>
+          <h2>Chairperson note</h2>
+          <p class="quote-lead">“<%= chairman.message %>”</p>
+          <p><strong><%= chairman.name %></strong><% if (chairman.role) { %> · <%= chairman.role %><% } %></p>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<section id="chief-advisory-committee" class="section section--tint">
+  <div class="container">
+    <div class="section-heading">
+      <h2>Chief Advisory Committee</h2>
+      <p>Advisors guiding programs and ethics — placeholder profiles.</p>
+    </div>
+    <div class="people-grid">
+      <% advisory.forEach(function(person) { %>
+        <article class="person">
+          <img src="<%= person.imagePath %>" alt="<%= person.name %>">
+          <h3><%= person.name %></h3>
+          <p class="muted"><%= person.designation %></p>
+          <% if (person.bio) { %><p><%= person.bio %></p><% } %>
+        </article>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/head-close') %>

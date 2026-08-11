@@ -1,0 +1,51 @@
+<%- include('../partials/head-open') %>
+
+<section class="page-hero page-hero--compact">
+  <div class="container">
+    <p class="eyebrow">About Us</p>
+    <h1>Team</h1>
+    <p class="lede">People coordinating programs day to day — placeholder profiles.</p>
+    <%- include('../partials/about-nav') %>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-heading">
+      <h2>Core team</h2>
+      <p>Program coordinators and field leads — placeholder profiles.</p>
+    </div>
+    <div class="people-grid">
+      <% team.forEach(function(person) { %>
+        <article class="person">
+          <img src="<%= person.imagePath %>" alt="<%= person.name %>">
+          <h3><%= person.name %></h3>
+          <p class="muted"><%= person.designation %></p>
+          <% if (person.bio) { %><p><%= person.bio %></p><% } %>
+        </article>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section id="volunteers" class="section section--tint">
+  <div class="container">
+    <div class="section-heading">
+      <h2>Volunteers</h2>
+      <p>Field volunteers who keep campaigns moving — placeholder profiles.</p>
+    </div>
+    <div class="people-grid">
+      <% volunteers.forEach(function(person) { %>
+        <article class="person">
+          <img src="<%= person.imagePath %>" alt="<%= person.name %>">
+          <h3><%= person.name %></h3>
+          <p class="muted"><%= person.designation %></p>
+          <% if (person.bio) { %><p><%= person.bio %></p><% } %>
+        </article>
+      <% }) %>
+    </div>
+    <p class="join-hint"><a class="btn btn--secondary" href="/contact#join">Join as a volunteer</a></p>
+  </div>
+</section>
+
+<%- include('../partials/head-close') %>

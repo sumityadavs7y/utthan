@@ -65,19 +65,52 @@ function createPublicRouter(express) {
     }
   });
 
-  router.get('/about', async (req, res, next) => {
+  router.get('/about', (req, res) => {
+    res.redirect(301, '/about/who-we-are');
+  });
+
+  router.get('/about/who-we-are', (req, res) => {
+    res.render('about/who-we-are', {
+      title: 'Who We Are',
+      aboutSection: 'who-we-are'
+    });
+  });
+
+  router.get('/about/history', (req, res) => {
+    res.render('about/history', {
+      title: 'History',
+      aboutSection: 'history'
+    });
+  });
+
+  router.get('/about/leadership', async (req, res, next) => {
     try {
-      const [chairman, advisory, team, volunteers] = await Promise.all([
+      const [chairman, advisory] = await Promise.all([
         Chairman.findOne({ order: [['id', 'ASC']] }),
-        TeamMember.findAll({ where: { category: 'advisory' }, order: [['sortOrder', 'ASC']] }),
+        TeamMember.findAll({ where: { category: 'advisory' }, order: [['sortOrder', 'ASC']] })
+      ]);
+
+      res.render('about/leadership', {
+        title: 'Leadership',
+        aboutSection: 'leadership',
+        chairman,
+        advisory
+      });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  router.get('/about/team', async (req, res, next) => {
+    try {
+      const [team, volunteers] = await Promise.all([
         TeamMember.findAll({ where: { category: 'board' }, order: [['sortOrder', 'ASC']] }),
         TeamMember.findAll({ where: { category: 'volunteer' }, order: [['sortOrder', 'ASC']] })
       ]);
 
-      res.render('about', {
-        title: 'About Us',
-        chairman,
-        advisory,
+      res.render('about/team', {
+        title: 'Team',
+        aboutSection: 'team',
         team,
         volunteers
       });

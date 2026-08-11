@@ -12,7 +12,30 @@
 
     <nav id="site-nav" class="site-nav" data-nav>
       <a href="/" class="<%= currentPath === '/' ? 'is-active' : '' %>">Home</a>
-      <a href="/about" class="<%= currentPath.startsWith('/about') ? 'is-active' : '' %>">About Us</a>
+
+      <div class="nav-item nav-item--dropdown <%= currentPath.startsWith('/about') ? 'is-current' : '' %>" data-dropdown>
+        <button
+          type="button"
+          class="nav-link nav-link--button <%= currentPath.startsWith('/about') ? 'is-active' : '' %>"
+          aria-expanded="false"
+          aria-haspopup="true"
+          aria-controls="about-menu"
+          data-dropdown-trigger
+        >
+          <span>About Us</span>
+          <svg class="nav-caret" viewBox="0 0 12 8" width="12" height="8" aria-hidden="true">
+            <path d="M1 1.5 L6 6.5 L11 1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <div id="about-menu" class="nav-panel" role="menu" data-dropdown-menu hidden>
+          <a href="/about/who-we-are" role="menuitem" class="<%= currentPath === '/about/who-we-are' ? 'is-active' : '' %>">Who We Are</a>
+          <a href="/about/history" role="menuitem" class="<%= currentPath === '/about/history' ? 'is-active' : '' %>">History</a>
+          <a href="/about/leadership" role="menuitem" class="<%= currentPath === '/about/leadership' ? 'is-active' : '' %>">Leadership</a>
+          <a href="/about/team" role="menuitem" class="<%= currentPath === '/about/team' ? 'is-active' : '' %>">Team</a>
+        </div>
+      </div>
+
       <a href="/campaigns" class="<%= currentPath.startsWith('/campaigns') ? 'is-active' : '' %>">Campaigns</a>
       <a href="/blogs" class="<%= currentPath.startsWith('/blogs') ? 'is-active' : '' %>">Blogs &amp; Media</a>
       <a href="/contact" class="<%= currentPath.startsWith('/contact') ? 'is-active' : '' %>">Contact</a>
