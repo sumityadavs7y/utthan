@@ -7,8 +7,8 @@
   <div class="hero__overlay"></div>
   <div class="container hero__content">
     <p class="eyebrow">The Utthan Foundation</p>
-    <h1>Neighbors rising together</h1>
-    <p class="lede">Food, learning, livelihood, and care — starting in Uttar Pradesh. Placeholder home copy.</p>
+    <h1>Neighbors rising together across Uttar Pradesh</h1>
+    <p class="lede">Food security, education, livelihood, and care — an NGO serving villages and neighborhoods from Lucknow outward.</p>
     <div class="hero__actions">
       <a class="btn btn--primary" href="/donate">Donate Now</a>
       <a class="btn btn--ghost" href="/campaigns">See Campaigns</a>
@@ -33,7 +33,7 @@
   <div class="container">
     <div class="section-heading">
       <h2>Ongoing campaigns</h2>
-      <p>Support active drives in the field. Numbers are placeholders.</p>
+      <p>Support active relief, education, and livelihood drives across Uttar Pradesh.</p>
     </div>
     <% if (ongoingCampaigns.length) { %>
       <div class="slider" data-slider>
@@ -72,26 +72,26 @@
   <div class="container">
     <div class="section-heading">
       <h2>What we do</h2>
-      <p>Short overview of our focus areas — placeholder descriptions.</p>
+      <p>Four focus areas guiding The Utthan Foundation’s community work in Uttar Pradesh.</p>
     </div>
     <div class="feature-grid">
       <article class="feature">
-        <img src="/images/hot-meal-distribution.jpg" alt="">
+        <img src="/images/hot-meal-distribution.jpg" alt="Volunteers serving hot meals in a community kitchen">
         <h3>Food security</h3>
         <p>Community kitchens and grocery kits for families facing hunger.</p>
       </article>
       <article class="feature">
-        <img src="/images/rural-classroom-teaching.jpg" alt="">
+        <img src="/images/rural-classroom-teaching.jpg" alt="Teacher helping children in a rural classroom">
         <h3>Education</h3>
         <p>School kits, classroom support, and community libraries.</p>
       </article>
       <article class="feature">
-        <img src="/images/women-sewing-workshop.jpg" alt="">
+        <img src="/images/women-sewing-workshop.jpg" alt="Women learning sewing skills in a livelihood workshop">
         <h3>Livelihood</h3>
         <p>Skills workshops so women can earn with dignity.</p>
       </article>
       <article class="feature">
-        <img src="/images/community-street-cleanup.jpg" alt="">
+        <img src="/images/community-street-cleanup.jpg" alt="Neighbors cleaning a street during a community care drive">
         <h3>Community care</h3>
         <p>Sanitation drives, relief distribution, and neighborhood action.</p>
       </article>
@@ -103,7 +103,7 @@
   <div class="container join-band">
     <div>
       <h2>Join us</h2>
-      <p>Volunteer in the field or become a member. Fees and roles are placeholders.</p>
+      <p>Volunteer in the field or become a member of The Utthan Foundation.</p>
       <% if (siteConfig && siteConfig.memberFeeNote) { %>
         <p class="note"><%= siteConfig.memberFeeNote %></p>
       <% } %>
@@ -119,12 +119,12 @@
   <div class="container">
     <div class="section-heading">
       <h2>Success stories</h2>
-      <p>Voices from neighbors we serve — placeholder quotes.</p>
+      <p>Voices from neighbors we serve across Uttar Pradesh.</p>
     </div>
     <div class="story-grid">
       <% testimonials.forEach(function(t) { %>
         <blockquote class="story">
-          <img src="<%= t.imagePath %>" alt="">
+          <img src="<%= t.imagePath %>" alt="<%= t.name %><%= t.role ? ', ' + t.role : '' %>">
           <p>“<%= t.quote %>”</p>
           <footer>
             <strong><%= t.name %></strong>

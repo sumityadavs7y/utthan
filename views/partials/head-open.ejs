@@ -3,8 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title ? title + ' · ' : '' %><%= siteName %></title>
-  <meta name="description" content="The Utthan Foundation — community relief, education, and dignity across Uttar Pradesh.">
+  <%
+    var pageTitle = (typeof seoTitle !== 'undefined' && seoTitle)
+      ? seoTitle
+      : ((typeof title !== 'undefined' && title) ? (title + ' · ' + siteName) : siteName);
+    var pageDescription = (typeof metaDescription !== 'undefined' && metaDescription)
+      ? metaDescription
+      : 'The Utthan Foundation is an NGO in Uttar Pradesh working on food security, education, livelihood, and community care. Donate, volunteer, or support a campaign near you.';
+    var pageCanonical = (typeof canonicalUrl !== 'undefined' && canonicalUrl) ? canonicalUrl : '';
+    var pageOgType = (typeof ogType !== 'undefined' && ogType) ? ogType : 'website';
+    var pageOgImage = (typeof ogImage !== 'undefined' && ogImage) ? ogImage : '';
+    var pageNoindex = (typeof noindex !== 'undefined' && noindex);
+  %>
+  <title><%= pageTitle %></title>
+  <meta name="description" content="<%= pageDescription %>">
+  <meta name="robots" content="<%= pageNoindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' %>">
+  <% if (pageCanonical) { %>
+  <link rel="canonical" href="<%= pageCanonical %>">
+  <% } %>
+
+  <meta property="og:site_name" content="<%= siteName %>">
+  <meta property="og:type" content="<%= pageOgType %>">
+  <meta property="og:title" content="<%= pageTitle %>">
+  <meta property="og:description" content="<%= pageDescription %>">
+  <% if (pageCanonical) { %>
+  <meta property="og:url" content="<%= pageCanonical %>">
+  <% } %>
+  <% if (pageOgImage) { %>
+  <meta property="og:image" content="<%= pageOgImage %>">
+  <meta property="og:image:alt" content="<%= siteName %>">
+  <% } %>
+  <meta property="og:locale" content="en_IN">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= pageTitle %>">
+  <meta name="twitter:description" content="<%= pageDescription %>">
+  <% if (pageOgImage) { %>
+  <meta name="twitter:image" content="<%= pageOgImage %>">
+  <% } %>
+
+  <meta name="theme-color" content="#1f4d3a">
+  <meta name="author" content="The Utthan Foundation">
+  <meta name="geo.region" content="IN-UP">
+  <meta name="geo.placename" content="Lucknow">
+
   <link rel="icon" href="/images/favicon.png" type="image/png">
   <link rel="shortcut icon" href="/images/favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="/images/favicon.png">
@@ -12,6 +54,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/site.css">
+
+  <% if (typeof jsonLd !== 'undefined' && jsonLd && jsonLd.length) { %>
+    <% jsonLd.forEach(function(block) { %>
+  <script type="application/ld+json"><%- JSON.stringify(block) %></script>
+    <% }) %>
+  <% } %>
 </head>
 <body>
   <%- include('header') %>

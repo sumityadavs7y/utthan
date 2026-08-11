@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const path = require('path');
 const express = require('express');
+const compression = require('compression');
 const session = require('express-session');
 const flash = require('connect-flash');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
@@ -12,6 +13,7 @@ const { runMigrations } = require('./utils/migrate');
 const { securityHeaders } = require('./middleware/security');
 const { createPublicRouter, loadSiteConfig } = require('./routes/public');
 const { formatCurrencyINR, campaignProgress } = require('./utils/helpers');
+const { socialLinksFromConfig, buildPageSeo } = require('./utils/seo');
 
 ensureSqliteDir();
 ensureUploadsDirs();
@@ -20,11 +22,16 @@ const app = express();
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.set('trust proxy', 1);
 
 app.use(securityHeaders);
+app.use(compression());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), {
+  maxAge: envConfig.envMode === 'production' ? '7d' : 0,
+  etag: true
+}));
 
 const sessionStore = new SequelizeStore({ db: sequelize });
 
@@ -43,7 +50,9 @@ app.use(flash());
 
 app.use(async (req, res, next) => {
   try {
-    res.locals.siteConfig = await loadSiteConfig();
+    const siteConfig = await loadSiteConfig();
+    res.locals.siteConfig = siteConfig;
+    res.locals.socialLinks = socialLinksFromConfig(siteConfig);
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     res.locals.currentPath = req.path;
@@ -71,7 +80,14 @@ app.use((req, res) => {
   res.status(404).render('error', {
     title: 'Not Found',
     statusCode: 404,
-    message: 'The page you requested was not found.'
+    message: 'The page you requested was not found.',
+    ...buildPageSeo({
+      seoTitle: 'Page Not Found · The Utthan Foundation',
+      description: 'The page you requested was not found on The Utthan Foundation website.',
+      path: req.path,
+      noindex: true
+    }),
+    jsonLd: []
   });
 });
 
@@ -80,7 +96,14 @@ app.use((err, req, res, _next) => {
   res.status(500).render('error', {
     title: 'Server Error',
     statusCode: 500,
-    message: envConfig.envMode === 'development' ? err.message : 'Something went wrong.'
+    message: envConfig.envMode === 'development' ? err.message : 'Something went wrong.',
+    ...buildPageSeo({
+      seoTitle: 'Server Error · The Utthan Foundation',
+      description: 'Something went wrong while loading this page.',
+      path: req.path,
+      noindex: true
+    }),
+    jsonLd: []
   });
 });
 
