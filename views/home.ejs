@@ -99,18 +99,24 @@
   </div>
 </section>
 
-<section class="section">
-  <div class="container join-band">
-    <div>
-      <h2>Join us</h2>
-      <p>Volunteer in the field or become a member of The Utthan Foundation.</p>
+<section class="join-split" aria-labelledby="join-heading">
+  <div class="join-split__media">
+    <img
+      src="/images/women-sewing-workshop.jpg"
+      alt="Women learning skills together at a community workshop"
+    >
+  </div>
+  <div class="join-split__content">
+    <div class="join-split__content-inner">
+      <h2 id="join-heading">Join us</h2>
+      <p class="join-split__lede">Volunteer in the field or become a member of The Utthan Foundation.</p>
+      <div class="join-split__actions">
+        <a class="btn btn--primary" href="/contact#join">Join as Volunteer</a>
+        <a class="btn btn--secondary" href="/contact#join">Join as Member</a>
+      </div>
       <% if (siteConfig && siteConfig.memberFeeNote) { %>
-        <p class="note"><%= siteConfig.memberFeeNote %></p>
+        <p class="join-split__fee"><%= siteConfig.memberFeeNote %></p>
       <% } %>
-    </div>
-    <div class="join-band__actions">
-      <a class="btn btn--primary" href="/contact#join">Join as Volunteer</a>
-      <a class="btn btn--secondary" href="/contact#join">Join as Member</a>
     </div>
   </div>
 </section>
