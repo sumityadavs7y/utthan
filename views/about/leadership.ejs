@@ -34,11 +34,48 @@
     </div>
     <div class="people-grid">
       <% advisory.forEach(function(person) { %>
-        <article class="person">
-          <img src="<%= person.imagePath %>" alt="<%= person.name %>">
-          <h3><%= person.name %></h3>
-          <p class="muted"><%= person.designation %></p>
-          <% if (person.bio) { %><p><%= person.bio %></p><% } %>
+        <article class="campaign-card">
+          <div class="campaign-card__media">
+            <img src="<%= person.imagePath %>" alt="<%= person.name %>">
+            <span class="badge">Advisor</span>
+          </div>
+          <div class="campaign-card__body">
+            <h3><%= person.name %></h3>
+            <% if (person.bio) { %>
+              <p><%= person.bio %></p>
+            <% } else { %>
+              <p><%= person.designation %></p>
+            <% } %>
+            <p class="progress__meta"><%= person.designation %></p>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section id="governing-body" class="section">
+  <div class="container">
+    <div class="section-heading">
+      <h2>Governing Body</h2>
+      <p>Members of the governing body — placeholder profiles.</p>
+    </div>
+    <div class="people-grid people-grid--4">
+      <% governing.forEach(function(person) { %>
+        <article class="campaign-card">
+          <div class="campaign-card__media">
+            <img src="<%= person.imagePath %>" alt="<%= person.name %>">
+            <span class="badge">Governing</span>
+          </div>
+          <div class="campaign-card__body">
+            <h3><%= person.name %></h3>
+            <% if (person.bio) { %>
+              <p><%= person.bio %></p>
+            <% } else { %>
+              <p><%= person.designation %></p>
+            <% } %>
+            <p class="progress__meta"><%= person.designation %></p>
+          </div>
         </article>
       <% }) %>
     </div>

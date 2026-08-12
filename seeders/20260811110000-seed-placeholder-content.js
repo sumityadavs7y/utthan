@@ -408,6 +408,46 @@ module.exports = {
         updatedAt: now
       },
       {
+        name: 'Anil Mehra',
+        designation: 'Governing Body Member',
+        imagePath: `${IMG}/clothes-distribution-village.jpg`,
+        category: 'governing',
+        bio: 'Placeholder bio for Governing Body member.',
+        sortOrder: 1,
+        createdAt: now,
+        updatedAt: now
+      },
+      {
+        name: 'Sunita Devi',
+        designation: 'Governing Body Member',
+        imagePath: `${IMG}/hot-meal-distribution.jpg`,
+        category: 'governing',
+        bio: 'Placeholder bio for Governing Body member.',
+        sortOrder: 2,
+        createdAt: now,
+        updatedAt: now
+      },
+      {
+        name: 'Vikram Joshi',
+        designation: 'Governing Body Member',
+        imagePath: `${IMG}/community-library-books.jpg`,
+        category: 'governing',
+        bio: 'Placeholder bio for Governing Body member.',
+        sortOrder: 3,
+        createdAt: now,
+        updatedAt: now
+      },
+      {
+        name: 'Kavita Nair',
+        designation: 'Governing Body Member',
+        imagePath: `${IMG}/school-supplies-distribution.jpg`,
+        category: 'governing',
+        bio: 'Placeholder bio for Governing Body member.',
+        sortOrder: 4,
+        createdAt: now,
+        updatedAt: now
+      },
+      {
         name: 'Sumit Yadav',
         designation: 'Operations Lead',
         imagePath: `${IMG}/community-street-cleanup.jpg`,

@@ -756,6 +756,7 @@ button.campaign-card--button:focus-visible {
 .campaign-grid { grid-template-columns: repeat(2, 1fr); }
 .story-grid,
 .people-grid { grid-template-columns: repeat(3, 1fr); }
+.people-grid--4 { grid-template-columns: repeat(4, 1fr); }
 .blog-grid { grid-template-columns: 1fr; }
 .media-grid { grid-template-columns: repeat(3, 1fr); }
 .donate-layout { grid-template-columns: repeat(2, 1fr); }
@@ -1033,6 +1034,22 @@ button.campaign-card--button:focus-visible {
   grid-template-columns: 1.1fr 0.9fr;
   gap: 2rem;
   align-items: start;
+}
+
+.split.leadership-note {
+  grid-template-columns: 480px minmax(0, 1fr);
+  gap: 2.25rem;
+  align-items: start;
+}
+
+.split.leadership-note .media-frame {
+  width: 100%;
+}
+
+.split.leadership-note .media-frame img {
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  object-fit: cover;
 }
 
 .split--flip {
@@ -1369,6 +1386,7 @@ textarea:focus {
   .feature-grid,
   .story-grid,
   .people-grid,
+  .people-grid--4,
   .campaign-grid,
   .media-grid,
   .donate-layout,
@@ -1379,6 +1397,14 @@ textarea:focus {
   .blog-card,
   .form-row {
     grid-template-columns: 1fr;
+  }
+
+  .split.leadership-note {
+    grid-template-columns: 1fr;
+  }
+
+  .split.leadership-note .media-frame {
+    max-width: 240px;
   }
 
   .split--flip > :first-child,

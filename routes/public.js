@@ -197,9 +197,10 @@ function createPublicRouter(express) {
 
   router.get('/about/leadership', async (req, res, next) => {
     try {
-      const [chairman, advisory] = await Promise.all([
+      const [chairman, advisory, governing] = await Promise.all([
         Chairman.findOne({ order: [['id', 'ASC']] }),
-        TeamMember.findAll({ where: { category: 'advisory' }, order: [['sortOrder', 'ASC']] })
+        TeamMember.findAll({ where: { category: 'advisory' }, order: [['sortOrder', 'ASC']] }),
+        TeamMember.findAll({ where: { category: 'governing' }, order: [['sortOrder', 'ASC']] })
       ]);
 
       res.render('about/leadership', {
@@ -213,7 +214,8 @@ function createPublicRouter(express) {
           ]
         }),
         chairman,
-        advisory
+        advisory,
+        governing
       });
     } catch (err) {
       next(err);

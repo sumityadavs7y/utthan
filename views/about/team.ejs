@@ -15,13 +15,22 @@
       <h2>Core team</h2>
       <p>Program coordinators and field leads — placeholder profiles.</p>
     </div>
-    <div class="people-grid">
+    <div class="people-grid people-grid--4">
       <% team.forEach(function(person) { %>
-        <article class="person">
-          <img src="<%= person.imagePath %>" alt="<%= person.name %>">
-          <h3><%= person.name %></h3>
-          <p class="muted"><%= person.designation %></p>
-          <% if (person.bio) { %><p><%= person.bio %></p><% } %>
+        <article class="campaign-card">
+          <div class="campaign-card__media">
+            <img src="<%= person.imagePath %>" alt="<%= person.name %>">
+            <span class="badge">Team</span>
+          </div>
+          <div class="campaign-card__body">
+            <h3><%= person.name %></h3>
+            <% if (person.bio) { %>
+              <p><%= person.bio %></p>
+            <% } else { %>
+              <p><%= person.designation %></p>
+            <% } %>
+            <p class="progress__meta"><%= person.designation %></p>
+          </div>
         </article>
       <% }) %>
     </div>
@@ -34,13 +43,22 @@
       <h2>Volunteers</h2>
       <p>Field volunteers who keep campaigns moving — placeholder profiles.</p>
     </div>
-    <div class="people-grid">
+    <div class="people-grid people-grid--4">
       <% volunteers.forEach(function(person) { %>
-        <article class="person">
-          <img src="<%= person.imagePath %>" alt="<%= person.name %>">
-          <h3><%= person.name %></h3>
-          <p class="muted"><%= person.designation %></p>
-          <% if (person.bio) { %><p><%= person.bio %></p><% } %>
+        <article class="campaign-card">
+          <div class="campaign-card__media">
+            <img src="<%= person.imagePath %>" alt="<%= person.name %>">
+            <span class="badge">Volunteer</span>
+          </div>
+          <div class="campaign-card__body">
+            <h3><%= person.name %></h3>
+            <% if (person.bio) { %>
+              <p><%= person.bio %></p>
+            <% } else { %>
+              <p><%= person.designation %></p>
+            <% } %>
+            <p class="progress__meta"><%= person.designation %></p>
+          </div>
         </article>
       <% }) %>
     </div>
