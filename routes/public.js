@@ -139,7 +139,7 @@ function createPublicRouter(express) {
           limit: 8
         }),
         ImpactStat.findAll({ order: [['sortOrder', 'ASC']] }),
-        Testimonial.findAll({ order: [['sortOrder', 'ASC']], limit: 3 }),
+        Testimonial.findAll({ order: [['sortOrder', 'ASC']], limit: 8 }),
         Campaign.findAll({
           order: [['sortOrder', 'ASC']],
           limit: 4

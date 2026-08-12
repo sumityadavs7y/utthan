@@ -98,6 +98,7 @@
     if (event.key === 'Escape') {
       closeAllDropdowns();
       closeMobileNav();
+      closeStoryModal();
     }
   });
 
@@ -107,13 +108,147 @@
     const next = slider.querySelector('[data-slider-next]');
     if (!track) return;
 
-    const scrollByCard = function (direction) {
-      const card = track.querySelector('.campaign-slide');
-      const amount = card ? card.getBoundingClientRect().width + 16 : 320;
-      track.scrollBy({ left: direction * amount, behavior: 'smooth' });
+    const slides = track.querySelectorAll('.slider__slide');
+    if (!slides.length) return;
+
+    const gap = 16;
+    let timer = null;
+    let paused = false;
+
+    const cardStep = function () {
+      const card = track.querySelector('.slider__slide');
+      return card ? card.getBoundingClientRect().width + gap : 320;
     };
 
-    if (prev) prev.addEventListener('click', function () { scrollByCard(-1); });
-    if (next) next.addEventListener('click', function () { scrollByCard(1); });
+    const atEnd = function () {
+      return track.scrollLeft + track.clientWidth >= track.scrollWidth - 8;
+    };
+
+    const scrollByCard = function (direction) {
+      if (direction > 0 && atEnd()) {
+        track.scrollTo({ left: 0, behavior: 'smooth' });
+        return;
+      }
+      if (direction < 0 && track.scrollLeft <= 8) {
+        track.scrollTo({ left: track.scrollWidth, behavior: 'smooth' });
+        return;
+      }
+      track.scrollBy({ left: direction * cardStep(), behavior: 'smooth' });
+    };
+
+    const stopAuto = function () {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    };
+
+    const startAuto = function () {
+      stopAuto();
+      if (paused || slides.length < 2) return;
+      timer = setInterval(function () {
+        scrollByCard(1);
+      }, 4500);
+    };
+
+    const pause = function () {
+      paused = true;
+      stopAuto();
+    };
+
+    const resume = function () {
+      paused = false;
+      startAuto();
+    };
+
+    if (prev) {
+      prev.addEventListener('click', function () {
+        scrollByCard(-1);
+        startAuto();
+      });
+    }
+    if (next) {
+      next.addEventListener('click', function () {
+        scrollByCard(1);
+        startAuto();
+      });
+    }
+
+    slider.addEventListener('mouseenter', pause);
+    slider.addEventListener('mouseleave', resume);
+    slider.addEventListener('focusin', pause);
+    slider.addEventListener('focusout', function (event) {
+      if (!slider.contains(event.relatedTarget)) resume();
+    });
+    track.addEventListener('pointerdown', pause);
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) stopAuto();
+      else if (!paused) startAuto();
+    });
+
+    startAuto();
   });
+
+  const storyModal = document.querySelector('[data-story-modal]');
+  let storyModalLastFocus = null;
+
+  function closeStoryModal() {
+    if (!storyModal || storyModal.hidden) return;
+    storyModal.hidden = true;
+    document.body.classList.remove('story-modal-open');
+    if (storyModalLastFocus && typeof storyModalLastFocus.focus === 'function') {
+      storyModalLastFocus.focus();
+    }
+    storyModalLastFocus = null;
+  }
+
+  function openStoryModal(trigger) {
+    if (!storyModal || !trigger) return;
+
+    const image = storyModal.querySelector('[data-story-modal-image]');
+    const title = storyModal.querySelector('[data-story-modal-title]');
+    const quote = storyModal.querySelector('[data-story-modal-quote]');
+    const meta = storyModal.querySelector('[data-story-modal-meta]');
+    const closeBtn = storyModal.querySelector('.story-modal__close');
+
+    const name = trigger.getAttribute('data-story-name') || '';
+    const role = trigger.getAttribute('data-story-role') || '';
+    const storyTitle = trigger.getAttribute('data-story-title') || '';
+    const storyQuote = trigger.getAttribute('data-story-quote') || '';
+    const storyImage = trigger.getAttribute('data-story-image') || '';
+
+    if (image) {
+      image.src = storyImage;
+      image.alt = name ? (name + (role ? ', ' + role : '')) : storyTitle;
+    }
+    if (title) title.textContent = storyTitle;
+    if (quote) quote.textContent = storyQuote;
+    if (meta) {
+      meta.innerHTML = '';
+      if (name) {
+        const strong = document.createElement('strong');
+        strong.textContent = name;
+        meta.appendChild(strong);
+        if (role) meta.appendChild(document.createTextNode(' — ' + role));
+      }
+    }
+
+    storyModalLastFocus = trigger;
+    storyModal.hidden = false;
+    document.body.classList.add('story-modal-open');
+    if (closeBtn) closeBtn.focus();
+  }
+
+  document.querySelectorAll('[data-story-open]').forEach(function (trigger) {
+    trigger.addEventListener('click', function () {
+      openStoryModal(trigger);
+    });
+  });
+
+  if (storyModal) {
+    storyModal.querySelectorAll('[data-story-close]').forEach(function (el) {
+      el.addEventListener('click', closeStoryModal);
+    });
+  }
 })();

@@ -39,7 +39,7 @@
       <div class="slider" data-slider>
         <div class="slider__track" data-slider-track>
           <% ongoingCampaigns.forEach(function(c) { %>
-            <article class="campaign-slide">
+            <article class="slider__slide">
               <a href="/campaigns/<%= c.slug %>" class="campaign-card">
                 <div class="campaign-card__media">
                   <img src="<%= c.imagePath %>" alt="<%= c.title %>">
@@ -121,18 +121,71 @@
       <h2>Success stories</h2>
       <p>Voices from neighbors we serve across Uttar Pradesh.</p>
     </div>
-    <div class="story-grid">
-      <% testimonials.forEach(function(t) { %>
-        <blockquote class="story">
-          <img src="<%= t.imagePath %>" alt="<%= t.name %><%= t.role ? ', ' + t.role : '' %>">
-          <p>“<%= t.quote %>”</p>
-          <footer>
-            <strong><%= t.name %></strong>
-            <% if (t.role) { %><span><%= t.role %></span><% } %>
-          </footer>
-        </blockquote>
-      <% }) %>
-    </div>
+    <% if (testimonials.length) { %>
+      <div class="slider" data-slider>
+        <div class="slider__track" data-slider-track>
+          <% testimonials.forEach(function(t) { %>
+            <article class="slider__slide">
+              <button
+                type="button"
+                class="campaign-card campaign-card--button"
+                data-story-open
+                data-story-image="<%= t.imagePath %>"
+                data-story-title="<%= t.title %>"
+                data-story-quote="<%= t.quote %>"
+                data-story-name="<%= t.name %>"
+                data-story-role="<%= t.role || '' %>"
+                aria-label="Read success story: <%= t.title %>"
+              >
+                <div class="campaign-card__media">
+                  <img src="<%= t.imagePath %>" alt="">
+                  <span class="badge">Story</span>
+                </div>
+                <div class="campaign-card__body">
+                  <h3><%= t.title %></h3>
+                  <p><%= t.quote %></p>
+                  <div class="progress" aria-hidden="true">
+                    <div class="progress__bar" style="width: 100%"></div>
+                  </div>
+                  <p class="progress__meta">
+                    <strong><%= t.name %></strong><% if (t.role) { %> — <%= t.role %><% } %>
+                  </p>
+                </div>
+              </button>
+            </article>
+          <% }) %>
+        </div>
+        <div class="slider__controls">
+          <button type="button" data-slider-prev aria-label="Previous">‹</button>
+          <button type="button" data-slider-next aria-label="Next">›</button>
+        </div>
+      </div>
+
+      <div class="story-modal" data-story-modal hidden>
+        <div class="story-modal__backdrop" data-story-close tabindex="-1"></div>
+        <div
+          class="story-modal__dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="story-modal-title"
+        >
+          <button type="button" class="story-modal__close" data-story-close aria-label="Close story">×</button>
+          <div class="story-modal__scroll">
+            <div class="story-modal__media">
+              <img src="" alt="" data-story-modal-image>
+            </div>
+            <div class="story-modal__body">
+              <span class="badge">Story</span>
+              <h3 id="story-modal-title" data-story-modal-title></h3>
+              <p data-story-modal-quote></p>
+              <p class="progress__meta" data-story-modal-meta></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% } else { %>
+      <p class="muted">No success stories yet.</p>
+    <% } %>
   </div>
 </section>
 

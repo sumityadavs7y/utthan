@@ -125,6 +125,93 @@ module.exports = {
         updatedAt: now
       },
       {
+        title: 'Village Health Camps',
+        slug: 'village-health-camps',
+        category: 'Health',
+        status: 'ongoing',
+        summary: 'Free check-ups, medicines, and health awareness in partner villages.',
+        description: 'Placeholder health campaign. Mobile clinics and weekend camps offer basic screening, medicines, and hygiene education for families with limited clinic access. Replace with real program details.',
+        imagePath: `${IMG}/village-aid-notebooks.jpg`,
+        photoPaths: JSON.stringify([
+          `${IMG}/village-aid-notebooks.jpg`,
+          `${IMG}/clothes-distribution-village.jpg`,
+          `${IMG}/grocery-aid-alley.jpg`
+        ]),
+        timeline: JSON.stringify([
+          { date: '2025-10-01', title: 'Camp calendar set', detail: 'Partner PHCs and volunteer doctors confirmed.' },
+          { date: '2025-11-12', title: 'First camp', detail: 'Screening and medicine kits in two villages.' },
+          { date: '2026-02-01', title: 'Expanded coverage', detail: 'Added three more blocks.' }
+        ]),
+        goalAmount: 280000,
+        raisedAmount: 142000,
+        authorName: 'Health Desk',
+        authorImagePath: null,
+        location: 'Eastern UP (placeholder)',
+        startDate: '2025-10-01',
+        endDate: '2026-06-30',
+        sortOrder: 4,
+        createdAt: now,
+        updatedAt: now
+      },
+      {
+        title: 'Clean Water for Schools',
+        slug: 'clean-water-for-schools',
+        category: 'Water & Sanitation',
+        status: 'ongoing',
+        summary: 'Safe drinking water stations and hygiene kits for rural government schools.',
+        description: 'Placeholder WASH campaign. We install filtered drinking water points, repair handwash stations, and train student hygiene clubs. Replace with real site names and budgets.',
+        imagePath: `${IMG}/community-street-cleanup.jpg`,
+        photoPaths: JSON.stringify([
+          `${IMG}/community-street-cleanup.jpg`,
+          `${IMG}/rural-classroom-teaching.jpg`,
+          `${IMG}/school-supplies-distribution.jpg`
+        ]),
+        timeline: JSON.stringify([
+          { date: '2025-08-01', title: 'School survey', detail: 'Mapped water access gaps across partner schools.' },
+          { date: '2025-09-20', title: 'First installations', detail: 'Filters and tanks fitted at two schools.' },
+          { date: '2026-01-10', title: 'Hygiene club training', detail: 'Student monitors trained on maintenance.' }
+        ]),
+        goalAmount: 320000,
+        raisedAmount: 175000,
+        authorName: 'WASH Team',
+        authorImagePath: null,
+        location: 'Barabanki & Sitapur (placeholder)',
+        startDate: '2025-08-01',
+        endDate: '2026-07-31',
+        sortOrder: 5,
+        createdAt: now,
+        updatedAt: now
+      },
+      {
+        title: 'Community Library Corners',
+        slug: 'community-library-corners',
+        category: 'Education',
+        status: 'ongoing',
+        summary: 'Neighborhood reading corners with books, tutoring hours, and parent workshops.',
+        description: 'Placeholder literacy campaign. We set up small library corners in community spaces, stock age-appropriate books, and run evening tutoring for primary students. Replace with real locations.',
+        imagePath: `${IMG}/community-library-books.jpg`,
+        photoPaths: JSON.stringify([
+          `${IMG}/community-library-books.jpg`,
+          `${IMG}/rural-classroom-teaching.jpg`,
+          `${IMG}/village-aid-notebooks.jpg`
+        ]),
+        timeline: JSON.stringify([
+          { date: '2025-07-01', title: 'Space partnerships', detail: 'Agreements with three community halls.' },
+          { date: '2025-08-15', title: 'Book drives', detail: 'First shelves stocked with donated titles.' },
+          { date: '2025-12-01', title: 'Tutoring starts', detail: 'Evening sessions for classes 1–5.' }
+        ]),
+        goalAmount: 250000,
+        raisedAmount: 98000,
+        authorName: 'Education Desk',
+        authorImagePath: null,
+        location: 'Lucknow outskirts (placeholder)',
+        startDate: '2025-07-01',
+        endDate: '2026-06-30',
+        sortOrder: 6,
+        createdAt: now,
+        updatedAt: now
+      },
+      {
         title: 'Green Village Saplings',
         slug: 'green-village-saplings',
         category: 'Environment',
@@ -148,7 +235,7 @@ module.exports = {
         location: 'Rural UP (placeholder)',
         startDate: '2024-07-01',
         endDate: '2025-03-01',
-        sortOrder: 4,
+        sortOrder: 7,
         createdAt: now,
         updatedAt: now
       },
@@ -176,7 +263,7 @@ module.exports = {
         location: 'Central UP (placeholder)',
         startDate: '2026-09-01',
         endDate: '2027-03-31',
-        sortOrder: 5,
+        sortOrder: 8,
         createdAt: now,
         updatedAt: now
       },
@@ -205,7 +292,7 @@ module.exports = {
         location: 'Lucknow (placeholder)',
         startDate: '2026-10-15',
         endDate: '2027-04-30',
-        sortOrder: 6,
+        sortOrder: 9,
         createdAt: now,
         updatedAt: now
       }
@@ -365,7 +452,7 @@ module.exports = {
     await queryInterface.bulkInsert('Testimonials', [
       {
         title: 'A warmer winter',
-        quote: 'Placeholder success story: The blankets arrived before the coldest week. Our family slept through the night for the first time.',
+        quote: 'Placeholder success story with a much longer narrative: When the first frost settled over our village, we had almost nothing left to keep the children warm. The wind came through the gaps in our walls, and every evening felt longer than the last. Neighbors shared what little they had — a spare shawl here, a thin quilt there — but nights were still bitterly cold and sleep came in short, restless stretches. I remember sitting awake beside the cooking hearth after the embers died, counting breaths and praying the youngest would not wake crying from the chill. That winter we skipped meals so we could buy a little more fuel, and still it was never enough. Then the Utthan Foundation winter drive reached our lane. Volunteers arrived quietly with blankets, woolens, and socks folded with care. There were no loud speeches and no cameras pushed into our faces — only careful hands placing warmth into our home, asking if we needed anything else, and listening when we spoke. They returned the next week to check on the elders at the end of the street and to make sure the children had dry clothes for school. For the first time that season, my mother and the little ones slept through until morning. The house still felt poor, but it no longer felt abandoned. That single stretch of nights changed how we talk about help in our family: it is not charity from far away, and it is not a debt we must repay with shame. It is neighbors rising together so no one is left shivering alone. We still tell this story whenever winter returns — when fog lies low on the fields and the first cold rain starts — because warmth is more than cloth. It is dignity, it is belonging, and it is the promise that someone will knock on your door before the cold becomes unbearable.',
         name: 'Kamla Devi',
         role: 'Beneficiary, Winter Drive',
         imagePath: `${IMG}/winter-blanket-distribution.jpg`,
@@ -390,6 +477,36 @@ module.exports = {
         role: 'Trainee, Livelihood Program',
         imagePath: `${IMG}/women-sewing-workshop.jpg`,
         sortOrder: 3,
+        createdAt: now,
+        updatedAt: now
+      },
+      {
+        title: 'A full plate again',
+        quote: 'Placeholder success story: The community kitchen meals kept our children fed when work dried up. We could focus on finding steady work again.',
+        name: 'Ramesh Kumar',
+        role: 'Neighbor, Community Kitchen',
+        imagePath: `${IMG}/hot-meal-distribution.jpg`,
+        sortOrder: 4,
+        createdAt: now,
+        updatedAt: now
+      },
+      {
+        title: 'Clean water at school',
+        quote: 'Placeholder success story: After the water station was installed, children stopped falling sick from dirty drinking water. Attendance improved within weeks.',
+        name: 'Anita Sharma',
+        role: 'Teacher, Partner School',
+        imagePath: `${IMG}/community-street-cleanup.jpg`,
+        sortOrder: 5,
+        createdAt: now,
+        updatedAt: now
+      },
+      {
+        title: 'Books within reach',
+        quote: 'Placeholder success story: The library corner is where my son learned to love reading. Evening tutoring gave him confidence he never had in class.',
+        name: 'Farida Begum',
+        role: 'Parent, Library Corners',
+        imagePath: `${IMG}/community-library-books.jpg`,
+        sortOrder: 6,
         createdAt: now,
         updatedAt: now
       }
