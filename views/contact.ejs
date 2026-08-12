@@ -1,18 +1,33 @@
 <%- include('partials/head-open') %>
 
-<section class="page-hero">
-  <div class="container">
-    <p class="eyebrow">Contact Us</p>
-    <h1>Contact The Utthan Foundation</h1>
-    <p class="lede">Reach our offices across Uttar Pradesh, send a message, or join as a volunteer or member.</p>
+<section class="contact-hero">
+  <div class="contact-hero__media" aria-hidden="true">
+    <img src="/images/community-street-cleanup.jpg" alt="">
+  </div>
+  <div class="contact-hero__overlay"></div>
+  <div class="container contact-hero__content">
+    <p class="eyebrow">Contact</p>
+    <h1>Talk with Utthan</h1>
+    <p class="lede">Send a note, join the work, or find us across Uttar Pradesh.</p>
   </div>
 </section>
 
-<section class="section section--tint">
-  <div class="container contact-stack">
-    <form class="form" method="post" action="/contact" novalidate>
+<nav class="contact-jump" aria-label="Contact sections">
+  <div class="container contact-jump__inner">
+    <a href="#message">Send a message</a>
+    <a href="#join">Join us</a>
+    <a href="#offices">Our offices</a>
+  </div>
+</nav>
+
+<section id="message" class="section">
+  <div class="container contact-block">
+    <header class="contact-block__head">
       <h2>Send a message</h2>
-      <div class="form-row">
+      <p>Partnerships, press, or a simple hello — we read every note.</p>
+    </header>
+    <form class="contact-form" method="post" action="/contact" novalidate>
+      <div class="contact-form__row">
         <label>
           First name *
           <input type="text" name="firstName" required value="<%= form.firstName || '' %>">
@@ -22,7 +37,7 @@
           <input type="text" name="lastName" value="<%= form.lastName || '' %>">
         </label>
       </div>
-      <div class="form-row">
+      <div class="contact-form__row">
         <label>
           Email *
           <input type="email" name="email" required value="<%= form.email || '' %>">
@@ -34,17 +49,24 @@
       </div>
       <label>
         Message *
-        <textarea name="message" rows="5" required><%= form.message || '' %></textarea>
+        <textarea name="message" rows="6" required><%= form.message || '' %></textarea>
       </label>
-      <button class="btn btn--primary btn--form" type="submit">Send message</button>
+      <button class="btn btn--primary contact-form__submit" type="submit">Send message</button>
     </form>
+  </div>
+</section>
 
-    <div id="join">
+<section id="join" class="section section--tint">
+  <div class="container contact-block">
+    <header class="contact-block__head">
       <h2>Join us</h2>
-      <p>Volunteer in campaigns or apply for membership. <%= siteConfig && siteConfig.memberFeeNote ? siteConfig.memberFeeNote : '' %></p>
-
-      <form class="form" method="post" action="/join/volunteer" novalidate>
-        <h3>Volunteer / member interest</h3>
+      <p>Volunteer in the field or become a member.</p>
+      <% if (siteConfig && siteConfig.memberFeeNote) { %>
+        <p class="contact-block__note"><%= siteConfig.memberFeeNote %></p>
+      <% } %>
+    </header>
+    <form class="contact-form" method="post" action="/join/volunteer" novalidate>
+      <div class="contact-form__row">
         <label>
           Full name *
           <input type="text" name="name" required>
@@ -53,37 +75,39 @@
           Email *
           <input type="email" name="email" required>
         </label>
+      </div>
+      <div class="contact-form__row">
         <label>
           Phone
           <input type="tel" name="phone">
         </label>
         <label>
-          Organization / college (optional)
+          Organization / college
           <input type="text" name="company">
         </label>
-        <label>
-          How would you like to help? *
-          <textarea name="message" rows="4" required placeholder="Volunteer shifts, membership, skills you can offer…"></textarea>
-        </label>
-        <button class="btn btn--primary btn--form" type="submit">Submit interest</button>
-      </form>
-    </div>
+      </div>
+      <label>
+        How would you like to help? *
+        <textarea name="message" rows="5" required placeholder="Volunteer shifts, membership, skills you can offer…"></textarea>
+      </label>
+      <button class="btn btn--primary contact-form__submit" type="submit">Submit interest</button>
+    </form>
   </div>
 </section>
 
-<section class="section">
+<section id="offices" class="section">
   <div class="container">
-    <div class="section-heading">
+    <header class="contact-block__head contact-block__head--wide">
       <h2>Our offices</h2>
-      <p>Three placeholder locations — replace with real office addresses when ready.</p>
-    </div>
-    <div class="office-grid">
+      <p>Three placeholder desks across Uttar Pradesh — replace with real addresses when ready.</p>
+    </header>
+    <div class="office-rail">
       <% offices.forEach(function(office) { %>
-        <article class="office-card">
-          <h3><%= office.label %></h3>
-          <p><%= office.address %></p>
-          <p><a href="tel:<%= String(office.phone).replace(/\s/g, '') %>"><%= office.phone %></a></p>
-          <p><a href="mailto:<%= office.email %>"><%= office.email %></a></p>
+        <article class="office-rail__item">
+          <p class="eyebrow"><%= office.label %></p>
+          <p class="office-rail__address"><%= office.address %></p>
+          <a class="office-rail__link" href="tel:<%= String(office.phone).replace(/\s/g, '') %>"><%= office.phone %></a>
+          <a class="office-rail__link" href="mailto:<%= office.email %>"><%= office.email %></a>
         </article>
       <% }) %>
     </div>
