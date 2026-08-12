@@ -17,6 +17,7 @@ const {
   parseTimeline,
   parsePhotoList
 } = require('../utils/helpers');
+const partners = require('../data/partners');
 const {
   PAGE_SEO,
   buildPageSeo,
@@ -154,7 +155,8 @@ function createPublicRouter(express) {
         ongoingCampaigns: ongoing.map(decorateCampaign),
         stats,
         testimonials,
-        whatWeDo: whatWeDo.map(decorateCampaign)
+        whatWeDo: whatWeDo.map(decorateCampaign),
+        partners
       });
     } catch (err) {
       next(err);

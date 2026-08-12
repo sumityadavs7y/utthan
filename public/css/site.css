@@ -873,6 +873,119 @@ button.campaign-card--button:focus-visible {
   text-align: center;
 }
 
+.partners-marquee {
+  margin-top: 0.75rem;
+}
+
+.partners-marquee__viewport {
+  overflow: hidden;
+  padding-block: 0.25rem;
+  mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+}
+
+.partners-marquee__track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.partners-marquee.is-ready .partners-marquee__track {
+  animation: partnersScrollExact var(--partners-duration, 28s) linear infinite;
+}
+
+.partners-marquee:hover .partners-marquee__track,
+.partners-marquee:focus-within .partners-marquee__track {
+  animation-play-state: paused;
+}
+
+.partners-marquee__set {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  list-style: none;
+  margin: 0;
+  padding: 0 0.85rem 0 0;
+}
+
+.partner-item {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  height: 60px;
+  box-sizing: border-box;
+  padding: 0 1.15rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  white-space: nowrap;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.partner-item--logo {
+  padding: 0 0.85rem;
+  min-width: 60px;
+}
+
+.partner-item__mark {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.partner-item__mark img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
+}
+
+.partner-item__name {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+}
+
+@keyframes partnersScrollExact {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(calc(-1 * var(--partners-shift, 0px)), 0, 0); }
+}
+
+.partners-marquee.is-static .partners-marquee__viewport {
+  overflow-x: auto;
+}
+
+.partners-marquee.is-static .partners-marquee__track {
+  animation: none;
+  width: auto;
+  max-width: 100%;
+}
+
+.partners-marquee.is-static .partners-marquee__set {
+  padding-right: 0;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .partners-marquee__track {
+    animation: none !important;
+  }
+}
+
 .page-hero {
   padding: 3.5rem 0 1.5rem;
 }

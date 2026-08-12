@@ -251,4 +251,75 @@
       el.addEventListener('click', closeStoryModal);
     });
   }
+
+  function setupPartnersMarquee(root) {
+    const viewport = root.querySelector('.partners-marquee__viewport');
+    const track = root.querySelector('[data-partners-track]');
+    const sourceSet = root.querySelector('[data-partners-set]');
+    if (!viewport || !track || !sourceSet) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const rebuild = function () {
+      // Keep only the source set, then clone until the strip always fills the view.
+      while (track.children.length > 1) {
+        track.removeChild(track.lastElementChild);
+      }
+
+      if (reduceMotion) {
+        root.classList.add('is-static');
+        return;
+      }
+
+      const setWidth = sourceSet.getBoundingClientRect().width;
+      if (!setWidth) return;
+
+      const viewportWidth = viewport.clientWidth;
+      // Enough copies that two full loops are always on screen while scrolling.
+      const needed = Math.max(2, Math.ceil((viewportWidth * 2) / setWidth) + 1);
+      for (let i = 1; i < needed; i += 1) {
+        const clone = sourceSet.cloneNode(true);
+        clone.removeAttribute('data-partners-set');
+        clone.setAttribute('aria-hidden', 'true');
+        track.appendChild(clone);
+      }
+
+      track.style.setProperty('--partners-shift', setWidth + 'px');
+      track.style.setProperty('--partners-duration', Math.max(18, Math.round(setWidth / 28)) + 's');
+      root.classList.add('is-ready');
+      track.style.animation = 'none';
+      void track.offsetWidth;
+      track.style.removeProperty('animation');
+    };
+
+    const start = function () {
+      rebuild();
+    };
+
+    const images = Array.prototype.slice.call(sourceSet.querySelectorAll('img'));
+    if (!images.length) {
+      start();
+    } else {
+      let pending = images.length;
+      const done = function () {
+        pending -= 1;
+        if (pending <= 0) start();
+      };
+      images.forEach(function (img) {
+        if (img.complete) done();
+        else {
+          img.addEventListener('load', done, { once: true });
+          img.addEventListener('error', done, { once: true });
+        }
+      });
+    }
+
+    let resizeTimer = null;
+    window.addEventListener('resize', function () {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(rebuild, 150);
+    });
+  }
+
+  document.querySelectorAll('[data-partners-marquee]').forEach(setupPartnersMarquee);
 })();

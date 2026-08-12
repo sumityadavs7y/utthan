@@ -195,15 +195,40 @@
   </div>
 </section>
 
-<section class="section">
+<section class="section partners-section">
   <div class="container">
     <div class="section-heading">
       <h2>Our partners</h2>
-      <p>Partner logos coming soon.</p>
+      <p>Organizations and groups walking with The Utthan Foundation across Uttar Pradesh.</p>
     </div>
-    <div class="partners-placeholder">
-      <span>Partners — coming soon</span>
-    </div>
+    <% if (partners && partners.length) { %>
+      <div class="partners-marquee" data-partners-marquee>
+        <div class="partners-marquee__viewport">
+          <div class="partners-marquee__track" data-partners-track>
+            <ul class="partners-marquee__set" data-partners-set>
+              <% partners.forEach(function(p) { %>
+                <% const showLogo = Boolean(p.logoPath); %>
+                <% const showName = Boolean(p.name) && (p.showName !== false || !showLogo); %>
+                <li class="partner-item<%= showLogo && showName ? ' partner-item--both' : (showLogo ? ' partner-item--logo' : ' partner-item--name') %>">
+                  <% if (showLogo) { %>
+                    <span class="partner-item__mark">
+                      <img src="<%= p.logoPath %>" alt="<%= showName ? '' : (p.name || 'Partner') %>" width="36" height="36" decoding="async">
+                    </span>
+                  <% } %>
+                  <% if (showName) { %>
+                    <span class="partner-item__name"><%= p.name %></span>
+                  <% } %>
+                </li>
+              <% }) %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="partners-placeholder">
+        <span>Partners — coming soon</span>
+      </div>
+    <% } %>
   </div>
 </section>
 
