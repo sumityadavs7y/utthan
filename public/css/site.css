@@ -466,6 +466,11 @@ p {
   hyphens: auto;
 }
 
+.page-hero .lede {
+  max-width: none;
+  width: 100%;
+}
+
 .hero .lede { color: rgba(255,255,255,0.9); }
 
 .hero__actions {
@@ -1027,7 +1032,19 @@ button.campaign-card--button:focus-visible {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   gap: 2rem;
-  align-items: center;
+  align-items: start;
+}
+
+.split--flip {
+  grid-template-columns: 0.9fr 1.1fr;
+}
+
+.split--flip > :first-child {
+  order: 2;
+}
+
+.split--flip > :last-child {
+  order: 1;
 }
 
 .media-frame {
@@ -1362,6 +1379,11 @@ textarea:focus {
   .blog-card,
   .form-row {
     grid-template-columns: 1fr;
+  }
+
+  .split--flip > :first-child,
+  .split--flip > :last-child {
+    order: initial;
   }
 
   .join-split {
