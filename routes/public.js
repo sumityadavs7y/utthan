@@ -19,6 +19,7 @@ const {
   campaignDateLabel
 } = require('../utils/helpers');
 const partners = require('../data/partners');
+const offices = require('../data/offices');
 const {
   PAGE_SEO,
   buildPageSeo,
@@ -486,6 +487,7 @@ function createPublicRouter(express) {
     res.render('contact', {
       title: 'Contact Us',
       form: req.flash('form')[0] || {},
+      offices,
       ...withSeo(res, 'contact', {
         breadcrumbs: [
           { name: 'Home', path: '/' },

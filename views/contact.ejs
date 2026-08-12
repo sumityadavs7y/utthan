@@ -4,49 +4,40 @@
   <div class="container">
     <p class="eyebrow">Contact Us</p>
     <h1>Contact The Utthan Foundation</h1>
-    <p class="lede">Reach our Lucknow, Uttar Pradesh office or send a message. Join as a volunteer or member below.</p>
+    <p class="lede">Reach our offices across Uttar Pradesh, send a message, or join as a volunteer or member.</p>
   </div>
 </section>
 
-<section class="section">
-  <div class="container contact-layout">
-    <div>
-      <h2>UP office address</h2>
-      <% if (siteConfig) { %>
-        <p><%= siteConfig.address %></p>
-        <p><a href="tel:<%= siteConfig.phone.replace(/\s/g, '') %>"><%= siteConfig.phone %></a></p>
-        <p><a href="mailto:<%= siteConfig.email %>"><%= siteConfig.email %></a></p>
-      <% } %>
-
-      <form class="form" method="post" action="/contact" novalidate>
-        <h2>Send a message</h2>
-        <div class="form-row">
-          <label>
-            First name *
-            <input type="text" name="firstName" required value="<%= form.firstName || '' %>">
-          </label>
-          <label>
-            Last name
-            <input type="text" name="lastName" value="<%= form.lastName || '' %>">
-          </label>
-        </div>
-        <div class="form-row">
-          <label>
-            Email *
-            <input type="email" name="email" required value="<%= form.email || '' %>">
-          </label>
-          <label>
-            Phone
-            <input type="tel" name="phone" value="<%= form.phone || '' %>">
-          </label>
-        </div>
+<section class="section section--tint">
+  <div class="container contact-stack">
+    <form class="form" method="post" action="/contact" novalidate>
+      <h2>Send a message</h2>
+      <div class="form-row">
         <label>
-          Message *
-          <textarea name="message" rows="5" required><%= form.message || '' %></textarea>
+          First name *
+          <input type="text" name="firstName" required value="<%= form.firstName || '' %>">
         </label>
-        <button class="btn btn--primary" type="submit">Send message</button>
-      </form>
-    </div>
+        <label>
+          Last name
+          <input type="text" name="lastName" value="<%= form.lastName || '' %>">
+        </label>
+      </div>
+      <div class="form-row">
+        <label>
+          Email *
+          <input type="email" name="email" required value="<%= form.email || '' %>">
+        </label>
+        <label>
+          Phone
+          <input type="tel" name="phone" value="<%= form.phone || '' %>">
+        </label>
+      </div>
+      <label>
+        Message *
+        <textarea name="message" rows="5" required><%= form.message || '' %></textarea>
+      </label>
+      <button class="btn btn--primary btn--form" type="submit">Send message</button>
+    </form>
 
     <div id="join">
       <h2>Join us</h2>
@@ -74,8 +65,27 @@
           How would you like to help? *
           <textarea name="message" rows="4" required placeholder="Volunteer shifts, membership, skills you can offer…"></textarea>
         </label>
-        <button class="btn btn--primary" type="submit">Submit interest</button>
+        <button class="btn btn--primary btn--form" type="submit">Submit interest</button>
       </form>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-heading">
+      <h2>Our offices</h2>
+      <p>Three placeholder locations — replace with real office addresses when ready.</p>
+    </div>
+    <div class="office-grid">
+      <% offices.forEach(function(office) { %>
+        <article class="office-card">
+          <h3><%= office.label %></h3>
+          <p><%= office.address %></p>
+          <p><a href="tel:<%= String(office.phone).replace(/\s/g, '') %>"><%= office.phone %></a></p>
+          <p><a href="mailto:<%= office.email %>"><%= office.email %></a></p>
+        </article>
+      <% }) %>
     </div>
   </div>
 </section>
