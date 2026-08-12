@@ -29,6 +29,9 @@
                 <p class="eyebrow"><%= c.category %></p>
                 <h3><%= c.title %></h3>
                 <p><%= c.summary %></p>
+                <% if (c.dateLabel) { %>
+                  <p class="campaign-card__dates"><%= c.dateLabel %></p>
+                <% } %>
                 <div class="progress">
                   <div class="progress__bar" style="width: <%= c.progress %>%"></div>
                 </div>

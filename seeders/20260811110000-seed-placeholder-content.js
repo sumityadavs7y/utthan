@@ -302,7 +302,7 @@ module.exports = {
       {
         title: 'How a community kitchen feeds hope',
         category: 'Impact',
-        content: 'Placeholder blog post. Neighbors line up for a warm meal while volunteers ladle rice and dal. Replace this story with a real field update from The Utthan Foundation.',
+        content: 'Placeholder blog post with a longer field update. Neighbors line up for a warm meal while volunteers ladle rice and dal under a tin shed that doubles as our community kitchen. Before noon the queue already stretches past the alley. Elders sit on charpoys with steel plates; schoolchildren arrive with siblings in tow. We cook what local donations allow — rice, dal, seasonal sabzi — and send dry ration kits home with families who cannot stay for the meal. Replace this story with a real field update from The Utthan Foundation. Until then, this longer placeholder shows how blog cards truncate on the listing and open in full when you click the card.',
         imagePath: `${IMG}/hot-meal-distribution.jpg`,
         createdAt: new Date('2026-06-12T10:00:00Z'),
         updatedAt: now

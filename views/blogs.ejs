@@ -10,47 +10,124 @@
 
 <section class="section">
   <div class="container">
-    <div class="section-heading">
-      <h2>Blogs</h2>
-      <p>Photo, text, and date.</p>
+    <div class="tabs" role="tablist">
+      <a class="tabs__item <%= tab === 'blogs' ? 'is-active' : '' %>" href="/blogs?tab=blogs">Blogs</a>
+      <a class="tabs__item <%= tab === 'media' ? 'is-active' : '' %>" href="/blogs?tab=media">Media</a>
     </div>
-    <div class="blog-grid">
-      <% posts.forEach(function(post) { %>
-        <article class="blog-card">
-          <% if (post.imagePath) { %>
-            <img src="<%= post.imagePath %>" alt="<%= post.title %>">
-          <% } %>
-          <div>
-            <p class="eyebrow"><%= post.category %> · <%= new Date(post.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) %></p>
-            <h3><%= post.title %></h3>
-            <p><%= post.content %></p>
-          </div>
-        </article>
-      <% }) %>
-    </div>
+
+    <% if (tab === 'blogs') { %>
+      <% if (posts.length) { %>
+        <div class="blog-grid">
+          <% posts.forEach(function(post) { %>
+            <button
+              type="button"
+              class="blog-card blog-card--button"
+              data-content-open
+              data-content-type="blog"
+              data-content-badge="Blog"
+              data-content-title="<%= post.title %>"
+              data-content-meta="<%= post.category %> · <%= post.dateFormatted %>"
+              data-content-image="<%= post.imagePath || '' %>"
+              aria-label="Read blog: <%= post.title %>"
+            >
+              <% if (post.imagePath) { %>
+                <img src="<%= post.imagePath %>" alt="">
+              <% } %>
+              <div class="blog-card__body">
+                <p class="eyebrow"><%= post.category %> · <%= post.dateFormatted %></p>
+                <h3><%= post.title %></h3>
+                <p class="blog-card__preview"><%= post.preview %></p>
+                <% if (post.isTruncated) { %>
+                  <span class="blog-card__more">Read more</span>
+                <% } %>
+              </div>
+              <span class="u-hidden" data-content-full><%= post.content %></span>
+            </button>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <p class="muted">No blog posts yet.</p>
+      <% } %>
+    <% } else { %>
+      <% if (media.length) { %>
+        <div class="media-grid">
+          <% media.forEach(function(item) { %>
+            <button
+              type="button"
+              class="media-tile media-tile--button"
+              data-content-open
+              data-content-type="media"
+              data-content-badge="Media"
+              data-content-title="<%= item.title || item.caption || 'Media' %>"
+              data-content-meta="<%= item.dateFormatted || '' %>"
+              data-content-image="<%= item.imagePath %>"
+              aria-label="Open media: <%= item.caption || item.title || 'Photo' %>"
+            >
+              <img src="<%= item.imagePath %>" alt="">
+              <span class="media-tile__caption">
+                <span><%= item.caption || item.title || 'Untitled' %></span>
+                <% if (item.dateFormatted) { %>
+                  <time><%= item.dateFormatted %></time>
+                <% } %>
+              </span>
+              <span class="u-hidden" data-content-full><%= item.caption || item.title || '' %></span>
+            </button>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <p class="muted">No media yet.</p>
+      <% } %>
+    <% } %>
+
+    <% if (pagination && pagination.totalPages > 1) { %>
+      <nav class="pagination" aria-label="Pagination">
+        <% if (pagination.hasPrev) { %>
+          <a class="pagination__btn" href="<%= pagination.prevHref %>" aria-label="Previous page">‹ Prev</a>
+        <% } else { %>
+          <span class="pagination__btn is-disabled" aria-disabled="true">‹ Prev</span>
+        <% } %>
+
+        <div class="pagination__pages">
+          <% pagination.pages.forEach(function(p) { %>
+            <% if (p.isCurrent) { %>
+              <span class="pagination__page is-current" aria-current="page"><%= p.number %></span>
+            <% } else { %>
+              <a class="pagination__page" href="<%= p.href %>"><%= p.number %></a>
+            <% } %>
+          <% }) %>
+        </div>
+
+        <% if (pagination.hasNext) { %>
+          <a class="pagination__btn" href="<%= pagination.nextHref %>" aria-label="Next page">Next ›</a>
+        <% } else { %>
+          <span class="pagination__btn is-disabled" aria-disabled="true">Next ›</span>
+        <% } %>
+      </nav>
+    <% } %>
   </div>
 </section>
 
-<section class="section section--tint">
-  <div class="container">
-    <div class="section-heading">
-      <h2>Media</h2>
-      <p>Photos auto-adjust to fit. Captions and dates included.</p>
-    </div>
-    <div class="media-grid">
-      <% media.forEach(function(item) { %>
-        <figure class="media-tile">
-          <img src="<%= item.imagePath %>" alt="<%= item.caption || item.title || 'Media photo' %>">
-          <figcaption>
-            <span><%= item.caption || item.title || 'Untitled' %></span>
-            <% if (item.mediaDate) { %>
-              <time><%= item.mediaDate %></time>
-            <% } %>
-          </figcaption>
-        </figure>
-      <% }) %>
+<div class="story-modal" data-content-modal hidden>
+  <div class="story-modal__backdrop" data-content-close tabindex="-1"></div>
+  <div
+    class="story-modal__dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="content-modal-title"
+  >
+    <button type="button" class="story-modal__close" data-content-close aria-label="Close">×</button>
+    <div class="story-modal__scroll">
+      <div class="story-modal__media" data-content-modal-media>
+        <img src="" alt="" data-content-modal-image>
+      </div>
+      <div class="story-modal__body">
+        <span class="badge" data-content-modal-badge>Blog</span>
+        <h3 id="content-modal-title" data-content-modal-title></h3>
+        <p data-content-modal-text></p>
+        <p class="progress__meta" data-content-modal-meta></p>
+      </div>
     </div>
   </div>
-</section>
+</div>
 
 <%- include('partials/head-close') %>

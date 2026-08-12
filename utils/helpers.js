@@ -51,11 +51,43 @@ function parsePhotoList(photos) {
   }
 }
 
+function formatCampaignDate(dateStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return String(dateStr);
+  return d.toLocaleDateString('en-IN', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+}
+
+/** Status-based campaign date range for cards and detail pages. */
+function campaignDateLabel(campaign) {
+  const start = formatCampaignDate(campaign.startDate);
+  const end = formatCampaignDate(campaign.endDate);
+  const status = campaign.status;
+
+  if (status === 'ongoing') {
+    return start ? `${start} – Present` : null;
+  }
+  if (status === 'completed') {
+    if (start && end) return `${start} – ${end}`;
+    return start || end || null;
+  }
+  if (status === 'upcoming') {
+    return start ? `Starts ${start}` : null;
+  }
+  return null;
+}
+
 module.exports = {
   isDevEnvMode,
   slugify,
   formatCurrencyINR,
   campaignProgress,
   parseTimeline,
-  parsePhotoList
+  parsePhotoList,
+  formatCampaignDate,
+  campaignDateLabel
 };

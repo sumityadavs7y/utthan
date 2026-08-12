@@ -15,7 +15,8 @@ const {
   formatCurrencyINR,
   campaignProgress,
   parseTimeline,
-  parsePhotoList
+  parsePhotoList,
+  campaignDateLabel
 } = require('../utils/helpers');
 const partners = require('../data/partners');
 const {
@@ -43,6 +44,7 @@ function decorateCampaign(campaign) {
   plain.raisedFormatted = formatCurrencyINR(plain.raisedAmount);
   plain.timelineItems = parseTimeline(plain.timeline);
   plain.photos = parsePhotoList(plain.photoPaths);
+  plain.dateLabel = campaignDateLabel(plain);
   return plain;
 }
 
@@ -347,10 +349,79 @@ function createPublicRouter(express) {
 
   router.get('/blogs', async (req, res, next) => {
     try {
-      const [posts, media] = await Promise.all([
-        Post.findAll({ order: [['createdAt', 'DESC']] }),
-        Gallery.findAll({ order: [['mediaDate', 'DESC'], ['id', 'DESC']] })
-      ]);
+      const tab = req.query.tab === 'media' ? 'media' : 'blogs';
+      const perPage = tab === 'media' ? 9 : 6;
+      const requestedPage = Math.max(1, parseInt(req.query.page, 10) || 1);
+
+      let posts = [];
+      let media = [];
+      let total = 0;
+
+      if (tab === 'blogs') {
+        const result = await Post.findAndCountAll({
+          order: [['createdAt', 'DESC']],
+          limit: perPage,
+          offset: (requestedPage - 1) * perPage
+        });
+        total = result.count;
+        posts = result.rows.map((post) => {
+          const plain = post.get({ plain: true });
+          const content = String(plain.content || '');
+          const limit = 160;
+          plain.isTruncated = content.length > limit;
+          plain.preview = plain.isTruncated ? `${content.slice(0, limit).trim()}…` : content;
+          plain.dateFormatted = new Date(plain.createdAt).toLocaleDateString('en-IN', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          });
+          return plain;
+        });
+      } else {
+        const result = await Gallery.findAndCountAll({
+          order: [['mediaDate', 'DESC'], ['id', 'DESC']],
+          limit: perPage,
+          offset: (requestedPage - 1) * perPage
+        });
+        total = result.count;
+        media = result.rows.map((item) => {
+          const plain = item.get({ plain: true });
+          plain.dateFormatted = plain.mediaDate
+            ? new Date(plain.mediaDate).toLocaleDateString('en-IN', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+              })
+            : null;
+          return plain;
+        });
+      }
+
+      const totalPages = Math.max(1, Math.ceil(total / perPage));
+      const page = Math.min(requestedPage, totalPages);
+      // If user requested a page past the end, refetch the last page once.
+      if (page !== requestedPage && total > 0) {
+        return res.redirect(`/blogs?tab=${tab}&page=${page}`);
+      }
+
+      const pagination = {
+        page,
+        perPage,
+        total,
+        totalPages,
+        hasPrev: page > 1,
+        hasNext: page < totalPages,
+        prevHref: page > 1 ? `/blogs?tab=${tab}&page=${page - 1}` : null,
+        nextHref: page < totalPages ? `/blogs?tab=${tab}&page=${page + 1}` : null,
+        pages: Array.from({ length: totalPages }, (_, i) => {
+          const number = i + 1;
+          return {
+            number,
+            href: `/blogs?tab=${tab}&page=${number}`,
+            isCurrent: number === page
+          };
+        })
+      };
 
       res.render('blogs', {
         title: 'Blogs & Media',
@@ -360,8 +431,10 @@ function createPublicRouter(express) {
             { name: 'Blogs & Media', path: '/blogs' }
           ]
         }),
+        tab,
         posts,
-        media
+        media,
+        pagination
       });
     } catch (err) {
       next(err);

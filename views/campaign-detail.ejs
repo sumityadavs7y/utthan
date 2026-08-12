@@ -19,8 +19,8 @@
         <h2>About this campaign</h2>
         <p><%= campaign.description %></p>
         <% if (campaign.location) { %><p><strong>Location:</strong> <%= campaign.location %></p><% } %>
-        <% if (campaign.startDate || campaign.endDate) { %>
-          <p><strong>Dates:</strong> <%= campaign.startDate || 'TBD' %> → <%= campaign.endDate || 'TBD' %></p>
+        <% if (campaign.dateLabel) { %>
+          <p><strong>Timeline:</strong> <%= campaign.dateLabel %></p>
         <% } %>
       </div>
 
