@@ -3,6 +3,7 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 const { envConfig } = require('../config');
 const {
+  sequelize,
   Permission,
   Role,
   User,
@@ -16,8 +17,11 @@ const {
   TeamMember,
   Chairman,
   Testimonial,
-  SiteConfig
+  SiteConfig,
+  ImpactStat
 } = require('../models');
+const placeholderSeed = require('../seeders/20260811110000-seed-placeholder-content');
+const { parsePhotoList } = require('./helpers');
 const { PERMISSIONS, ADMIN_SLUG, EVERYONE_SLUG } = require('./permissions');
 const { createMediaFromDisk, findMediaIdByPath } = require('./media');
 const { PAGE_BLOCK_SEED } = require('./pageBlocks');
@@ -152,11 +156,32 @@ async function backfillImageIds() {
     if (ids.length) await campaign.update({ photoPaths: JSON.stringify(ids) });
   }
 
+  const posts = await Post.findAll();
+  for (const post of posts) {
+    const existing = parsePhotoList(post.photoPaths).map(Number).filter(Boolean);
+    if (existing.length) continue;
+    if (post.imageId) {
+      await post.update({ photoPaths: JSON.stringify([post.imageId]) });
+    }
+  }
+
   const config = await SiteConfig.findOne({ order: [['id', 'ASC']] });
   if (config && !config.logoId) {
     const logoId = await findMediaIdByPath('/images/logo.png');
     if (logoId) await config.update({ logoId });
   }
+}
+
+async function seedPlaceholderContent() {
+  const alreadySeeded = await Campaign.count()
+    || await Post.count()
+    || await Gallery.count()
+    || await SiteConfig.count()
+    || await ImpactStat.count();
+  if (alreadySeeded) return;
+
+  await placeholderSeed.up(sequelize.getQueryInterface());
+  console.log('   ✓ Seeded starter campaigns, blogs, media, team, and site settings');
 }
 
 async function seedOffices() {
@@ -220,10 +245,11 @@ async function bootstrapCms() {
   const { adminRole } = await seedPermissionsAndRoles();
   await seedAdminUser(adminRole);
   await importImages();
-  await backfillImageIds();
+  await seedPlaceholderContent();
   await seedOffices();
   await seedPartners();
   await seedPageBlocks();
+  await backfillImageIds();
   console.log('✅ CMS bootstrap complete.');
 }
 
