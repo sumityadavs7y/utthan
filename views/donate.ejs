@@ -20,62 +20,69 @@
   </div>
 </section>
 
-<section class="section">
+<section class="section donate-page">
   <div class="container">
-    <div class="cms-heading-row">
+    <div class="donate-sheet cms-relative">
       <% if (siteConfig) { %>
         <%- include('partials/cms-bar', { permission: 'settings.edit', editType: 'site-config', id: siteConfig.id }) %>
       <% } %>
-    </div>
-    <div class="donate-layout">
-      <div class="donate-block">
-        <h2>QR code (placeholder)</h2>
-        <p class="note">Replace this image with your real UPI QR.</p>
-        <% if (siteConfig && siteConfig.qrUrl) { %>
-          <img class="qr" src="<%= siteConfig.qrUrl %>" alt="Donation QR placeholder">
-        <% } %>
-      </div>
 
-      <div class="donate-block">
-        <h2>UPI details (placeholder)</h2>
-        <dl class="detail-list">
-          <div>
-            <dt>UPI ID</dt>
-            <dd><code><%= siteConfig ? siteConfig.upiId : 'utthan@upi-placeholder' %></code></dd>
-          </div>
-        </dl>
-      </div>
+      <% if (siteConfig && (siteConfig.qrUrl || siteConfig.upiId)) { %>
+        <div class="donate-sheet__scan">
+          <p class="donate-sheet__kicker">UPI</p>
+          <h2>Scan to donate</h2>
+          <% if (siteConfig.qrUrl) { %>
+            <div class="donate-qr">
+              <img class="qr" src="<%= siteConfig.qrUrl %>" alt="Donation QR code">
+            </div>
+          <% } %>
+          <% if (siteConfig.upiId) { %>
+            <div class="donate-upi">
+              <p class="donate-upi__label">UPI ID</p>
+              <p class="donate-upi__value"><code><%= siteConfig.upiId %></code></p>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
 
-      <div class="donate-block">
-        <h2>Bank details (placeholder)</h2>
-        <dl class="detail-list">
-          <div>
-            <dt>Account name</dt>
-            <dd><%= siteConfig ? siteConfig.accountName : 'The Utthan Foundation (Placeholder)' %></dd>
-          </div>
-          <div>
-            <dt>Bank</dt>
-            <dd><%= siteConfig ? siteConfig.bankName : 'Placeholder Bank' %></dd>
-          </div>
-          <div>
-            <dt>Account number</dt>
-            <dd><code><%= siteConfig ? siteConfig.accountNumber : '000000000000' %></code></dd>
-          </div>
-          <div>
-            <dt>IFSC</dt>
-            <dd><code><%= siteConfig ? siteConfig.ifsc : 'PLCH0000000' %></code></dd>
-          </div>
-        </dl>
-      </div>
+      <% if (siteConfig && (siteConfig.accountName || siteConfig.bankName || siteConfig.accountNumber || siteConfig.ifsc)) { %>
+        <div class="donate-sheet__bank">
+          <h2>Bank transfer</h2>
+          <dl class="donate-rows">
+            <% if (siteConfig.accountName) { %>
+              <div>
+                <dt>Account name</dt>
+                <dd><%= siteConfig.accountName %></dd>
+              </div>
+            <% } %>
+            <% if (siteConfig.bankName) { %>
+              <div>
+                <dt>Bank</dt>
+                <dd><%= siteConfig.bankName %></dd>
+              </div>
+            <% } %>
+            <% if (siteConfig.accountNumber) { %>
+              <div>
+                <dt>Account number</dt>
+                <dd><code><%= siteConfig.accountNumber %></code></dd>
+              </div>
+            <% } %>
+            <% if (siteConfig.ifsc) { %>
+              <div>
+                <dt>IFSC</dt>
+                <dd><code><%= siteConfig.ifsc %></code></dd>
+              </div>
+            <% } %>
+          </dl>
+        </div>
+      <% } %>
 
-      <div class="donate-block">
-        <h2>Donation link (placeholder)</h2>
-        <p>External payment page will go here later.</p>
-        <% if (siteConfig && siteConfig.donationLink) { %>
-          <a class="btn btn--secondary" href="<%= siteConfig.donationLink %>" target="_blank" rel="noopener noreferrer">Open placeholder link</a>
-        <% } %>
-        <p class="note">Live Razorpay / PhonePe gateway is out of scope for this phase.</p>
-      </div>
+      <% if (siteConfig && siteConfig.donationLink) { %>
+        <div class="donate-sheet__cta">
+          <p>Prefer to pay online?</p>
+          <a class="btn btn--donate" href="<%= siteConfig.donationLink %>" target="_blank" rel="noopener noreferrer">Donate now</a>
+        </div>
+      <% } %>
     </div>
   </div>
 </section>

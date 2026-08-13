@@ -28,11 +28,9 @@
     <div>
       <h3>UP Office</h3>
       <% if (siteConfig) { %>
-        <p><%= siteConfig.address %></p>
-        <p><a href="tel:<%= siteConfig.phone.replace(/\s/g, '') %>"><%= siteConfig.phone %></a></p>
-        <p><a href="mailto:<%= siteConfig.email %>"><%= siteConfig.email %></a></p>
-      <% } else { %>
-        <p>Address and contact details coming soon.</p>
+        <% if (siteConfig.address) { %><p><%= siteConfig.address %></p><% } %>
+        <% if (siteConfig.phone) { %><p><a href="tel:<%= siteConfig.phone.replace(/\s/g, '') %>"><%= siteConfig.phone %></a></p><% } %>
+        <% if (siteConfig.email) { %><p><a href="mailto:<%= siteConfig.email %>"><%= siteConfig.email %></a></p><% } %>
       <% } %>
     </div>
   </div>

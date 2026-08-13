@@ -635,7 +635,6 @@ p {
 .story,
 .person,
 .blog-card,
-.donate-block,
 .donate-panel {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -709,7 +708,6 @@ button.campaign-card--button:focus-visible {
 .story,
 .person,
 .blog-card > div,
-.donate-block,
 .donate-panel {
   padding: 1.1rem 1.15rem 1.25rem;
 }
@@ -767,8 +765,7 @@ button.campaign-card--button:focus-visible {
 .people-grid,
 .campaign-grid,
 .blog-grid,
-.media-grid,
-.donate-layout {
+.media-grid {
   display: grid;
   gap: 1.25rem;
 }
@@ -780,7 +777,157 @@ button.campaign-card--button:focus-visible {
 .people-grid--4 { grid-template-columns: repeat(4, 1fr); }
 .blog-grid { grid-template-columns: 1fr; }
 .media-grid { grid-template-columns: repeat(3, 1fr); }
-.donate-layout { grid-template-columns: repeat(2, 1fr); }
+.donate-page {
+  padding-top: 0.5rem;
+}
+
+.donate-sheet {
+  width: min(560px, 100%);
+  margin: 0 auto 1rem;
+  overflow: hidden;
+  border-radius: 28px;
+  border: 1px solid rgba(31, 42, 36, 0.1);
+  box-shadow: 0 24px 50px rgba(29, 51, 40, 0.14);
+  background: var(--surface);
+}
+
+.donate-sheet__kicker {
+  margin: 0 0 0.35rem;
+  color: var(--accent-soft);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.donate-sheet__scan {
+  padding: 2rem 1.5rem 1.75rem;
+  text-align: center;
+  background:
+    radial-gradient(circle at top, rgba(243, 224, 196, 0.18), transparent 55%),
+    linear-gradient(180deg, #244233 0%, var(--brand-deep) 100%);
+  color: #f7f3ea;
+}
+
+.donate-sheet__scan h2 {
+  color: #fffdf8;
+  margin-bottom: 1.25rem;
+}
+
+.donate-qr {
+  display: grid;
+  place-items: center;
+  width: fit-content;
+  margin-inline: auto;
+  padding: 0.85rem;
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+}
+
+.donate-sheet .qr {
+  width: min(210px, 62vw);
+  border: 0;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.donate-upi {
+  margin-top: 1.25rem;
+}
+
+.donate-upi__label {
+  margin: 0 0 0.4rem;
+  color: rgba(247, 243, 234, 0.72);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.donate-upi__value {
+  margin: 0;
+  text-align: center;
+}
+
+.donate-upi__value code {
+  display: inline-block;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 253, 248, 0.12);
+  border: 1px solid rgba(255, 253, 248, 0.22);
+  color: #fffdf8;
+  font-size: 1.05rem;
+  font-weight: 700;
+  user-select: all;
+}
+
+.donate-sheet__bank {
+  padding: 1.6rem 1.5rem 1.35rem;
+}
+
+.donate-sheet__bank h2 {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.donate-rows {
+  margin: 0;
+}
+
+.donate-rows > div {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.donate-rows > div:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.donate-rows dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.donate-rows dd {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.donate-rows code {
+  font-weight: 700;
+}
+
+.donate-sheet__cta {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1.35rem 1.5rem 1.6rem;
+  background: var(--accent-soft);
+  text-align: center;
+}
+
+.donate-sheet__cta p {
+  margin: 0;
+  color: var(--brand-deep);
+  font-weight: 600;
+  text-align: center;
+}
+
+.donate-sheet__cta .btn {
+  width: 100%;
+  padding: 0.9rem 1.25rem;
+  font-size: 1.05rem;
+}
 
 .join-split {
   display: grid;
@@ -1052,7 +1199,7 @@ button.campaign-card--button:focus-visible {
 
 .split {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 2rem;
   align-items: start;
 }
@@ -1074,15 +1221,22 @@ button.campaign-card--button:focus-visible {
 }
 
 .split--flip {
-  grid-template-columns: 0.9fr 1.1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
 
-.split--flip > :first-child {
-  order: 2;
+.split--flip > .media-frame {
+  order: -1;
 }
 
-.split--flip > :last-child {
-  order: 1;
+.split .media-frame {
+  width: 100%;
+}
+
+.split .media-frame img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
 }
 
 .media-frame {
@@ -1797,7 +1951,6 @@ textarea:focus {
   .people-grid--4,
   .campaign-grid,
   .media-grid,
-  .donate-layout,
   .split,
   .detail-layout,
   .office-rail,
@@ -1838,8 +1991,7 @@ textarea:focus {
     max-width: 240px;
   }
 
-  .split--flip > :first-child,
-  .split--flip > :last-child {
+  .split--flip > .media-frame {
     order: initial;
   }
 

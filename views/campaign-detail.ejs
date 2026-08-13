@@ -69,7 +69,6 @@
         <div class="progress__bar" style="width: <%= campaign.progress %>%"></div>
       </div>
       <p class="progress__meta"><%= campaign.raisedFormatted %> raised of <%= campaign.goalFormatted %> (<%= campaign.progress %>%)</p>
-      <p class="note">Raised totals are placeholders. Live payment gateway comes later.</p>
       <div class="donate-panel__actions">
         <a class="btn btn--primary btn--block" href="/donate?campaign=<%= campaign.slug %>">Donate toward this campaign</a>
         <a class="btn btn--secondary btn--block" href="/campaigns">All campaigns</a>

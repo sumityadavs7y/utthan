@@ -607,7 +607,7 @@ function createPublicRouter(express) {
         source: 'contact'
       });
 
-      req.flash('success', 'Thank you — your message was received (placeholder inbox).');
+      req.flash('success', 'Thank you — your message was received.');
       return res.redirect('/contact');
     } catch (err) {
       next(err);
@@ -635,7 +635,7 @@ function createPublicRouter(express) {
         message
       });
 
-      req.flash('success', 'Volunteer interest received — we will follow up (placeholder).');
+      req.flash('success', 'Volunteer interest received — we will follow up.');
       return res.redirect('/contact#join');
     } catch (err) {
       next(err);
