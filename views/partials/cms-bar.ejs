@@ -1,6 +1,16 @@
-<% if (typeof can === 'function' && can(permission)) { %>
+<%
+  var cmsCan = typeof can === 'function' ? can : function () { return false; };
+  var cmsPerm = typeof permission !== 'undefined' ? permission : '';
+  var cmsAddPerm = typeof addPermission !== 'undefined' && addPermission ? addPermission : cmsPerm;
+  var cmsListPerm = typeof listPermission !== 'undefined' && listPermission ? listPermission : cmsPerm;
+  var cmsShowAdd = typeof addType !== 'undefined' && addType && cmsCan(cmsAddPerm);
+  var cmsShowList = typeof listType !== 'undefined' && listType && cmsCan(cmsListPerm);
+  var cmsShowEdit = typeof editType !== 'undefined' && editType && typeof id !== 'undefined' && id && cmsCan(cmsPerm);
+  var cmsShowDelete = typeof canDelete !== 'undefined' && canDelete && typeof editType !== 'undefined' && typeof id !== 'undefined' && id && cmsCan(cmsPerm);
+%>
+<% if (cmsShowAdd || cmsShowList || cmsShowEdit || cmsShowDelete) { %>
   <div class="cms-actions">
-    <% if (typeof addType !== 'undefined' && addType) { %>
+    <% if (cmsShowAdd) { %>
       <button
         type="button"
         class="cms-btn"
@@ -8,13 +18,13 @@
         <% if (typeof extra !== 'undefined' && extra) { %>data-cms-extra="<%= extra %>"<% } %>
       >Add</button>
     <% } %>
-    <% if (typeof listType !== 'undefined' && listType) { %>
+    <% if (cmsShowList) { %>
       <button type="button" class="cms-btn" data-cms-list="<%= listType %>"><%= typeof listLabel !== 'undefined' && listLabel ? listLabel : 'Edit' %></button>
     <% } %>
-    <% if (typeof editType !== 'undefined' && editType && typeof id !== 'undefined' && id) { %>
-      <button type="button" class="cms-btn" data-cms-edit="<%= editType %>" data-id="<%= id %>">Edit</button>
+    <% if (cmsShowEdit) { %>
+      <button type="button" class="cms-btn" data-cms-edit="<%= editType %>" data-id="<%= id %>"><%= typeof editLabel !== 'undefined' && editLabel ? editLabel : 'Edit' %></button>
     <% } %>
-    <% if (typeof canDelete !== 'undefined' && canDelete && typeof editType !== 'undefined' && id) { %>
+    <% if (cmsShowDelete) { %>
       <button type="button" class="cms-btn cms-btn--danger" data-cms-delete="<%= editType %>" data-id="<%= id %>">Delete</button>
     <% } %>
   </div>

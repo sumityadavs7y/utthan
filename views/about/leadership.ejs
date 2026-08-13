@@ -35,8 +35,7 @@
 <section id="chief-advisory-committee" class="section section--tint">
   <div class="container">
     <div class="section-heading cms-relative">
-      <%- include('../partials/cms-bar', { permission: 'about.leadership.edit', editType: 'page-block', id: advisoryHead.id }) %>
-      <%- include('../partials/cms-bar', { permission: 'about.leadership.edit', addType: 'team-member', extra: '{"category":"advisory"}' }) %>
+      <%- include('../partials/cms-bar', { permission: 'about.leadership.edit', editType: 'page-block', id: advisoryHead.id, addType: 'team-member', extra: '{"category":"advisory"}' }) %>
       <h2><%= advisoryHead.title || 'Chief Advisory Committee' %></h2>
       <p><%= advisoryHead.lede || '' %></p>
     </div>
@@ -66,8 +65,7 @@
 <section id="governing-body" class="section">
   <div class="container">
     <div class="section-heading cms-relative">
-      <%- include('../partials/cms-bar', { permission: 'about.leadership.edit', editType: 'page-block', id: governingHead.id }) %>
-      <%- include('../partials/cms-bar', { permission: 'about.leadership.edit', addType: 'team-member', extra: '{"category":"governing"}' }) %>
+      <%- include('../partials/cms-bar', { permission: 'about.leadership.edit', editType: 'page-block', id: governingHead.id, addType: 'team-member', extra: '{"category":"governing"}' }) %>
       <h2><%= governingHead.title || 'Governing Body' %></h2>
       <p><%= governingHead.lede || '' %></p>
     </div>

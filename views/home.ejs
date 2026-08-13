@@ -84,8 +84,7 @@
 <section class="section section--tint">
   <div class="container">
     <div class="section-heading cms-relative">
-      <%- include('partials/cms-bar', { permission: 'home.edit', editType: 'page-block', id: doHead.id }) %>
-      <%- include('partials/cms-bar', { permission: 'home.edit', addType: 'home-feature' }) %>
+      <%- include('partials/cms-bar', { permission: 'home.edit', editType: 'page-block', id: doHead.id, addType: 'home-feature' }) %>
       <h2><%= doHead.title || 'What we do' %></h2>
       <p><%= doHead.lede || '' %></p>
     </div>
@@ -133,8 +132,7 @@
 <section class="section section--tint">
   <div class="container">
     <div class="section-heading cms-relative">
-      <%- include('partials/cms-bar', { permission: 'home.edit', editType: 'page-block', id: storiesHead.id }) %>
-      <%- include('partials/cms-bar', { permission: 'stories.edit', addType: 'testimonial' }) %>
+      <%- include('partials/cms-bar', { permission: 'home.edit', editType: 'page-block', id: storiesHead.id, addType: 'testimonial', addPermission: 'stories.edit' }) %>
       <h2><%= storiesHead.title || 'Success stories' %></h2>
       <p><%= storiesHead.lede || '' %></p>
     </div>
@@ -210,7 +208,7 @@
 <section class="section partners-section">
   <div class="container">
     <div class="section-heading cms-relative">
-      <%- include('partials/cms-bar', { permission: 'partners.edit', listType: 'partner', listLabel: 'Edit' }) %>
+      <%- include('partials/cms-bar', { permission: 'home.edit', editType: 'page-block', id: partnersHead.id, listType: 'partner', listLabel: 'Partners', listPermission: 'partners.edit' }) %>
       <h2><%= partnersHead.title || 'Our partners' %></h2>
       <p><%= partnersHead.lede || '' %></p>
     </div>

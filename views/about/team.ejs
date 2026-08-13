@@ -14,8 +14,7 @@
 <section class="section">
   <div class="container">
     <div class="section-heading cms-relative">
-      <%- include('../partials/cms-bar', { permission: 'about.team.edit', editType: 'page-block', id: coreHead.id }) %>
-      <%- include('../partials/cms-bar', { permission: 'about.team.edit', addType: 'team-member', extra: '{"category":"board"}' }) %>
+      <%- include('../partials/cms-bar', { permission: 'about.team.edit', editType: 'page-block', id: coreHead.id, addType: 'team-member', extra: '{"category":"board"}' }) %>
       <h2><%= coreHead.title || 'Core team' %></h2>
       <p><%= coreHead.lede || '' %></p>
     </div>
@@ -45,8 +44,7 @@
 <section id="volunteers" class="section section--tint">
   <div class="container">
     <div class="section-heading cms-relative">
-      <%- include('../partials/cms-bar', { permission: 'about.team.edit', editType: 'page-block', id: volHead.id }) %>
-      <%- include('../partials/cms-bar', { permission: 'about.team.edit', addType: 'team-member', extra: '{"category":"volunteer"}' }) %>
+      <%- include('../partials/cms-bar', { permission: 'about.team.edit', editType: 'page-block', id: volHead.id, addType: 'team-member', extra: '{"category":"volunteer"}' }) %>
       <h2><%= volHead.title || 'Volunteers' %></h2>
       <p><%= volHead.lede || '' %></p>
     </div>

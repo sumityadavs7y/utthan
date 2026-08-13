@@ -16,9 +16,9 @@
 
 <nav class="contact-jump" aria-label="Contact sections">
   <div class="container contact-jump__inner">
-    <a href="#message">Send a message</a>
-    <a href="#join">Join us</a>
-    <a href="#offices">Our offices</a>
+    <a href="#message"><%= messageHead.title || 'Send a message' %></a>
+    <a href="#join"><%= joinHead.title || 'Join us' %></a>
+    <a href="#offices"><%= officesHead.title || 'Our offices' %></a>
   </div>
 </nav>
 
@@ -104,8 +104,7 @@
 <section id="offices" class="section">
   <div class="container">
     <header class="contact-block__head contact-block__head--wide cms-relative">
-      <%- include('partials/cms-bar', { permission: 'contact.edit', editType: 'page-block', id: officesHead.id }) %>
-      <%- include('partials/cms-bar', { permission: 'offices.edit', addType: 'office' }) %>
+      <%- include('partials/cms-bar', { permission: 'contact.edit', editType: 'page-block', id: officesHead.id, addType: 'office', addPermission: 'offices.edit' }) %>
       <h2><%= officesHead.title || 'Our offices' %></h2>
       <p><%= officesHead.lede || '' %></p>
     </header>
