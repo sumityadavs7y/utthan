@@ -27,7 +27,7 @@ module.exports = {
     }
 
     const rows = await queryInterface.sequelize.query(
-      'SELECT id, imageId, photoPaths FROM Posts',
+      'SELECT id, "imageId", "photoPaths" FROM "Posts"',
       { type: Sequelize.QueryTypes.SELECT }
     );
 
@@ -40,7 +40,7 @@ module.exports = {
       if (!imageId) continue;
 
       await queryInterface.sequelize.query(
-        'UPDATE Posts SET photoPaths = :photoPaths, updatedAt = :updatedAt WHERE id = :id',
+        'UPDATE "Posts" SET "photoPaths" = :photoPaths, "updatedAt" = :updatedAt WHERE id = :id',
         {
           replacements: {
             id: row.id,

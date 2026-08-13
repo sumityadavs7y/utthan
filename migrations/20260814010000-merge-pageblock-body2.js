@@ -20,7 +20,7 @@ function parseExtra(raw) {
 module.exports = {
   async up(queryInterface, Sequelize) {
     const rows = await queryInterface.sequelize.query(
-      'SELECT id, body, extra FROM PageBlocks',
+      'SELECT id, body, extra FROM "PageBlocks"',
       { type: Sequelize.QueryTypes.SELECT }
     );
 
@@ -35,7 +35,7 @@ module.exports = {
       delete extra.body2;
 
       await queryInterface.sequelize.query(
-        'UPDATE PageBlocks SET body = :body, extra = :extra, updatedAt = :updatedAt WHERE id = :id',
+        'UPDATE "PageBlocks" SET body = :body, extra = :extra, "updatedAt" = :updatedAt WHERE id = :id',
         {
           replacements: {
             id: row.id,
@@ -50,7 +50,7 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     const rows = await queryInterface.sequelize.query(
-      'SELECT id, body, extra FROM PageBlocks',
+      'SELECT id, body, extra FROM "PageBlocks"',
       { type: Sequelize.QueryTypes.SELECT }
     );
 
@@ -64,7 +64,7 @@ module.exports = {
       const nextBody = parts[0].trim();
 
       await queryInterface.sequelize.query(
-        'UPDATE PageBlocks SET body = :body, extra = :extra, updatedAt = :updatedAt WHERE id = :id',
+        'UPDATE "PageBlocks" SET body = :body, extra = :extra, "updatedAt" = :updatedAt WHERE id = :id',
         {
           replacements: {
             id: row.id,

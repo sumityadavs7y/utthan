@@ -125,7 +125,11 @@ jobs:
           fi
 
           "${COMPOSE[@]}" -p utthan pull db nginx || true
-          "${COMPOSE[@]}" -p utthan up -d --build --remove-orphans
+          if ! "${COMPOSE[@]}" -p utthan up -d --build --remove-orphans; then
+            echo "compose up reported a failure; continuing to health wait + logs"
+            "${COMPOSE[@]}" -p utthan ps || true
+            "${COMPOSE[@]}" -p utthan logs --tail=80 app || true
+          fi
 
           # Keep HTTPS nginx config if SSL was previously enabled on this host.
           if [[ -f deploy/nginx/.ssl-enabled ]]; then
@@ -136,7 +140,8 @@ jobs:
 
           echo "Waiting for health..."
           for i in $(seq 1 36); do
-            if curl -fsS http://127.0.0.1/health >/dev/null 2>&1; then
+            if "${COMPOSE[@]}" -p utthan exec -T app curl -fsS http://127.0.0.1:3000/health >/dev/null 2>&1 \
+              || curl -fsS http://127.0.0.1/health >/dev/null 2>&1; then
               echo "Healthy"
               "${COMPOSE[@]}" -p utthan ps
               exit 0
@@ -146,6 +151,6 @@ jobs:
 
           echo "Deploy did not become healthy in time"
           "${COMPOSE[@]}" -p utthan ps || true
-          "${COMPOSE[@]}" -p utthan logs --tail=80 app || true
+          "${COMPOSE[@]}" -p utthan logs --tail=120 app || true
           exit 1
           REMOTE
