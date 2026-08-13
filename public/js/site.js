@@ -598,4 +598,20 @@
   }
 
   document.querySelectorAll('[data-partners-marquee]').forEach(setupPartnersMarquee);
+
+  document.querySelectorAll('[data-toast]').forEach(function (toast) {
+    var hideTimer = window.setTimeout(dismiss, 5200);
+
+    function dismiss() {
+      window.clearTimeout(hideTimer);
+      if (toast.classList.contains('is-leaving')) return;
+      toast.classList.add('is-leaving');
+      window.setTimeout(function () {
+        toast.remove();
+      }, 280);
+    }
+
+    var closeBtn = toast.querySelector('[data-toast-close]');
+    if (closeBtn) closeBtn.addEventListener('click', dismiss);
+  });
 })();
