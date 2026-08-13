@@ -141,8 +141,8 @@ function organizationJsonLd(siteConfig) {
     name: SITE_NAME,
     alternateName: 'Utthan Foundation',
     url: siteOrigin(),
-    logo: absoluteUrl('/images/logo.png'),
-    image: absoluteUrl('/images/logo.png'),
+    logo: absoluteUrl(siteConfig?.logoUrl || '/images/logo.png'),
+    image: absoluteUrl(siteConfig?.logoUrl || '/images/logo.png'),
     description: DEFAULT_DESCRIPTION,
     email: siteConfig?.email || 'hello@theutthanfoundation.in',
     telephone: siteConfig?.phone || undefined,
@@ -218,7 +218,9 @@ function campaignJsonLd(campaign) {
       name: campaign.title,
       description: truncate(campaign.summary || campaign.description, 200),
       url,
-      image: campaign.imagePath ? absoluteUrl(campaign.imagePath) : undefined
+      image: campaign.imageUrl || campaign.imagePath
+        ? absoluteUrl(campaign.imageUrl || campaign.imagePath)
+        : undefined
     }
   };
 }

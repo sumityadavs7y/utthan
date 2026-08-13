@@ -1,8 +1,9 @@
 <footer class="site-footer">
   <div class="container footer-grid">
-    <div>
-      <p class="footer-brand">The Utthan Foundation</p>
-      <p class="muted">An NGO uniting neighbors across Uttar Pradesh for food security, education, livelihood, and community care.</p>
+    <div class="cms-relative">
+      <%- include('cms-bar', { permission: 'settings.edit', editType: 'page-block', id: footerBlock && footerBlock.id }) %>
+      <p class="footer-brand"><%= footerBlock && footerBlock.title ? footerBlock.title : 'The Utthan Foundation' %></p>
+      <p class="muted"><%= footerBlock && footerBlock.body ? footerBlock.body : 'An NGO uniting neighbors across Uttar Pradesh for food security, education, livelihood, and community care.' %></p>
       <% if (typeof socialLinks !== 'undefined' && socialLinks && socialLinks.length) { %>
         <ul class="footer-social" aria-label="Social media">
           <% socialLinks.forEach(function(link) { %>

@@ -1,0 +1,43 @@
+<%- include('../partials/head-open') %>
+
+<section class="page-hero page-hero--compact">
+  <div class="container">
+    <p class="eyebrow">Admin</p>
+    <h1><%= editUser ? 'Edit user' : 'New user' %></h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container login-wrap">
+    <form class="contact-form" method="post" action="<%= editUser ? '/admin/users/' + editUser.id : '/admin/users' %>">
+      <%- csrfField %>
+      <label>
+        Name
+        <input type="text" name="name" required value="<%= editUser ? editUser.name : '' %>">
+      </label>
+      <label>
+        Email
+        <input type="email" name="email" required value="<%= editUser ? editUser.email : '' %>">
+      </label>
+      <label>
+        Password<%= editUser ? ' (leave blank to keep current)' : '' %>
+        <input type="password" name="password" <%= editUser ? '' : 'required' %> autocomplete="new-password">
+      </label>
+      <label>
+        Role
+        <select name="roleId" required>
+          <% roles.forEach(function(role) { %>
+            <option value="<%= role.id %>" <%= editUser && editUser.roleId === role.id ? 'selected' : '' %>><%= role.name %></option>
+          <% }) %>
+        </select>
+      </label>
+      <label class="cms-check">
+        <input type="checkbox" name="isActive" value="1" <%= !editUser || editUser.isActive ? 'checked' : '' %>>
+        Active
+      </label>
+      <button class="btn btn--primary contact-form__submit" type="submit">Save</button>
+    </form>
+  </div>
+</section>
+
+<%- include('../partials/head-close') %>

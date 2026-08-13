@@ -1,36 +1,42 @@
 <%- include('../partials/head-open') %>
+<% const hero = blocks.hero || {}; const story = blocks.story || {}; const growth = blocks.growth || {}; %>
 
-<section class="page-hero page-hero--compact">
+<section class="page-hero page-hero--compact cms-relative">
+  <%- include('../partials/cms-bar', { permission: 'about.history.edit', editType: 'page-block', id: hero.id }) %>
   <div class="container">
-    <p class="eyebrow">About Us</p>
-    <h1>History</h1>
-    <p class="lede">How The Utthan Foundation began as neighbors helping neighbors across Uttar Pradesh.</p>
+    <p class="eyebrow"><%= hero.eyebrow || 'About Us' %></p>
+    <h1><%= hero.title || 'History' %></h1>
+    <p class="lede"><%= hero.lede || '' %></p>
     <%- include('../partials/about-nav') %>
   </div>
 </section>
 
 <section class="section">
-  <div class="container split">
+  <div class="container split cms-relative">
+    <%- include('../partials/cms-bar', { permission: 'about.history.edit', editType: 'page-block', id: story.id }) %>
     <div>
-      <h2>Our story</h2>
-      <p>The Utthan Foundation grew from neighbors sharing meals, school supplies, and winter kits with families who needed them most.</p>
-      <p>Today we run campaigns with volunteers and local partners — expanding food security, education, livelihood, and community care programs across Uttar Pradesh.</p>
+      <h2><%= story.title || 'Our story' %></h2>
+      <% (story.paragraphs || []).forEach((para) => { %>
+        <p><%= para %></p>
+      <% }) %>
     </div>
     <figure class="media-frame">
-      <img src="/images/village-aid-notebooks.jpg" alt="Community outreach in a village courtyard">
+      <img src="<%= story.imageUrl || '' %>" alt="<%= story.alt || '' %>">
     </figure>
   </div>
 </section>
 
 <section class="section section--tint">
-  <div class="container split split--flip">
+  <div class="container split split--flip cms-relative">
+    <%- include('../partials/cms-bar', { permission: 'about.history.edit', editType: 'page-block', id: growth.id }) %>
     <div>
-      <h2>How we grew</h2>
-      <p>Placeholder history section. Early volunteers organized small drives block by block — kitchens, school kits, and winter warmth — then formalized as The Utthan Foundation to serve more communities across Uttar Pradesh.</p>
-      <p>Replace this copy with real milestones, founding dates, and the people who shaped Utthan’s journey.</p>
+      <h2><%= growth.title || 'How we grew' %></h2>
+      <% (growth.paragraphs || []).forEach((para) => { %>
+        <p><%= para %></p>
+      <% }) %>
     </div>
     <figure class="media-frame">
-      <img src="/images/community-street-cleanup.jpg" alt="Neighbors working together on a community drive">
+      <img src="<%= growth.imageUrl || '' %>" alt="<%= growth.alt || '' %>">
     </figure>
   </div>
 </section>

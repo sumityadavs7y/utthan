@@ -38,7 +38,11 @@ const Campaign = sequelize.define('Campaign', {
   },
   imagePath: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
+  },
+  imageId: {
+    type: DataTypes.INTEGER,
+    allowNull: true
   },
   photoPaths: {
     type: DataTypes.TEXT,

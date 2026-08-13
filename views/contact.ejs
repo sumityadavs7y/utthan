@@ -1,14 +1,16 @@
 <%- include('partials/head-open') %>
+<% const hero = blocks.hero || {}; const messageHead = blocks['message-heading'] || {}; const joinHead = blocks['join-heading'] || {}; const officesHead = blocks['offices-heading'] || {}; %>
 
-<section class="contact-hero">
+<section class="contact-hero cms-relative">
+  <%- include('partials/cms-bar', { permission: 'contact.edit', editType: 'page-block', id: hero.id }) %>
   <div class="contact-hero__media" aria-hidden="true">
-    <img src="/images/community-street-cleanup.jpg" alt="">
+    <img src="<%= hero.imageUrl || '' %>" alt="">
   </div>
   <div class="contact-hero__overlay"></div>
   <div class="container contact-hero__content">
-    <p class="eyebrow">Contact</p>
-    <h1>Talk with Utthan</h1>
-    <p class="lede">Send a note, join the work, or find us across Uttar Pradesh.</p>
+    <p class="eyebrow"><%= hero.eyebrow || 'Contact' %></p>
+    <h1><%= hero.title || 'Talk with Utthan' %></h1>
+    <p class="lede"><%= hero.lede || '' %></p>
   </div>
 </section>
 
@@ -22,11 +24,13 @@
 
 <section id="message" class="section">
   <div class="container contact-block">
-    <header class="contact-block__head">
-      <h2>Send a message</h2>
-      <p>Partnerships, press, or a simple hello — we read every note.</p>
+    <header class="contact-block__head cms-relative">
+      <%- include('partials/cms-bar', { permission: 'contact.edit', editType: 'page-block', id: messageHead.id }) %>
+      <h2><%= messageHead.title || 'Send a message' %></h2>
+      <p><%= messageHead.lede || '' %></p>
     </header>
     <form class="contact-form" method="post" action="/contact" novalidate>
+      <%- csrfField %>
       <div class="contact-form__row">
         <label>
           First name *
@@ -58,14 +62,16 @@
 
 <section id="join" class="section section--tint">
   <div class="container contact-block">
-    <header class="contact-block__head">
-      <h2>Join us</h2>
-      <p>Volunteer in the field or become a member.</p>
+    <header class="contact-block__head cms-relative">
+      <%- include('partials/cms-bar', { permission: 'contact.edit', editType: 'page-block', id: joinHead.id }) %>
+      <h2><%= joinHead.title || 'Join us' %></h2>
+      <p><%= joinHead.lede || '' %></p>
       <% if (siteConfig && siteConfig.memberFeeNote) { %>
         <p class="contact-block__note"><%= siteConfig.memberFeeNote %></p>
       <% } %>
     </header>
     <form class="contact-form" method="post" action="/join/volunteer" novalidate>
+      <%- csrfField %>
       <div class="contact-form__row">
         <label>
           Full name *
@@ -97,17 +103,24 @@
 
 <section id="offices" class="section">
   <div class="container">
-    <header class="contact-block__head contact-block__head--wide">
-      <h2>Our offices</h2>
-      <p>Three placeholder desks across Uttar Pradesh — replace with real addresses when ready.</p>
+    <header class="contact-block__head contact-block__head--wide cms-relative">
+      <%- include('partials/cms-bar', { permission: 'contact.edit', editType: 'page-block', id: officesHead.id }) %>
+      <%- include('partials/cms-bar', { permission: 'offices.edit', addType: 'office' }) %>
+      <h2><%= officesHead.title || 'Our offices' %></h2>
+      <p><%= officesHead.lede || '' %></p>
     </header>
     <div class="office-rail">
       <% offices.forEach(function(office) { %>
-        <article class="office-rail__item">
+        <article class="office-rail__item cms-relative">
+          <%- include('partials/cms-bar', { permission: 'offices.edit', editType: 'office', id: office.id, canDelete: true }) %>
           <p class="eyebrow"><%= office.label %></p>
           <p class="office-rail__address"><%= office.address %></p>
-          <a class="office-rail__link" href="tel:<%= String(office.phone).replace(/\s/g, '') %>"><%= office.phone %></a>
-          <a class="office-rail__link" href="mailto:<%= office.email %>"><%= office.email %></a>
+          <% if (office.phone) { %>
+            <a class="office-rail__link" href="tel:<%= String(office.phone).replace(/\s/g, '') %>"><%= office.phone %></a>
+          <% } %>
+          <% if (office.email) { %>
+            <a class="office-rail__link" href="mailto:<%= office.email %>"><%= office.email %></a>
+          <% } %>
         </article>
       <% }) %>
     </div>

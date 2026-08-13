@@ -7,16 +7,23 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
-const { envConfig, ensureSqliteDir, ensureUploadsDirs } = require('./config');
-const { sequelize, testConnection } = require('./models');
+const { envConfig, ensureSqliteDir } = require('./config');
+const { sequelize, testConnection, PageBlock } = require('./models');
 const { runMigrations } = require('./utils/migrate');
+const { bootstrapCms } = require('./utils/bootstrapCms');
 const { securityHeaders } = require('./middleware/security');
+const { loadCurrentUser } = require('./middleware/auth');
 const { createPublicRouter, loadSiteConfig } = require('./routes/public');
-const { formatCurrencyINR, campaignProgress } = require('./utils/helpers');
+const { createAuthRouter } = require('./routes/auth');
+const { createCmsRouter } = require('./routes/cms');
+const { createAdminRouter } = require('./routes/admin');
+const { createMediaRouter } = require('./routes/media');
+const { formatCurrencyINR, campaignProgress, bodyParagraphs } = require('./utils/helpers');
 const { socialLinksFromConfig, buildPageSeo } = require('./utils/seo');
+const { mediaUrl } = require('./utils/media');
+const { decorateBlock } = require('./utils/pageBlocks');
 
 ensureSqliteDir();
-ensureUploadsDirs();
 
 const app = express();
 
@@ -43,22 +50,32 @@ app.use(session({
   cookie: {
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: 'lax'
+    sameSite: 'lax',
+    secure: envConfig.envMode === 'production'
   }
 }));
 app.use(flash());
+app.use(loadCurrentUser);
 
 app.use(async (req, res, next) => {
   try {
     const siteConfig = await loadSiteConfig();
-    res.locals.siteConfig = siteConfig;
-    res.locals.socialLinks = socialLinksFromConfig(siteConfig);
+    const config = siteConfig && siteConfig.get ? siteConfig.get({ plain: true }) : siteConfig;
+    if (config) {
+      config.logoUrl = mediaUrl(config.logoId) || '/images/logo.png';
+      config.qrUrl = mediaUrl(config.qrImageId) || config.qrImagePath || '';
+    }
+    const footerRow = await PageBlock.findOne({ where: { pageKey: 'site', blockKey: 'footer' } });
+    res.locals.siteConfig = config;
+    res.locals.footerBlock = decorateBlock(footerRow, mediaUrl);
+    res.locals.socialLinks = socialLinksFromConfig(config);
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     res.locals.currentPath = req.path;
     res.locals.siteName = 'The Utthan Foundation';
     res.locals.formatCurrencyINR = formatCurrencyINR;
     res.locals.campaignProgress = campaignProgress;
+    res.locals.bodyParagraphs = bodyParagraphs;
     next();
   } catch (err) {
     next(err);
@@ -74,6 +91,10 @@ app.get('/health', async (req, res) => {
   }
 });
 
+app.use(createMediaRouter(express));
+app.use(createAuthRouter(express));
+app.use('/admin', createAdminRouter(express));
+app.use('/cms', createCmsRouter(express));
 app.use(createPublicRouter(express));
 
 app.use((req, res) => {
@@ -117,6 +138,7 @@ const startServer = async () => {
     await testConnection();
     await runMigrations();
     await sessionStore.sync();
+    await bootstrapCms();
 
     app.listen(envConfig.port, () => {
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');

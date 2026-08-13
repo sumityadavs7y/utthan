@@ -24,6 +24,14 @@ const Post = sequelize.define('Post', {
   imagePath: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  imageId: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  photoPaths: {
+    type: DataTypes.TEXT,
+    allowNull: true
   }
 }, {
   tableName: 'Posts'

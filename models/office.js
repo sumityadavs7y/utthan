@@ -1,37 +1,26 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('./sequelize');
 
-const TeamMember = sequelize.define('TeamMember', {
+const Office = sequelize.define('Office', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  name: {
+  label: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  designation: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  imagePath: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  imageId: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  category: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      isIn: [['board', 'volunteer', 'advisory', 'governing']]
-    }
-  },
-  bio: {
+  address: {
     type: DataTypes.TEXT,
+    allowNull: false
+  },
+  phone: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  email: {
+    type: DataTypes.STRING,
     allowNull: true
   },
   sortOrder: {
@@ -40,7 +29,7 @@ const TeamMember = sequelize.define('TeamMember', {
     defaultValue: 0
   }
 }, {
-  tableName: 'TeamMembers'
+  tableName: 'Offices'
 });
 
-module.exports = TeamMember;
+module.exports = Office;

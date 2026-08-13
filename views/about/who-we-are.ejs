@@ -1,49 +1,57 @@
 <%- include('../partials/head-open') %>
+<% const hero = blocks.hero || {}; const mission = blocks.mission || {}; const vision = blocks.vision || {}; const goal = blocks.goal || {}; %>
 
-<section class="page-hero page-hero--compact">
+<section class="page-hero page-hero--compact cms-relative">
+  <%- include('../partials/cms-bar', { permission: 'about.who_we_are.edit', editType: 'page-block', id: hero.id }) %>
   <div class="container">
-    <p class="eyebrow">About Us</p>
-    <h1>Who We Are</h1>
-    <p class="lede">The Utthan Foundation is an NGO working with communities across Uttar Pradesh on food security, education, livelihood, and care.</p>
+    <p class="eyebrow"><%= hero.eyebrow || 'About Us' %></p>
+    <h1><%= hero.title || 'Who We Are' %></h1>
+    <p class="lede"><%= hero.lede || '' %></p>
     <%- include('../partials/about-nav') %>
   </div>
 </section>
 
 <section class="section">
-  <div class="container split">
+  <div class="container split cms-relative">
+    <%- include('../partials/cms-bar', { permission: 'about.who_we_are.edit', editType: 'page-block', id: mission.id }) %>
     <div>
-      <h2>Our mission</h2>
-      <p>The Utthan Foundation brings neighbors, volunteers, and partners together so help reaches villages and urban neighborhoods with dignity.</p>
-      <p>From community kitchens and school kits to livelihood workshops and local relief drives, we focus on practical support that families can feel — starting in Lucknow and across Uttar Pradesh.</p>
+      <h2><%= mission.title || 'Our mission' %></h2>
+      <% (mission.paragraphs || []).forEach((para) => { %>
+        <p><%= para %></p>
+      <% }) %>
     </div>
     <figure class="media-frame">
-      <img src="/images/grocery-aid-alley.jpg" alt="Community members sharing a bag of groceries">
+      <img src="<%= mission.imageUrl || '' %>" alt="<%= mission.alt || '' %>">
     </figure>
   </div>
 </section>
 
 <section class="section section--tint">
-  <div class="container split split--flip">
+  <div class="container split split--flip cms-relative">
+    <%- include('../partials/cms-bar', { permission: 'about.who_we_are.edit', editType: 'page-block', id: vision.id }) %>
     <div>
-      <h2>Our vision</h2>
-      <p>We envision Uttar Pradesh communities where every neighbor can meet basic needs, learn with confidence, and earn with dignity — without waiting for help that never arrives.</p>
-      <p>Utthan means uplift. Our vision is a network of local care strong enough that villages and city neighborhoods rise together, generation after generation.</p>
+      <h2><%= vision.title || 'Our vision' %></h2>
+      <% (vision.paragraphs || []).forEach((para) => { %>
+        <p><%= para %></p>
+      <% }) %>
     </div>
     <figure class="media-frame">
-      <img src="/images/rural-classroom-teaching.jpg" alt="Teacher supporting children in a rural classroom">
+      <img src="<%= vision.imageUrl || '' %>" alt="<%= vision.alt || '' %>">
     </figure>
   </div>
 </section>
 
 <section class="section">
-  <div class="container split">
+  <div class="container split cms-relative">
+    <%- include('../partials/cms-bar', { permission: 'about.who_we_are.edit', editType: 'page-block', id: goal.id }) %>
     <div>
-      <h2>Our goal</h2>
-      <p>Expand trusted, community-led programs across more districts of Uttar Pradesh — food security, education support, livelihood skills, and neighborhood care.</p>
-      <p>We aim to grow with volunteers, members, and partners so every campaign is practical, accountable, and rooted in the people we serve.</p>
+      <h2><%= goal.title || 'Our goal' %></h2>
+      <% (goal.paragraphs || []).forEach((para) => { %>
+        <p><%= para %></p>
+      <% }) %>
     </div>
     <figure class="media-frame">
-      <img src="/images/women-sewing-workshop.jpg" alt="Women learning skills in a livelihood workshop">
+      <img src="<%= goal.imageUrl || '' %>" alt="<%= goal.alt || '' %>">
     </figure>
   </div>
 </section>

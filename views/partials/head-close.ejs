@@ -1,5 +1,9 @@
   </main>
   <%- include('footer') %>
+  <%- include('cms-modal') %>
   <script src="/js/site.js" defer></script>
+  <% if (typeof currentUser !== 'undefined' && currentUser) { %>
+    <script src="/js/cms.js" defer></script>
+  <% } %>
 </body>
 </html>

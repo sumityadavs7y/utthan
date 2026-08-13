@@ -1,11 +1,11 @@
 const multer = require('multer');
 
 function fileFilter(req, file, cb) {
-  const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+  const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
   if (allowed.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Only image files (jpeg, png, webp, gif) are allowed.'));
+    cb(new Error('Only image files (jpeg, png, webp, gif, svg) are allowed.'));
   }
 }
 
@@ -17,7 +17,6 @@ const upload = multer({
   }
 });
 
-// Keep aliases so existing route imports continue to work
 module.exports = {
   upload,
   galleryUpload: upload,

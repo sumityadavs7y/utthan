@@ -1,39 +1,52 @@
 <%- include('partials/head-open') %>
+<% const hero = blocks.hero || {}; const campHead = blocks['campaigns-heading'] || {}; const doHead = blocks['what-we-do-heading'] || {}; const join = blocks.join || {}; const storiesHead = blocks['stories-heading'] || {}; const partnersHead = blocks['partners-heading'] || {}; const focusAreas = typeof features !== 'undefined' ? features : []; %>
 
-<section class="hero">
+<section class="hero cms-relative">
+  <%- include('partials/cms-bar', { permission: 'home.edit', editType: 'page-block', id: hero.id }) %>
   <div class="hero__media" aria-hidden="true">
-    <img src="/images/food-aid-kit-handover.jpg" alt="">
+    <img src="<%= hero.imageUrl || '' %>" alt="">
   </div>
   <div class="hero__overlay"></div>
   <div class="container hero__content">
-    <p class="eyebrow">The Utthan Foundation</p>
-    <h1>Neighbors rising together across Uttar Pradesh</h1>
-    <p class="lede">Food security, education, livelihood, and care — an NGO serving villages and neighborhoods from Lucknow outward.</p>
+    <p class="eyebrow"><%= hero.eyebrow || 'The Utthan Foundation' %></p>
+    <h1><%= hero.title || 'Neighbors rising together across Uttar Pradesh' %></h1>
+    <p class="lede"><%= hero.lede || '' %></p>
     <div class="hero__actions">
-      <a class="btn btn--primary" href="/donate">Donate Now</a>
-      <a class="btn btn--ghost" href="/campaigns">See Campaigns</a>
+      <% if (hero.extra && hero.extra.ctaPrimaryLabel) { %>
+        <a class="btn btn--primary" href="<%= hero.extra.ctaPrimaryHref || '/donate' %>"><%= hero.extra.ctaPrimaryLabel %></a>
+      <% } %>
+      <% if (hero.extra && hero.extra.ctaSecondaryLabel) { %>
+        <a class="btn btn--ghost" href="<%= hero.extra.ctaSecondaryHref || '/campaigns' %>"><%= hero.extra.ctaSecondaryLabel %></a>
+      <% } %>
     </div>
   </div>
 </section>
 
-<% if (stats && stats.length) { %>
 <section class="stats-strip">
-  <div class="container stats-grid">
-    <% stats.forEach(function(stat) { %>
-      <div class="stat">
-        <strong><%= stat.prefix || '' %><%= Number(stat.value).toLocaleString('en-IN') %><%= stat.suffix || '' %></strong>
-        <span><%= stat.label %></span>
+  <div class="container">
+    <div class="cms-heading-row">
+      <%- include('partials/cms-bar', { permission: 'stats.edit', addType: 'stat' }) %>
+    </div>
+    <% if (stats && stats.length) { %>
+      <div class="stats-grid">
+        <% stats.forEach(function(stat) { %>
+          <div class="stat cms-relative">
+            <%- include('partials/cms-bar', { permission: 'stats.edit', editType: 'stat', id: stat.id, canDelete: true }) %>
+            <strong><%= stat.prefix || '' %><%= Number(stat.value).toLocaleString('en-IN') %><%= stat.suffix || '' %></strong>
+            <span><%= stat.label %></span>
+          </div>
+        <% }) %>
       </div>
-    <% }) %>
+    <% } %>
   </div>
 </section>
-<% } %>
 
 <section class="section">
   <div class="container">
-    <div class="section-heading">
-      <h2>Ongoing campaigns</h2>
-      <p>Support active relief, education, and livelihood drives across Uttar Pradesh.</p>
+    <div class="section-heading cms-relative">
+      <%- include('partials/cms-bar', { permission: 'home.edit', editType: 'page-block', id: campHead.id }) %>
+      <h2><%= campHead.title || 'Ongoing campaigns' %></h2>
+      <p><%= campHead.lede || '' %></p>
     </div>
     <% if (ongoingCampaigns.length) { %>
       <div class="slider" data-slider>
@@ -42,7 +55,7 @@
             <article class="slider__slide">
               <a href="/campaigns/<%= c.slug %>" class="campaign-card">
                 <div class="campaign-card__media">
-                  <img src="<%= c.imagePath %>" alt="<%= c.title %>">
+                  <img src="<%= c.imageUrl %>" alt="<%= c.title %>">
                   <span class="badge"><%= c.status %></span>
                 </div>
                 <div class="campaign-card__body">
@@ -70,49 +83,45 @@
 
 <section class="section section--tint">
   <div class="container">
-    <div class="section-heading">
-      <h2>What we do</h2>
-      <p>Four focus areas guiding The Utthan Foundation’s community work in Uttar Pradesh.</p>
+    <div class="section-heading cms-relative">
+      <%- include('partials/cms-bar', { permission: 'home.edit', editType: 'page-block', id: doHead.id }) %>
+      <%- include('partials/cms-bar', { permission: 'home.edit', addType: 'home-feature' }) %>
+      <h2><%= doHead.title || 'What we do' %></h2>
+      <p><%= doHead.lede || '' %></p>
     </div>
-    <div class="feature-grid">
-      <article class="feature">
-        <img src="/images/hot-meal-distribution.jpg" alt="Volunteers serving hot meals in a community kitchen">
-        <h3>Food security</h3>
-        <p>Community kitchens and grocery kits for families facing hunger.</p>
-      </article>
-      <article class="feature">
-        <img src="/images/rural-classroom-teaching.jpg" alt="Teacher helping children in a rural classroom">
-        <h3>Education</h3>
-        <p>School kits, classroom support, and community libraries.</p>
-      </article>
-      <article class="feature">
-        <img src="/images/women-sewing-workshop.jpg" alt="Women learning sewing skills in a livelihood workshop">
-        <h3>Livelihood</h3>
-        <p>Skills workshops so women can earn with dignity.</p>
-      </article>
-      <article class="feature">
-        <img src="/images/community-street-cleanup.jpg" alt="Neighbors cleaning a street during a community care drive">
-        <h3>Community care</h3>
-        <p>Sanitation drives, relief distribution, and neighborhood action.</p>
-      </article>
-    </div>
+    <% if (focusAreas.length) { %>
+      <div class="feature-grid">
+        <% focusAreas.forEach(function(feature) { %>
+          <article class="feature cms-relative">
+            <%- include('partials/cms-bar', { permission: 'home.edit', editType: 'home-feature', id: feature.id, canDelete: true }) %>
+            <img src="<%= feature.imageUrl || '' %>" alt="<%= feature.alt || feature.title || '' %>">
+            <h3><%= feature.title %></h3>
+            <p><%= feature.body %></p>
+          </article>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <p class="muted">No focus areas yet.</p>
+    <% } %>
   </div>
 </section>
 
-<section class="join-split" aria-labelledby="join-heading">
+<section class="join-split cms-relative" aria-labelledby="join-heading">
+  <%- include('partials/cms-bar', { permission: 'home.edit', editType: 'page-block', id: join.id }) %>
   <div class="join-split__media">
-    <img
-      src="/images/women-sewing-workshop.jpg"
-      alt="Women learning skills together at a community workshop"
-    >
+    <img src="<%= join.imageUrl || '' %>" alt="<%= join.alt || '' %>">
   </div>
   <div class="join-split__content">
     <div class="join-split__content-inner">
-      <h2 id="join-heading">Join us</h2>
-      <p class="join-split__lede">Volunteer in the field or become a member of The Utthan Foundation.</p>
+      <h2 id="join-heading"><%= join.title || 'Join us' %></h2>
+      <p class="join-split__lede"><%= join.lede || '' %></p>
       <div class="join-split__actions">
-        <a class="btn btn--primary" href="/contact#join">Join as Volunteer</a>
-        <a class="btn btn--secondary" href="/contact#join">Join as Member</a>
+        <% if (join.extra && join.extra.ctaPrimaryLabel) { %>
+          <a class="btn btn--primary" href="<%= join.extra.ctaPrimaryHref || '/contact#join' %>"><%= join.extra.ctaPrimaryLabel %></a>
+        <% } %>
+        <% if (join.extra && join.extra.ctaSecondaryLabel) { %>
+          <a class="btn btn--secondary" href="<%= join.extra.ctaSecondaryHref || '/contact#join' %>"><%= join.extra.ctaSecondaryLabel %></a>
+        <% } %>
       </div>
       <% if (siteConfig && siteConfig.memberFeeNote) { %>
         <p class="join-split__fee"><%= siteConfig.memberFeeNote %></p>
@@ -123,20 +132,23 @@
 
 <section class="section section--tint">
   <div class="container">
-    <div class="section-heading">
-      <h2>Success stories</h2>
-      <p>Voices from neighbors we serve across Uttar Pradesh.</p>
+    <div class="section-heading cms-relative">
+      <%- include('partials/cms-bar', { permission: 'home.edit', editType: 'page-block', id: storiesHead.id }) %>
+      <%- include('partials/cms-bar', { permission: 'stories.edit', addType: 'testimonial' }) %>
+      <h2><%= storiesHead.title || 'Success stories' %></h2>
+      <p><%= storiesHead.lede || '' %></p>
     </div>
     <% if (testimonials.length) { %>
       <div class="slider" data-slider>
         <div class="slider__track" data-slider-track>
           <% testimonials.forEach(function(t) { %>
-            <article class="slider__slide">
+            <article class="slider__slide cms-relative">
+              <%- include('partials/cms-bar', { permission: 'stories.edit', editType: 'testimonial', id: t.id, canDelete: true }) %>
               <button
                 type="button"
                 class="campaign-card campaign-card--button"
                 data-story-open
-                data-story-image="<%= t.imagePath %>"
+                data-story-image="<%= t.imageUrl %>"
                 data-story-title="<%= t.title %>"
                 data-story-quote="<%= t.quote %>"
                 data-story-name="<%= t.name %>"
@@ -144,7 +156,7 @@
                 aria-label="Read success story: <%= t.title %>"
               >
                 <div class="campaign-card__media">
-                  <img src="<%= t.imagePath %>" alt="">
+                  <img src="<%= t.imageUrl %>" alt="">
                   <span class="badge">Story</span>
                 </div>
                 <div class="campaign-card__body">
@@ -197,9 +209,10 @@
 
 <section class="section partners-section">
   <div class="container">
-    <div class="section-heading">
-      <h2>Our partners</h2>
-      <p>Organizations and groups walking with The Utthan Foundation across Uttar Pradesh.</p>
+    <div class="section-heading cms-relative">
+      <%- include('partials/cms-bar', { permission: 'partners.edit', listType: 'partner', listLabel: 'Edit' }) %>
+      <h2><%= partnersHead.title || 'Our partners' %></h2>
+      <p><%= partnersHead.lede || '' %></p>
     </div>
     <% if (partners && partners.length) { %>
       <div class="partners-marquee" data-partners-marquee>
@@ -207,12 +220,12 @@
           <div class="partners-marquee__track" data-partners-track>
             <ul class="partners-marquee__set" data-partners-set>
               <% partners.forEach(function(p) { %>
-                <% const showLogo = Boolean(p.logoPath); %>
+                <% const showLogo = Boolean(p.logoUrl); %>
                 <% const showName = Boolean(p.name) && (p.showName !== false || !showLogo); %>
                 <li class="partner-item<%= showLogo && showName ? ' partner-item--both' : (showLogo ? ' partner-item--logo' : ' partner-item--name') %>">
                   <% if (showLogo) { %>
                     <span class="partner-item__mark">
-                      <img src="<%= p.logoPath %>" alt="<%= showName ? '' : (p.name || 'Partner') %>" width="36" height="36" decoding="async">
+                      <img src="<%= p.logoUrl %>" alt="<%= showName ? '' : (p.name || 'Partner') %>" width="36" height="36" decoding="async">
                     </span>
                   <% } %>
                   <% if (showName) { %>

@@ -1,0 +1,98 @@
+<%- include('../partials/head-open') %>
+
+<section class="page-hero page-hero--compact">
+  <div class="container">
+    <p class="eyebrow">Admin</p>
+    <h1>Inbox</h1>
+    <p class="lede">Contact messages and volunteer / membership interest.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <h2>Contact messages</h2>
+    <% if (!messages.length) { %>
+      <p class="muted">No messages yet.</p>
+    <% } else { %>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>When</th>
+              <th>From</th>
+              <th>Message</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% messages.forEach(function(item) { %>
+              <tr class="<%= item.isRead ? '' : 'is-unread' %>">
+                <td><%= new Date(item.createdAt).toLocaleString('en-IN') %></td>
+                <td>
+                  <%= item.firstName %> <%= item.lastName || '' %><br>
+                  <a href="mailto:<%= item.email %>"><%= item.email %></a>
+                  <% if (item.phone) { %><br><%= item.phone %><% } %>
+                </td>
+                <td><%= item.message %></td>
+                <td>
+                  <% if (!item.isRead) { %>
+                    <form method="post" action="/admin/inbox/contact/<%= item.id %>/read">
+                      <%- csrfField %>
+                      <button class="cms-btn" type="submit">Mark read</button>
+                    </form>
+                  <% } else { %>
+                    Read
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+
+    <h2 class="section-subheading">Volunteer &amp; membership</h2>
+    <% if (!applications.length) { %>
+      <p class="muted">No applications yet.</p>
+    <% } else { %>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>When</th>
+              <th>From</th>
+              <th>Message</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% applications.forEach(function(item) { %>
+              <tr class="<%= item.isRead ? '' : 'is-unread' %>">
+                <td><%= new Date(item.createdAt).toLocaleString('en-IN') %></td>
+                <td>
+                  <%= item.name %><br>
+                  <a href="mailto:<%= item.email %>"><%= item.email %></a>
+                  <% if (item.phone) { %><br><%= item.phone %><% } %>
+                  <% if (item.company) { %><br><%= item.company %><% } %>
+                </td>
+                <td><%= item.message %></td>
+                <td>
+                  <% if (!item.isRead) { %>
+                    <form method="post" action="/admin/inbox/volunteer/<%= item.id %>/read">
+                      <%- csrfField %>
+                      <button class="cms-btn" type="submit">Mark read</button>
+                    </form>
+                  <% } else { %>
+                    Read
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/head-close') %>

@@ -1,0 +1,58 @@
+<%- include('../partials/head-open') %>
+
+<section class="page-hero page-hero--compact">
+  <div class="container">
+    <p class="eyebrow">Admin</p>
+    <h1>Roles</h1>
+    <p class="lede">Admin has every permission. Everyone has none. Custom roles can mix section access.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p class="admin-toolbar">
+      <a class="btn btn--primary" href="/admin/roles/new">Add role</a>
+    </p>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Role</th>
+            <th>Permissions</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% roles.forEach(function(role) { %>
+            <tr>
+              <td>
+                <strong><%= role.name %></strong>
+                <% if (role.isSystem) { %><span class="badge">System</span><% } %>
+              </td>
+              <td>
+                <% if (role.slug === 'admin') { %>
+                  All permissions
+                <% } else if (!(role.Permissions && role.Permissions.length)) { %>
+                  None
+                <% } else { %>
+                  <%= role.Permissions.map(function(p){ return p.label; }).join(', ') %>
+                <% } %>
+              </td>
+              <td class="admin-table__actions">
+                <a href="/admin/roles/<%= role.id %>/edit">Edit</a>
+                <% if (!role.isSystem) { %>
+                  <form method="post" action="/admin/roles/<%= role.id %>/delete" onsubmit="return confirm('Delete this role? Users will move to Everyone.');">
+                    <%- csrfField %>
+                    <button type="submit">Delete</button>
+                  </form>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/head-close') %>

@@ -1,0 +1,18 @@
+<% if (typeof currentUser !== 'undefined' && currentUser) { %>
+<div class="cms-modal" data-cms-modal hidden>
+  <div class="cms-modal__backdrop" data-cms-close tabindex="-1"></div>
+  <div class="cms-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="cms-modal-title">
+    <button type="button" class="cms-modal__close" data-cms-close aria-label="Close editor">×</button>
+    <h2 id="cms-modal-title" data-cms-title>Edit</h2>
+    <form class="cms-form" data-cms-form enctype="multipart/form-data">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="cms-form__fields" data-cms-fields></div>
+      <p class="cms-form__error" data-cms-error hidden></p>
+      <div class="cms-form__actions">
+        <button class="btn btn--primary" type="submit">Save</button>
+        <button class="btn btn--secondary" type="button" data-cms-close>Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+<% } %>

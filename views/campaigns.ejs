@@ -1,15 +1,20 @@
 <%- include('partials/head-open') %>
+<% const hero = blocks.hero || {}; %>
 
-<section class="page-hero">
+<section class="page-hero cms-relative">
+  <%- include('partials/cms-bar', { permission: 'campaigns.edit', editType: 'page-block', id: hero.id }) %>
   <div class="container">
-    <p class="eyebrow">Campaigns</p>
-    <h1>Campaigns for community relief &amp; care</h1>
-    <p class="lede">Browse ongoing, completed, and upcoming drives — winter relief, school kits, community kitchens, livelihood workshops, and more.</p>
+    <p class="eyebrow"><%= hero.eyebrow || 'Campaigns' %></p>
+    <h1><%= hero.title || 'Campaigns for community relief & care' %></h1>
+    <p class="lede"><%= hero.lede || '' %></p>
   </div>
 </section>
 
 <section class="section">
   <div class="container">
+    <div class="cms-heading-row">
+      <%- include('partials/cms-bar', { permission: 'campaigns.edit', addType: 'campaign' }) %>
+    </div>
     <div class="tabs" role="tablist">
       <a class="tabs__item <%= status === 'ongoing' ? 'is-active' : '' %>" href="/campaigns?status=ongoing">Ongoing</a>
       <a class="tabs__item <%= status === 'completed' ? 'is-active' : '' %>" href="/campaigns?status=completed">Completed</a>
@@ -19,10 +24,11 @@
     <% if (campaigns.length) { %>
       <div class="campaign-grid">
         <% campaigns.forEach(function(c) { %>
-          <article>
+          <article class="cms-relative">
+            <%- include('partials/cms-bar', { permission: 'campaigns.edit', editType: 'campaign', id: c.id, canDelete: true }) %>
             <a href="/campaigns/<%= c.slug %>" class="campaign-card">
               <div class="campaign-card__media">
-                <img src="<%= c.imagePath %>" alt="<%= c.title %>">
+                <img src="<%= c.imageUrl %>" alt="<%= c.title %>">
                 <span class="badge"><%= c.status %></span>
               </div>
               <div class="campaign-card__body">

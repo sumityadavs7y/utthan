@@ -1,68 +1,81 @@
 <%- include('partials/head-open') %>
+<% const hero = blocks.hero || {}; %>
 
-<section class="page-hero">
+<section class="page-hero cms-relative">
+  <%- include('partials/cms-bar', { permission: 'donate.edit', editType: 'page-block', id: hero.id }) %>
   <div class="container">
-    <p class="eyebrow">Donate</p>
-    <h1>Donate to The Utthan Foundation</h1>
+    <p class="eyebrow"><%= hero.eyebrow || 'Donate' %></p>
+    <h1><%= hero.title || 'Donate to The Utthan Foundation' %></h1>
     <p class="lede">
       <% if (campaign) { %>
-        Supporting: <strong><%= campaign.title %></strong>. Every gift funds food, education, livelihood, and care across Uttar Pradesh.
+        <% if (hero.extra && hero.extra.campaignLede) { %>
+          <%= hero.extra.campaignLede.replace('{title}', campaign.title) %>
+        <% } else { %>
+          Supporting: <strong><%= campaign.title %></strong>. Every gift funds food, education, livelihood, and care across Uttar Pradesh.
+        <% } %>
       <% } else { %>
-        Every gift helps neighbors rise. Support food security, education, livelihood, and community care across Uttar Pradesh.
+        <%= hero.lede || '' %>
       <% } %>
     </p>
   </div>
 </section>
 
 <section class="section">
-  <div class="container donate-layout">
-    <div class="donate-block">
-      <h2>QR code (placeholder)</h2>
-      <p class="note">Replace this image with your real UPI QR.</p>
-      <% if (siteConfig && siteConfig.qrImagePath) { %>
-        <img class="qr" src="<%= siteConfig.qrImagePath %>" alt="Donation QR placeholder">
+  <div class="container">
+    <div class="cms-heading-row">
+      <% if (siteConfig) { %>
+        <%- include('partials/cms-bar', { permission: 'settings.edit', editType: 'site-config', id: siteConfig.id }) %>
       <% } %>
     </div>
+    <div class="donate-layout">
+      <div class="donate-block">
+        <h2>QR code (placeholder)</h2>
+        <p class="note">Replace this image with your real UPI QR.</p>
+        <% if (siteConfig && siteConfig.qrUrl) { %>
+          <img class="qr" src="<%= siteConfig.qrUrl %>" alt="Donation QR placeholder">
+        <% } %>
+      </div>
 
-    <div class="donate-block">
-      <h2>UPI details (placeholder)</h2>
-      <dl class="detail-list">
-        <div>
-          <dt>UPI ID</dt>
-          <dd><code><%= siteConfig ? siteConfig.upiId : 'utthan@upi-placeholder' %></code></dd>
-        </div>
-      </dl>
-    </div>
+      <div class="donate-block">
+        <h2>UPI details (placeholder)</h2>
+        <dl class="detail-list">
+          <div>
+            <dt>UPI ID</dt>
+            <dd><code><%= siteConfig ? siteConfig.upiId : 'utthan@upi-placeholder' %></code></dd>
+          </div>
+        </dl>
+      </div>
 
-    <div class="donate-block">
-      <h2>Bank details (placeholder)</h2>
-      <dl class="detail-list">
-        <div>
-          <dt>Account name</dt>
-          <dd><%= siteConfig ? siteConfig.accountName : 'The Utthan Foundation (Placeholder)' %></dd>
-        </div>
-        <div>
-          <dt>Bank</dt>
-          <dd><%= siteConfig ? siteConfig.bankName : 'Placeholder Bank' %></dd>
-        </div>
-        <div>
-          <dt>Account number</dt>
-          <dd><code><%= siteConfig ? siteConfig.accountNumber : '000000000000' %></code></dd>
-        </div>
-        <div>
-          <dt>IFSC</dt>
-          <dd><code><%= siteConfig ? siteConfig.ifsc : 'PLCH0000000' %></code></dd>
-        </div>
-      </dl>
-    </div>
+      <div class="donate-block">
+        <h2>Bank details (placeholder)</h2>
+        <dl class="detail-list">
+          <div>
+            <dt>Account name</dt>
+            <dd><%= siteConfig ? siteConfig.accountName : 'The Utthan Foundation (Placeholder)' %></dd>
+          </div>
+          <div>
+            <dt>Bank</dt>
+            <dd><%= siteConfig ? siteConfig.bankName : 'Placeholder Bank' %></dd>
+          </div>
+          <div>
+            <dt>Account number</dt>
+            <dd><code><%= siteConfig ? siteConfig.accountNumber : '000000000000' %></code></dd>
+          </div>
+          <div>
+            <dt>IFSC</dt>
+            <dd><code><%= siteConfig ? siteConfig.ifsc : 'PLCH0000000' %></code></dd>
+          </div>
+        </dl>
+      </div>
 
-    <div class="donate-block">
-      <h2>Donation link (placeholder)</h2>
-      <p>External payment page will go here later.</p>
-      <% if (siteConfig && siteConfig.donationLink) { %>
-        <a class="btn btn--secondary" href="<%= siteConfig.donationLink %>" target="_blank" rel="noopener noreferrer">Open placeholder link</a>
-      <% } %>
-      <p class="note">Live Razorpay / PhonePe gateway is out of scope for this phase.</p>
+      <div class="donate-block">
+        <h2>Donation link (placeholder)</h2>
+        <p>External payment page will go here later.</p>
+        <% if (siteConfig && siteConfig.donationLink) { %>
+          <a class="btn btn--secondary" href="<%= siteConfig.donationLink %>" target="_blank" rel="noopener noreferrer">Open placeholder link</a>
+        <% } %>
+        <p class="note">Live Razorpay / PhonePe gateway is out of scope for this phase.</p>
+      </div>
     </div>
   </div>
 </section>

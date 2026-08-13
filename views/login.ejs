@@ -1,0 +1,28 @@
+<%- include('partials/head-open') %>
+
+<section class="page-hero page-hero--compact">
+  <div class="container">
+    <p class="eyebrow">Account</p>
+    <h1>Log in</h1>
+    <p class="lede">Sign in to edit website content. Visitors can browse the public site without an account.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container login-wrap">
+    <form class="contact-form login-form" method="post" action="/login">
+      <%- csrfField %>
+      <label>
+        Email
+        <input type="email" name="email" required autocomplete="username">
+      </label>
+      <label>
+        Password
+        <input type="password" name="password" required autocomplete="current-password">
+      </label>
+      <button class="btn btn--primary contact-form__submit" type="submit">Log in</button>
+    </form>
+  </div>
+</section>
+
+<%- include('partials/head-close') %>

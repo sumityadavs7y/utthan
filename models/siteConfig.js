@@ -71,6 +71,14 @@ const SiteConfig = sequelize.define('SiteConfig', {
     type: DataTypes.STRING,
     allowNull: true
   },
+  qrImageId: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  logoId: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
   donationLink: {
     type: DataTypes.STRING,
     allowNull: true

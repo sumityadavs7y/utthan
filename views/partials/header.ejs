@@ -2,7 +2,7 @@
 <header class="site-header">
   <div class="site-header__inner">
     <a class="brand" href="/" aria-label="<%= siteName %> home">
-      <img class="brand__logo" src="/images/logo.png" alt="Utthan Foundation" width="178" height="56">
+      <img class="brand__logo" src="<%= siteConfig && siteConfig.logoUrl ? siteConfig.logoUrl : '/images/logo.png' %>" alt="Utthan Foundation" width="178" height="56">
     </a>
 
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
@@ -40,6 +40,44 @@
       <a href="/blogs" class="<%= currentPath.startsWith('/blogs') ? 'is-active' : '' %>">Blogs &amp; Media</a>
       <a href="/contact" class="<%= currentPath.startsWith('/contact') ? 'is-active' : '' %>">Contact</a>
       <a class="btn btn--donate" href="/donate">Donate</a>
+
+      <% if (typeof currentUser !== 'undefined' && currentUser) { %>
+        <div class="nav-item nav-item--dropdown <%= currentPath.startsWith('/admin') ? 'is-current' : '' %>" data-dropdown>
+          <button
+            type="button"
+            class="nav-link nav-link--button <%= currentPath.startsWith('/admin') ? 'is-active' : '' %>"
+            aria-expanded="false"
+            aria-haspopup="true"
+            aria-controls="account-menu"
+            data-dropdown-trigger
+          >
+            <span><%= currentUser.name %></span>
+            <svg class="nav-caret" viewBox="0 0 12 8" width="12" height="8" aria-hidden="true">
+              <path d="M1 1.5 L6 6.5 L11 1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div id="account-menu" class="nav-panel" role="menu" data-dropdown-menu hidden>
+            <% if (typeof can === 'function' && can('users.manage')) { %>
+              <a href="/admin/users" role="menuitem" class="<%= currentPath.startsWith('/admin/users') ? 'is-active' : '' %>">Users</a>
+            <% } %>
+            <% if (typeof can === 'function' && can('roles.manage')) { %>
+              <a href="/admin/roles" role="menuitem" class="<%= currentPath.startsWith('/admin/roles') ? 'is-active' : '' %>">Roles</a>
+            <% } %>
+            <% if (typeof can === 'function' && can('inbox.view')) { %>
+              <a href="/admin/inbox" role="menuitem" class="<%= currentPath.startsWith('/admin/inbox') ? 'is-active' : '' %>">Inbox</a>
+            <% } %>
+            <% if (typeof can === 'function' && can('settings.edit') && siteConfig) { %>
+              <button type="button" class="nav-panel__button" role="menuitem" data-cms-edit="site-config" data-id="<%= siteConfig.id %>">Site settings</button>
+            <% } %>
+            <form method="post" action="/logout" class="nav-panel__form">
+              <%- csrfField %>
+              <button type="submit" role="menuitem">Log out</button>
+            </form>
+          </div>
+        </div>
+      <% } else { %>
+        <a href="/login" class="<%= currentPath === '/login' ? 'is-active' : '' %>">Login</a>
+      <% } %>
     </nav>
   </div>
 </header>

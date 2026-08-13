@@ -1,0 +1,47 @@
+<%- include('../partials/head-open') %>
+
+<section class="page-hero page-hero--compact">
+  <div class="container">
+    <p class="eyebrow">Admin</p>
+    <h1><%= editRole ? 'Edit role' : 'New role' %></h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container login-wrap login-wrap--wide">
+    <form class="contact-form" method="post" action="<%= editRole ? '/admin/roles/' + editRole.id : '/admin/roles' %>">
+      <%- csrfField %>
+      <label>
+        Name
+        <input type="text" name="name" required value="<%= editRole ? editRole.name : '' %>" <%= editRole && editRole.isSystem ? 'readonly' : '' %>>
+      </label>
+
+      <% if (editRole && editRole.slug === 'admin') { %>
+        <p class="note">Admin always has every permission.</p>
+      <% } else if (editRole && editRole.slug === 'everyone') { %>
+        <p class="note">Everyone has no permissions. This cannot be changed.</p>
+      <% } else { %>
+        <% permissionGroups.forEach(function(group) { %>
+          <fieldset class="perm-group">
+            <legend><%= group.name %></legend>
+            <% group.items.forEach(function(perm) { %>
+              <label class="cms-check">
+                <input
+                  type="checkbox"
+                  name="permissions"
+                  value="<%= perm.key %>"
+                  <%= selectedKeys.indexOf(perm.key) !== -1 ? 'checked' : '' %>
+                >
+                <%= perm.label %>
+              </label>
+            <% }) %>
+          </fieldset>
+        <% }) %>
+      <% } %>
+
+      <button class="btn btn--primary contact-form__submit" type="submit">Save</button>
+    </form>
+  </div>
+</section>
+
+<%- include('../partials/head-close') %>

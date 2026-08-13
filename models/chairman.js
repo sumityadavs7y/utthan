@@ -9,7 +9,11 @@ const Chairman = sequelize.define('Chairman', {
   },
   photoPath: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
+  },
+  photoId: {
+    type: DataTypes.INTEGER,
+    allowNull: true
   },
   message: {
     type: DataTypes.TEXT,
@@ -25,6 +29,10 @@ const Chairman = sequelize.define('Chairman', {
   },
   signaturePath: {
     type: DataTypes.STRING,
+    allowNull: true
+  },
+  signatureId: {
+    type: DataTypes.INTEGER,
     allowNull: true
   }
 }, {

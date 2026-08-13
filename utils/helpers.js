@@ -40,6 +40,13 @@ function parseTimeline(timeline) {
   }
 }
 
+function bodyParagraphs(text) {
+  return String(text || '')
+    .split(/\n+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
 function parsePhotoList(photos) {
   if (!photos) return [];
   if (Array.isArray(photos)) return photos;
@@ -49,6 +56,15 @@ function parsePhotoList(photos) {
   } catch {
     return [];
   }
+}
+
+function photoUrls(photos, mediaUrlFn) {
+  return parsePhotoList(photos).map((item) => {
+    if (typeof item === 'number' || /^\d+$/.test(String(item))) {
+      return mediaUrlFn ? mediaUrlFn(item) : `/media/${item}`;
+    }
+    return String(item);
+  });
 }
 
 function formatCampaignDate(dateStr) {
@@ -87,7 +103,9 @@ module.exports = {
   formatCurrencyINR,
   campaignProgress,
   parseTimeline,
+  bodyParagraphs,
   parsePhotoList,
+  photoUrls,
   formatCampaignDate,
   campaignDateLabel
 };

@@ -1,6 +1,7 @@
 <%- include('partials/head-open') %>
 
-<section class="page-hero page-hero--compact">
+<section class="page-hero page-hero--compact cms-relative">
+  <%- include('partials/cms-bar', { permission: 'campaigns.edit', editType: 'campaign', id: campaign.id, canDelete: true }) %>
   <div class="container">
     <p class="eyebrow"><%= campaign.category %> · <%= campaign.status %></p>
     <h1><%= campaign.title %></h1>
@@ -12,7 +13,7 @@
   <div class="container detail-layout">
     <div>
       <figure class="media-frame">
-        <img src="<%= campaign.imagePath %>" alt="<%= campaign.title %>">
+        <img src="<%= campaign.imageUrl %>" alt="<%= campaign.title %>">
       </figure>
 
       <div class="prose">

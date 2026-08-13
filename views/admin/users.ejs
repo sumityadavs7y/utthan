@@ -1,0 +1,51 @@
+<%- include('../partials/head-open') %>
+
+<section class="page-hero page-hero--compact">
+  <div class="container">
+    <p class="eyebrow">Admin</p>
+    <h1>Users</h1>
+    <p class="lede">Create accounts and assign roles. The Everyone role has no edit permissions.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p class="admin-toolbar">
+      <a class="btn btn--primary" href="/admin/users/new">Add user</a>
+    </p>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach(function(user) { %>
+            <tr>
+              <td><%= user.name %></td>
+              <td><%= user.email %></td>
+              <td><%= user.Role ? user.Role.name : '' %></td>
+              <td><%= user.isActive ? 'Active' : 'Inactive' %></td>
+              <td class="admin-table__actions">
+                <a href="/admin/users/<%= user.id %>/edit">Edit</a>
+                <% if (user.id !== currentUser.id) { %>
+                  <form method="post" action="/admin/users/<%= user.id %>/delete" onsubmit="return confirm('Delete this user?');">
+                    <%- csrfField %>
+                    <button type="submit">Delete</button>
+                  </form>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/head-close') %>

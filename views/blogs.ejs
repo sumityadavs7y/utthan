@@ -1,15 +1,24 @@
 <%- include('partials/head-open') %>
+<% const hero = blocks.hero || {}; %>
 
-<section class="page-hero">
+<section class="page-hero cms-relative">
+  <%- include('partials/cms-bar', { permission: 'blogs.edit', editType: 'page-block', id: hero.id }) %>
   <div class="container">
-    <p class="eyebrow">Blogs &amp; Media</p>
-    <h1>Stories from The Utthan Foundation</h1>
-    <p class="lede">Field updates, campaign stories, and photo media from our work across Uttar Pradesh.</p>
+    <p class="eyebrow"><%= hero.eyebrow || 'Blogs & Media' %></p>
+    <h1><%= hero.title || 'Stories from The Utthan Foundation' %></h1>
+    <p class="lede"><%= hero.lede || '' %></p>
   </div>
 </section>
 
 <section class="section">
   <div class="container">
+    <div class="cms-heading-row">
+      <% if (tab === 'blogs') { %>
+        <%- include('partials/cms-bar', { permission: 'blogs.edit', addType: 'post' }) %>
+      <% } else { %>
+        <%- include('partials/cms-bar', { permission: 'media.edit', addType: 'gallery' }) %>
+      <% } %>
+    </div>
     <div class="tabs" role="tablist">
       <a class="tabs__item <%= tab === 'blogs' ? 'is-active' : '' %>" href="/blogs?tab=blogs">Blogs</a>
       <a class="tabs__item <%= tab === 'media' ? 'is-active' : '' %>" href="/blogs?tab=media">Media</a>
@@ -19,30 +28,34 @@
       <% if (posts.length) { %>
         <div class="blog-grid">
           <% posts.forEach(function(post) { %>
-            <button
-              type="button"
-              class="blog-card blog-card--button"
-              data-content-open
-              data-content-type="blog"
-              data-content-badge="Blog"
-              data-content-title="<%= post.title %>"
-              data-content-meta="<%= post.category %> · <%= post.dateFormatted %>"
-              data-content-image="<%= post.imagePath || '' %>"
-              aria-label="Read blog: <%= post.title %>"
-            >
-              <% if (post.imagePath) { %>
-                <img src="<%= post.imagePath %>" alt="">
-              <% } %>
-              <div class="blog-card__body">
-                <p class="eyebrow"><%= post.category %> · <%= post.dateFormatted %></p>
-                <h3><%= post.title %></h3>
-                <p class="blog-card__preview"><%= post.preview %></p>
-                <% if (post.isTruncated) { %>
-                  <span class="blog-card__more">Read more</span>
+            <div class="cms-relative">
+              <%- include('partials/cms-bar', { permission: 'blogs.edit', editType: 'post', id: post.id, canDelete: true }) %>
+              <button
+                type="button"
+                class="blog-card blog-card--button"
+                data-content-open
+                data-content-type="blog"
+                data-content-badge="Blog"
+                data-content-title="<%= post.title %>"
+                data-content-meta="<%= post.category %> · <%= post.dateFormatted %>"
+                data-content-image="<%= post.imageUrl || '' %>"
+                aria-label="Read blog: <%= post.title %>"
+              >
+                <span class="u-hidden" data-content-images><%= JSON.stringify(post.photos || []) %></span>
+                <% if (post.imageUrl) { %>
+                  <img src="<%= post.imageUrl %>" alt="">
                 <% } %>
-              </div>
-              <span class="u-hidden" data-content-full><%= post.content %></span>
-            </button>
+                <div class="blog-card__body">
+                  <p class="eyebrow"><%= post.category %> · <%= post.dateFormatted %></p>
+                  <h3><%= post.title %></h3>
+                  <p class="blog-card__preview"><%= post.preview %></p>
+                  <% if (post.isTruncated) { %>
+                    <span class="blog-card__more">Read more</span>
+                  <% } %>
+                </div>
+                <span class="u-hidden" data-content-full><%= post.content %></span>
+              </button>
+            </div>
           <% }) %>
         </div>
       <% } else { %>
@@ -52,26 +65,29 @@
       <% if (media.length) { %>
         <div class="media-grid">
           <% media.forEach(function(item) { %>
-            <button
-              type="button"
-              class="media-tile media-tile--button"
-              data-content-open
-              data-content-type="media"
-              data-content-badge="Media"
-              data-content-title="<%= item.title || item.caption || 'Media' %>"
-              data-content-meta="<%= item.dateFormatted || '' %>"
-              data-content-image="<%= item.imagePath %>"
-              aria-label="Open media: <%= item.caption || item.title || 'Photo' %>"
-            >
-              <img src="<%= item.imagePath %>" alt="">
-              <span class="media-tile__caption">
-                <span><%= item.caption || item.title || 'Untitled' %></span>
-                <% if (item.dateFormatted) { %>
-                  <time><%= item.dateFormatted %></time>
-                <% } %>
-              </span>
-              <span class="u-hidden" data-content-full><%= item.caption || item.title || '' %></span>
-            </button>
+            <div class="cms-relative">
+              <%- include('partials/cms-bar', { permission: 'media.edit', editType: 'gallery', id: item.id, canDelete: true }) %>
+              <button
+                type="button"
+                class="media-tile media-tile--button"
+                data-content-open
+                data-content-type="media"
+                data-content-badge="Media"
+                data-content-title="<%= item.title || item.caption || 'Media' %>"
+                data-content-meta="<%= item.dateFormatted || '' %>"
+                data-content-image="<%= item.imageUrl %>"
+                aria-label="Open media: <%= item.caption || item.title || 'Photo' %>"
+              >
+                <img src="<%= item.imageUrl %>" alt="">
+                <span class="media-tile__caption">
+                  <span><%= item.caption || item.title || 'Untitled' %></span>
+                  <% if (item.dateFormatted) { %>
+                    <time><%= item.dateFormatted %></time>
+                  <% } %>
+                </span>
+                <span class="u-hidden" data-content-full><%= item.caption || item.title || '' %></span>
+              </button>
+            </div>
           <% }) %>
         </div>
       <% } else { %>
@@ -118,7 +134,12 @@
     <button type="button" class="story-modal__close" data-content-close aria-label="Close">×</button>
     <div class="story-modal__scroll">
       <div class="story-modal__media" data-content-modal-media>
-        <img src="" alt="" data-content-modal-image>
+        <div class="story-slider" data-story-slider>
+          <div class="story-slider__track" data-story-slider-track></div>
+          <button type="button" class="story-slider__nav story-slider__nav--prev" data-story-slider-prev aria-label="Previous photo">‹</button>
+          <button type="button" class="story-slider__nav story-slider__nav--next" data-story-slider-next aria-label="Next photo">›</button>
+          <div class="story-slider__dots" data-story-slider-dots></div>
+        </div>
       </div>
       <div class="story-modal__body">
         <span class="badge" data-content-modal-badge>Blog</span>

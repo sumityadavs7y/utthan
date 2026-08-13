@@ -1,20 +1,26 @@
 <%- include('../partials/head-open') %>
+<% const hero = blocks.hero || {}; const advisoryHead = blocks['advisory-heading'] || {}; const governingHead = blocks['governing-heading'] || {}; %>
 
-<section class="page-hero page-hero--compact">
+<section class="page-hero page-hero--compact cms-relative">
+  <%- include('../partials/cms-bar', { permission: 'about.leadership.edit', editType: 'page-block', id: hero.id }) %>
   <div class="container">
-    <p class="eyebrow">About Us</p>
-    <h1>Leadership</h1>
-    <p class="lede">Meet the leaders and advisory committee guiding The Utthan Foundation across Uttar Pradesh.</p>
+    <p class="eyebrow"><%= hero.eyebrow || 'About Us' %></p>
+    <h1><%= hero.title || 'Leadership' %></h1>
+    <p class="lede"><%= hero.lede || '' %></p>
     <%- include('../partials/about-nav') %>
   </div>
 </section>
 
 <section class="section">
   <div class="container">
+    <% if (!chairman) { %>
+      <%- include('../partials/cms-bar', { permission: 'about.leadership.edit', addType: 'chairman' }) %>
+    <% } %>
     <% if (chairman) { %>
-      <div class="split leadership-note">
+      <div class="split leadership-note cms-relative">
+        <%- include('../partials/cms-bar', { permission: 'about.leadership.edit', editType: 'chairman', id: chairman.id }) %>
         <figure class="media-frame media-frame--portrait">
-          <img src="<%= chairman.photoPath %>" alt="<%= chairman.name %>">
+          <img src="<%= chairman.imageUrl %>" alt="<%= chairman.name %>">
         </figure>
         <div>
           <h2>Chairperson note</h2>
@@ -28,15 +34,18 @@
 
 <section id="chief-advisory-committee" class="section section--tint">
   <div class="container">
-    <div class="section-heading">
-      <h2>Chief Advisory Committee</h2>
-      <p>Advisors guiding programs and ethics — placeholder profiles.</p>
+    <div class="section-heading cms-relative">
+      <%- include('../partials/cms-bar', { permission: 'about.leadership.edit', editType: 'page-block', id: advisoryHead.id }) %>
+      <%- include('../partials/cms-bar', { permission: 'about.leadership.edit', addType: 'team-member', extra: '{"category":"advisory"}' }) %>
+      <h2><%= advisoryHead.title || 'Chief Advisory Committee' %></h2>
+      <p><%= advisoryHead.lede || '' %></p>
     </div>
     <div class="people-grid">
       <% advisory.forEach(function(person) { %>
-        <article class="campaign-card">
+        <article class="campaign-card cms-relative">
+          <%- include('../partials/cms-bar', { permission: 'about.leadership.edit', editType: 'team-member', id: person.id, canDelete: true }) %>
           <div class="campaign-card__media">
-            <img src="<%= person.imagePath %>" alt="<%= person.name %>">
+            <img src="<%= person.imageUrl %>" alt="<%= person.name %>">
             <span class="badge">Advisor</span>
           </div>
           <div class="campaign-card__body">
@@ -56,15 +65,18 @@
 
 <section id="governing-body" class="section">
   <div class="container">
-    <div class="section-heading">
-      <h2>Governing Body</h2>
-      <p>Members of the governing body — placeholder profiles.</p>
+    <div class="section-heading cms-relative">
+      <%- include('../partials/cms-bar', { permission: 'about.leadership.edit', editType: 'page-block', id: governingHead.id }) %>
+      <%- include('../partials/cms-bar', { permission: 'about.leadership.edit', addType: 'team-member', extra: '{"category":"governing"}' }) %>
+      <h2><%= governingHead.title || 'Governing Body' %></h2>
+      <p><%= governingHead.lede || '' %></p>
     </div>
     <div class="people-grid people-grid--4">
       <% governing.forEach(function(person) { %>
-        <article class="campaign-card">
+        <article class="campaign-card cms-relative">
+          <%- include('../partials/cms-bar', { permission: 'about.leadership.edit', editType: 'team-member', id: person.id, canDelete: true }) %>
           <div class="campaign-card__media">
-            <img src="<%= person.imagePath %>" alt="<%= person.name %>">
+            <img src="<%= person.imageUrl %>" alt="<%= person.name %>">
             <span class="badge">Governing</span>
           </div>
           <div class="campaign-card__body">

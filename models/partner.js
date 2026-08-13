@@ -1,35 +1,24 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('./sequelize');
 
-const Testimonial = sequelize.define('Testimonial', {
+const Partner = sequelize.define('Partner', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  quote: {
-    type: DataTypes.TEXT,
-    allowNull: false
-  },
   name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  role: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  imagePath: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  imageId: {
+  logoId: {
     type: DataTypes.INTEGER,
     allowNull: true
+  },
+  showName: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true
   },
   sortOrder: {
     type: DataTypes.INTEGER,
@@ -37,7 +26,7 @@ const Testimonial = sequelize.define('Testimonial', {
     defaultValue: 0
   }
 }, {
-  tableName: 'Testimonials'
+  tableName: 'Partners'
 });
 
-module.exports = Testimonial;
+module.exports = Partner;

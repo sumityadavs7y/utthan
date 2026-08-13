@@ -1,0 +1,21 @@
+<% if (typeof can === 'function' && can(permission)) { %>
+  <div class="cms-actions">
+    <% if (typeof addType !== 'undefined' && addType) { %>
+      <button
+        type="button"
+        class="cms-btn"
+        data-cms-add="<%= addType %>"
+        <% if (typeof extra !== 'undefined' && extra) { %>data-cms-extra="<%= extra %>"<% } %>
+      >Add</button>
+    <% } %>
+    <% if (typeof listType !== 'undefined' && listType) { %>
+      <button type="button" class="cms-btn" data-cms-list="<%= listType %>"><%= typeof listLabel !== 'undefined' && listLabel ? listLabel : 'Edit' %></button>
+    <% } %>
+    <% if (typeof editType !== 'undefined' && editType && typeof id !== 'undefined' && id) { %>
+      <button type="button" class="cms-btn" data-cms-edit="<%= editType %>" data-id="<%= id %>">Edit</button>
+    <% } %>
+    <% if (typeof canDelete !== 'undefined' && canDelete && typeof editType !== 'undefined' && id) { %>
+      <button type="button" class="cms-btn cms-btn--danger" data-cms-delete="<%= editType %>" data-id="<%= id %>">Delete</button>
+    <% } %>
+  </div>
+<% } %>

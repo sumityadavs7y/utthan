@@ -1,34 +1,36 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('./sequelize');
 
-const Gallery = sequelize.define('Gallery', {
+const MediaAsset = sequelize.define('MediaAsset', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  title: {
+  sourceKey: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    unique: true
+  },
+  mimeType: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  originalName: {
     type: DataTypes.STRING,
     allowNull: true
   },
-  caption: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  imagePath: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  imageId: {
+  byteSize: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: false,
+    defaultValue: 0
   },
-  mediaDate: {
-    type: DataTypes.DATEONLY,
-    allowNull: true
+  data: {
+    type: DataTypes.BLOB('long'),
+    allowNull: false
   }
 }, {
-  tableName: 'Galleries'
+  tableName: 'MediaAssets'
 });
 
-module.exports = Gallery;
+module.exports = MediaAsset;

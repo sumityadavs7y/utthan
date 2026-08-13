@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const {
   SiteConfig,
   Campaign,
@@ -8,18 +9,22 @@ const {
   ImpactStat,
   Testimonial,
   ContactMessage,
-  VolunteerApplication
+  VolunteerApplication,
+  Office,
+  Partner,
+  PageBlock
 } = require('../models');
 const { rateLimit } = require('../middleware/rateLimit');
+const { verifyCsrf } = require('../middleware/auth');
 const {
   formatCurrencyINR,
   campaignProgress,
   parseTimeline,
-  parsePhotoList,
+  photoUrls,
   campaignDateLabel
 } = require('../utils/helpers');
-const partners = require('../data/partners');
-const offices = require('../data/offices');
+const { mediaUrl, resolveImageUrl } = require('../utils/media');
+const { decorateBlock, blockMap } = require('../utils/pageBlocks');
 const {
   PAGE_SEO,
   buildPageSeo,
@@ -38,14 +43,41 @@ async function loadSiteConfig() {
   return SiteConfig.findOne({ order: [['id', 'ASC']] });
 }
 
+async function loadBlocks(pageKey) {
+  const rows = await PageBlock.findAll({
+    where: { pageKey },
+    order: [['sortOrder', 'ASC'], ['id', 'ASC']]
+  });
+  return blockMap(rows.map((row) => decorateBlock(row, mediaUrl)));
+}
+
 function decorateCampaign(campaign) {
   const plain = campaign.get ? campaign.get({ plain: true }) : { ...campaign };
   plain.progress = campaignProgress(plain.raisedAmount, plain.goalAmount);
   plain.goalFormatted = formatCurrencyINR(plain.goalAmount);
   plain.raisedFormatted = formatCurrencyINR(plain.raisedAmount);
   plain.timelineItems = parseTimeline(plain.timeline);
-  plain.photos = parsePhotoList(plain.photoPaths);
+  plain.photos = photoUrls(plain.photoPaths, mediaUrl);
+  plain.imageUrl = resolveImageUrl(plain);
   plain.dateLabel = campaignDateLabel(plain);
+  return plain;
+}
+
+function decoratePerson(person) {
+  const plain = person.get ? person.get({ plain: true }) : { ...person };
+  plain.imageUrl = resolveImageUrl(plain);
+  return plain;
+}
+
+function decorateStory(story) {
+  const plain = story.get ? story.get({ plain: true }) : { ...story };
+  plain.imageUrl = resolveImageUrl(plain);
+  return plain;
+}
+
+function decoratePartner(partner) {
+  const plain = partner.get ? partner.get({ plain: true }) : { ...partner };
+  plain.logoUrl = mediaUrl(plain.logoId);
   return plain;
 }
 
@@ -93,6 +125,10 @@ function createPublicRouter(express) {
         'User-agent: *',
         'Allow: /',
         'Disallow: /health',
+        'Disallow: /login',
+        'Disallow: /logout',
+        'Disallow: /admin',
+        'Disallow: /cms',
         '',
         `Sitemap: ${siteOrigin()}/sitemap.xml`,
         ''
@@ -136,7 +172,7 @@ function createPublicRouter(express) {
 
   router.get('/', async (req, res, next) => {
     try {
-      const [ongoing, stats, testimonials, whatWeDo] = await Promise.all([
+      const [ongoing, stats, testimonials, partners, blocks, featureRows] = await Promise.all([
         Campaign.findAll({
           where: { status: 'ongoing' },
           order: [['sortOrder', 'ASC'], ['id', 'ASC']],
@@ -144,22 +180,33 @@ function createPublicRouter(express) {
         }),
         ImpactStat.findAll({ order: [['sortOrder', 'ASC']] }),
         Testimonial.findAll({ order: [['sortOrder', 'ASC']], limit: 8 }),
-        Campaign.findAll({
-          order: [['sortOrder', 'ASC']],
-          limit: 4
+        Partner.findAll({ order: [['sortOrder', 'ASC'], ['id', 'ASC']] }),
+        loadBlocks('home'),
+        PageBlock.findAll({
+          where: {
+            pageKey: 'home',
+            blockKey: { [Op.like]: 'what-we-do-%' }
+          },
+          order: [['sortOrder', 'ASC'], ['id', 'ASC']]
         })
       ]);
+
+      const hero = blocks.hero;
+      const features = featureRows
+        .filter((row) => row.blockKey !== 'what-we-do-heading')
+        .map((row) => decorateBlock(row, mediaUrl));
 
       res.render('home', {
         title: 'Home',
         ...withSeo(res, 'home', {
-          image: '/images/food-aid-kit-handover.jpg'
+          image: hero && hero.imageUrl ? hero.imageUrl : undefined
         }),
+        blocks,
+        features,
         ongoingCampaigns: ongoing.map(decorateCampaign),
         stats,
-        testimonials,
-        whatWeDo: whatWeDo.map(decorateCampaign),
-        partners
+        testimonials: testimonials.map(decorateStory),
+        partners: partners.map(decoratePartner)
       });
     } catch (err) {
       next(err);
@@ -170,45 +217,61 @@ function createPublicRouter(express) {
     res.redirect(301, '/about/who-we-are');
   });
 
-  router.get('/about/who-we-are', (req, res) => {
-    res.render('about/who-we-are', {
-      title: 'Who We Are',
-      aboutSection: 'who-we-are',
-      ...withSeo(res, 'whoWeAre', {
-        breadcrumbs: [
-          { name: 'Home', path: '/' },
-          { name: 'About', path: '/about/who-we-are' },
-          { name: 'Who We Are', path: '/about/who-we-are' }
-        ]
-      })
-    });
+  router.get('/about/who-we-are', async (req, res, next) => {
+    try {
+      res.render('about/who-we-are', {
+        title: 'Who We Are',
+        aboutSection: 'who-we-are',
+        blocks: await loadBlocks('who-we-are'),
+        ...withSeo(res, 'whoWeAre', {
+          breadcrumbs: [
+            { name: 'Home', path: '/' },
+            { name: 'About', path: '/about/who-we-are' },
+            { name: 'Who We Are', path: '/about/who-we-are' }
+          ]
+        })
+      });
+    } catch (err) {
+      next(err);
+    }
   });
 
-  router.get('/about/history', (req, res) => {
-    res.render('about/history', {
-      title: 'History',
-      aboutSection: 'history',
-      ...withSeo(res, 'history', {
-        breadcrumbs: [
-          { name: 'Home', path: '/' },
-          { name: 'About', path: '/about/who-we-are' },
-          { name: 'History', path: '/about/history' }
-        ]
-      })
-    });
+  router.get('/about/history', async (req, res, next) => {
+    try {
+      res.render('about/history', {
+        title: 'History',
+        aboutSection: 'history',
+        blocks: await loadBlocks('history'),
+        ...withSeo(res, 'history', {
+          breadcrumbs: [
+            { name: 'Home', path: '/' },
+            { name: 'About', path: '/about/who-we-are' },
+            { name: 'History', path: '/about/history' }
+          ]
+        })
+      });
+    } catch (err) {
+      next(err);
+    }
   });
 
   router.get('/about/leadership', async (req, res, next) => {
     try {
-      const [chairman, advisory, governing] = await Promise.all([
+      const [chairman, advisory, governing, blocks] = await Promise.all([
         Chairman.findOne({ order: [['id', 'ASC']] }),
         TeamMember.findAll({ where: { category: 'advisory' }, order: [['sortOrder', 'ASC']] }),
-        TeamMember.findAll({ where: { category: 'governing' }, order: [['sortOrder', 'ASC']] })
+        TeamMember.findAll({ where: { category: 'governing' }, order: [['sortOrder', 'ASC']] }),
+        loadBlocks('leadership')
       ]);
+
+      const chair = chairman
+        ? { ...chairman.get({ plain: true }), imageUrl: resolveImageUrl(chairman.get({ plain: true }), 'photoId', 'photoPath') }
+        : null;
 
       res.render('about/leadership', {
         title: 'Leadership',
         aboutSection: 'leadership',
+        blocks,
         ...withSeo(res, 'leadership', {
           breadcrumbs: [
             { name: 'Home', path: '/' },
@@ -216,9 +279,9 @@ function createPublicRouter(express) {
             { name: 'Leadership', path: '/about/leadership' }
           ]
         }),
-        chairman,
-        advisory,
-        governing
+        chairman: chair,
+        advisory: advisory.map(decoratePerson),
+        governing: governing.map(decoratePerson)
       });
     } catch (err) {
       next(err);
@@ -227,14 +290,16 @@ function createPublicRouter(express) {
 
   router.get('/about/team', async (req, res, next) => {
     try {
-      const [team, volunteers] = await Promise.all([
+      const [team, volunteers, blocks] = await Promise.all([
         TeamMember.findAll({ where: { category: 'board' }, order: [['sortOrder', 'ASC']] }),
-        TeamMember.findAll({ where: { category: 'volunteer' }, order: [['sortOrder', 'ASC']] })
+        TeamMember.findAll({ where: { category: 'volunteer' }, order: [['sortOrder', 'ASC']] }),
+        loadBlocks('team')
       ]);
 
       res.render('about/team', {
         title: 'Team',
         aboutSection: 'team',
+        blocks,
         ...withSeo(res, 'team', {
           breadcrumbs: [
             { name: 'Home', path: '/' },
@@ -242,8 +307,8 @@ function createPublicRouter(express) {
             { name: 'Team', path: '/about/team' }
           ]
         }),
-        team,
-        volunteers
+        team: team.map(decoratePerson),
+        volunteers: volunteers.map(decoratePerson)
       });
     } catch (err) {
       next(err);
@@ -256,15 +321,19 @@ function createPublicRouter(express) {
         ? req.query.status
         : 'ongoing';
 
-      const campaigns = await Campaign.findAll({
-        where: { status },
-        order: [['sortOrder', 'ASC'], ['id', 'ASC']]
-      });
+      const [campaigns, blocks] = await Promise.all([
+        Campaign.findAll({
+          where: { status },
+          order: [['sortOrder', 'ASC'], ['id', 'ASC']]
+        }),
+        loadBlocks('campaigns')
+      ]);
 
       const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
       res.render('campaigns', {
         title: 'Campaigns',
         status,
+        blocks,
         ...withSeo(res, 'campaigns', {
           seoTitle:
             status === 'ongoing'
@@ -320,7 +389,7 @@ function createPublicRouter(express) {
           seoTitle: `${decorated.title} | Donate | The Utthan Foundation`,
           description,
           path,
-          image: decorated.imagePath,
+          image: decorated.imageUrl,
           type: 'article',
           breadcrumbs: [
             { name: 'Home', path: '/' },
@@ -376,6 +445,12 @@ function createPublicRouter(express) {
             month: 'short',
             day: 'numeric'
           });
+          plain.photos = photoUrls(plain.photoPaths, mediaUrl);
+          if (!plain.photos.length) {
+            const cover = resolveImageUrl(plain);
+            if (cover) plain.photos = [cover];
+          }
+          plain.imageUrl = plain.photos[0] || '';
           return plain;
         });
       } else {
@@ -394,13 +469,13 @@ function createPublicRouter(express) {
                 day: 'numeric'
               })
             : null;
+          plain.imageUrl = resolveImageUrl(plain);
           return plain;
         });
       }
 
       const totalPages = Math.max(1, Math.ceil(total / perPage));
       const page = Math.min(requestedPage, totalPages);
-      // If user requested a page past the end, refetch the last page once.
       if (page !== requestedPage && total > 0) {
         return res.redirect(`/blogs?tab=${tab}&page=${page}`);
       }
@@ -426,6 +501,7 @@ function createPublicRouter(express) {
 
       res.render('blogs', {
         title: 'Blogs & Media',
+        blocks: await loadBlocks('blogs'),
         ...withSeo(res, 'blogs', {
           breadcrumbs: [
             { name: 'Home', path: '/' },
@@ -451,6 +527,7 @@ function createPublicRouter(express) {
         if (found) campaign = decorateCampaign(found);
       }
 
+      const blocks = await loadBlocks('donate');
       const seoExtras = campaign
         ? {
             seoTitle: `Donate to ${campaign.title} | The Utthan Foundation`,
@@ -459,7 +536,7 @@ function createPublicRouter(express) {
               160
             ),
             path: '/donate',
-            image: campaign.imagePath,
+            image: campaign.imageUrl,
             breadcrumbs: [
               { name: 'Home', path: '/' },
               { name: 'Donate', path: '/donate' },
@@ -476,6 +553,7 @@ function createPublicRouter(express) {
       res.render('donate', {
         title: 'Donate',
         campaign,
+        blocks,
         ...withSeo(res, 'donate', seoExtras)
       });
     } catch (err) {
@@ -483,21 +561,30 @@ function createPublicRouter(express) {
     }
   });
 
-  router.get('/contact', async (req, res) => {
-    res.render('contact', {
-      title: 'Contact Us',
-      form: req.flash('form')[0] || {},
-      offices,
-      ...withSeo(res, 'contact', {
-        breadcrumbs: [
-          { name: 'Home', path: '/' },
-          { name: 'Contact', path: '/contact' }
-        ]
-      })
-    });
+  router.get('/contact', async (req, res, next) => {
+    try {
+      const [offices, blocks] = await Promise.all([
+        Office.findAll({ order: [['sortOrder', 'ASC'], ['id', 'ASC']] }),
+        loadBlocks('contact')
+      ]);
+      res.render('contact', {
+        title: 'Contact Us',
+        form: req.flash('form')[0] || {},
+        offices,
+        blocks,
+        ...withSeo(res, 'contact', {
+          breadcrumbs: [
+            { name: 'Home', path: '/' },
+            { name: 'Contact', path: '/contact' }
+          ]
+        })
+      });
+    } catch (err) {
+      next(err);
+    }
   });
 
-  router.post('/contact', formLimiter, async (req, res, next) => {
+  router.post('/contact', formLimiter, verifyCsrf, async (req, res, next) => {
     try {
       const firstName = String(req.body.firstName || '').trim();
       const lastName = String(req.body.lastName || '').trim();
@@ -527,7 +614,7 @@ function createPublicRouter(express) {
     }
   });
 
-  router.post('/join/volunteer', formLimiter, async (req, res, next) => {
+  router.post('/join/volunteer', formLimiter, verifyCsrf, async (req, res, next) => {
     try {
       const name = String(req.body.name || '').trim();
       const email = String(req.body.email || '').trim();
