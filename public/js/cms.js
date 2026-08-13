@@ -13,6 +13,7 @@
   let currentId = null;
   let currentMode = 'single';
   let listRowIndex = 0;
+  let timelineRowIndex = 0;
 
   function closeModal() {
     modal.hidden = true;
@@ -23,6 +24,183 @@
   function showError(message) {
     errorEl.hidden = !message;
     errorEl.textContent = message || '';
+  }
+
+  function photoTile(item, keepName) {
+    const tile = document.createElement('div');
+    tile.className = 'cms-photo-tile';
+    const img = document.createElement('img');
+    img.src = item.url || '';
+    img.alt = '';
+    const keep = document.createElement('input');
+    keep.type = 'hidden';
+    keep.name = keepName;
+    keep.value = String(item.id);
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'cms-photo-tile__remove';
+    removeBtn.setAttribute('aria-label', 'Remove photo');
+    removeBtn.textContent = 'Remove';
+    removeBtn.addEventListener('click', function (event) {
+      event.preventDefault();
+      tile.remove();
+    });
+    tile.appendChild(img);
+    tile.appendChild(keep);
+    tile.appendChild(removeBtn);
+    return tile;
+  }
+
+  function photoManager(config) {
+    const box = document.createElement('div');
+    box.className = 'cms-photos';
+    const heading = document.createElement('span');
+    heading.textContent = config.label || 'Photos';
+    box.appendChild(heading);
+
+    if (config.managedName) {
+      const managed = document.createElement('input');
+      managed.type = 'hidden';
+      managed.name = config.managedName;
+      managed.value = '1';
+      box.appendChild(managed);
+    }
+
+    const row = document.createElement('div');
+    row.className = 'cms-preview-row';
+    (config.items || []).forEach(function (item) {
+      if (!item || !item.id) return;
+      row.appendChild(photoTile(item, config.keepName));
+    });
+    box.appendChild(row);
+
+    const hint = document.createElement('span');
+    hint.className = 'cms-hint';
+    hint.textContent = 'Add more photos, or remove any existing one.';
+    box.appendChild(hint);
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.name = config.fileName;
+    input.accept = 'image/jpeg,image/png,image/webp,image/gif,image/svg+xml';
+    input.multiple = true;
+    box.appendChild(input);
+    return box;
+  }
+
+  function addTimelineRow(item) {
+    const index = timelineRowIndex;
+    timelineRowIndex += 1;
+    const row = document.createElement('article');
+    row.className = 'cms-list-row';
+    row.dataset.rowIndex = String(index);
+
+    const heading = document.createElement('header');
+    heading.className = 'cms-list-row__head';
+    const titleEl = document.createElement('strong');
+    const initialTitle = (item && (item.title || item.date)) || 'New timeline item';
+    titleEl.textContent = initialTitle;
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'cms-btn cms-btn--danger';
+    removeBtn.textContent = 'Delete';
+    heading.appendChild(titleEl);
+    heading.appendChild(removeBtn);
+
+    const removeInput = document.createElement('input');
+    removeInput.type = 'hidden';
+    removeInput.name = 'timeline_' + index + '_remove';
+    removeInput.value = '0';
+
+    const dateLabel = document.createElement('label');
+    dateLabel.appendChild(document.createTextNode('Date'));
+    const dateInput = document.createElement('input');
+    dateInput.type = 'date';
+    dateInput.name = 'timeline_' + index + '_date';
+    dateInput.value = item && item.date ? String(item.date).slice(0, 10) : '';
+    dateLabel.appendChild(dateInput);
+
+    const titleLabel = document.createElement('label');
+    titleLabel.appendChild(document.createTextNode('Title'));
+    const titleInput = document.createElement('input');
+    titleInput.type = 'text';
+    titleInput.name = 'timeline_' + index + '_title';
+    titleInput.value = item && item.title ? item.title : '';
+    titleLabel.appendChild(titleInput);
+
+    function refreshHeading() {
+      titleEl.textContent = titleInput.value.trim() || dateInput.value || 'New timeline item';
+    }
+    titleInput.addEventListener('input', refreshHeading);
+    dateInput.addEventListener('input', refreshHeading);
+
+    const detailLabel = document.createElement('label');
+    detailLabel.appendChild(document.createTextNode('Description'));
+    const detailInput = document.createElement('textarea');
+    detailInput.name = 'timeline_' + index + '_detail';
+    detailInput.rows = 3;
+    detailInput.value = item && item.detail ? item.detail : '';
+    detailLabel.appendChild(detailInput);
+
+    const photos = photoManager({
+      label: 'Photos',
+      items: (item && item.photosItems) || [],
+      keepName: 'timeline_' + index + '_photoKeep',
+      fileName: 'timeline_' + index + '_photos'
+    });
+
+    removeBtn.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      if (!item || (!item.date && !item.title && !item.detail && !(item.photosItems || []).length)) {
+        row.remove();
+        return;
+      }
+      removeInput.value = '1';
+      row.classList.add('is-removed');
+      row.hidden = true;
+    });
+
+    row.appendChild(heading);
+    row.appendChild(removeInput);
+    row.appendChild(dateLabel);
+    row.appendChild(titleLabel);
+    row.appendChild(detailLabel);
+    row.appendChild(photos);
+    return row;
+  }
+
+  function timelineEditor(items) {
+    timelineRowIndex = 0;
+    const box = document.createElement('div');
+    box.className = 'cms-timeline';
+
+    const heading = document.createElement('span');
+    heading.textContent = 'Timeline';
+    box.appendChild(heading);
+
+    const hint = document.createElement('span');
+    hint.className = 'cms-hint';
+    hint.textContent = 'Add a timeline item for each date. Photos appear under that day’s description.';
+    box.appendChild(hint);
+
+    const list = document.createElement('div');
+    list.className = 'cms-list';
+    list.setAttribute('data-cms-timeline', '');
+    (items || []).forEach(function (item) {
+      list.appendChild(addTimelineRow(item));
+    });
+    box.appendChild(list);
+
+    const addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.className = 'btn btn--secondary';
+    addBtn.textContent = 'Add item';
+    addBtn.addEventListener('click', function () {
+      list.appendChild(addTimelineRow({}));
+    });
+    box.appendChild(addBtn);
+    return box;
   }
 
   function inputFor(field, values) {
@@ -68,60 +246,18 @@
       return wrap;
     }
 
+    if (field.type === 'timeline') {
+      return timelineEditor(values.timelineItems || []);
+    }
+
     if (field.type === 'files') {
-      const box = document.createElement('div');
-      box.className = 'cms-photos';
-      const heading = document.createElement('span');
-      heading.textContent = field.label;
-      box.appendChild(heading);
-
-      const managed = document.createElement('input');
-      managed.type = 'hidden';
-      managed.name = 'photosManaged';
-      managed.value = '1';
-      box.appendChild(managed);
-
-      const row = document.createElement('div');
-      row.className = 'cms-preview-row';
-      (values.photosItems || []).forEach(function (item) {
-        if (!item || !item.id) return;
-        const tile = document.createElement('div');
-        tile.className = 'cms-photo-tile';
-        const img = document.createElement('img');
-        img.src = item.url || '';
-        img.alt = '';
-        const keep = document.createElement('input');
-        keep.type = 'hidden';
-        keep.name = 'photosKeep';
-        keep.value = String(item.id);
-        const removeBtn = document.createElement('button');
-        removeBtn.type = 'button';
-        removeBtn.className = 'cms-photo-tile__remove';
-        removeBtn.setAttribute('aria-label', 'Remove photo');
-        removeBtn.textContent = 'Remove';
-        removeBtn.addEventListener('click', function (event) {
-          event.preventDefault();
-          tile.remove();
-        });
-        tile.appendChild(img);
-        tile.appendChild(keep);
-        tile.appendChild(removeBtn);
-        row.appendChild(tile);
+      return photoManager({
+        label: field.label,
+        items: values.photosItems || [],
+        keepName: 'photosKeep',
+        fileName: field.name,
+        managedName: 'photosManaged'
       });
-      box.appendChild(row);
-
-      const hint = document.createElement('span');
-      hint.className = 'cms-hint';
-      hint.textContent = 'Add more photos, or remove any existing one.';
-      box.appendChild(hint);
-
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.name = field.name;
-      input.accept = 'image/jpeg,image/png,image/webp,image/gif,image/svg+xml';
-      input.multiple = true;
-      box.appendChild(input);
-      return box;
     }
 
     if (field.type === 'file') {
@@ -396,6 +532,10 @@
     if (csrfToken) data.set('_csrf', csrfToken);
 
     let url;
+    if (form.querySelector('[data-cms-timeline]')) {
+      data.set('timelineCount', String(timelineRowIndex));
+    }
+
     if (currentMode === 'list') {
       data.set('rowCount', String(listRowIndex));
       url = '/cms/list/' + encodeURIComponent(currentType);

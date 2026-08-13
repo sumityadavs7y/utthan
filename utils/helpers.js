@@ -40,6 +40,20 @@ function parseTimeline(timeline) {
   }
 }
 
+function decorateTimelineItems(timeline, mediaUrlFn) {
+  return parseTimeline(timeline).map((item) => {
+    const photoIds = parsePhotoList(item.photoIds);
+    return {
+      date: item.date || '',
+      dateFormatted: formatCampaignDate(item.date) || item.date || '',
+      title: item.title || '',
+      detail: item.detail || '',
+      photoIds,
+      photos: photoUrls(photoIds, mediaUrlFn)
+    };
+  });
+}
+
 function bodyParagraphs(text) {
   return String(text || '')
     .split(/\n+/)
@@ -103,6 +117,7 @@ module.exports = {
   formatCurrencyINR,
   campaignProgress,
   parseTimeline,
+  decorateTimelineItems,
   bodyParagraphs,
   parsePhotoList,
   photoUrls,

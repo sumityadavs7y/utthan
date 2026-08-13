@@ -1427,6 +1427,44 @@ button.campaign-card--button:focus-visible {
   font-size: 0.85rem;
 }
 
+.timeline__photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.timeline__photos img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+}
+
+.photo-open {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+  font: inherit;
+  color: inherit;
+}
+
+.photo-open:hover img,
+.photo-open:focus-visible img {
+  filter: brightness(0.92);
+}
+
+.photo-open:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
 .photo-strip__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1972,6 +2010,27 @@ textarea:focus {
   backdrop-filter: blur(4px);
 }
 
+.story-modal--lightbox .story-modal__dialog {
+  width: min(960px, 100%);
+}
+
+.story-modal--lightbox .story-modal__media img {
+  aspect-ratio: 16 / 10;
+}
+
+.story-modal--lightbox .story-modal__body {
+  padding: 0.9rem 1.15rem 1.1rem;
+}
+
+.story-modal--lightbox .story-modal__body.is-empty {
+  display: none;
+}
+
+.story-modal--lightbox .story-modal__body h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
 .story-modal__dialog {
   position: relative;
   z-index: 1;
@@ -2452,4 +2511,9 @@ body.cms-open {
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
+}
+
+.cms-timeline {
+  display: grid;
+  gap: 0.65rem;
 }

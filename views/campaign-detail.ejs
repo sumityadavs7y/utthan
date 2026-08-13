@@ -31,9 +31,18 @@
           <ol>
             <% campaign.timelineItems.forEach(function(item) { %>
               <li>
-                <time><%= item.date %></time>
-                <strong><%= item.title %></strong>
-                <p><%= item.detail %></p>
+                <% if (item.dateFormatted || item.date) { %><time><%= item.dateFormatted || item.date %></time><% } %>
+                <% if (item.title) { %><strong><%= item.title %></strong><% } %>
+                <% if (item.detail) { %><p><%= item.detail %></p><% } %>
+                <% if (item.photos && item.photos.length) { %>
+                  <div class="timeline__photos" data-photo-set data-photo-set-title="<%= item.title || item.dateFormatted || 'Timeline photos' %>">
+                    <% item.photos.forEach(function(src, photoIndex) { %>
+                      <button type="button" class="photo-open" data-photo-open aria-label="View photo <%= photoIndex + 1 %>">
+                        <img src="<%= src %>" alt="<%= item.title || campaign.title %>">
+                      </button>
+                    <% }) %>
+                  </div>
+                <% } %>
               </li>
             <% }) %>
           </ol>
@@ -43,9 +52,11 @@
       <% if (campaign.photos && campaign.photos.length) { %>
         <div class="photo-strip">
           <h2>Photos</h2>
-          <div class="photo-strip__grid">
-            <% campaign.photos.forEach(function(src) { %>
-              <img src="<%= src %>" alt="<%= campaign.title %> photo">
+          <div class="photo-strip__grid" data-photo-set data-photo-set-title="<%= campaign.title %> photos">
+            <% campaign.photos.forEach(function(src, photoIndex) { %>
+              <button type="button" class="photo-open" data-photo-open aria-label="View photo <%= photoIndex + 1 %>">
+                <img src="<%= src %>" alt="<%= campaign.title %> photo">
+              </button>
             <% }) %>
           </div>
         </div>

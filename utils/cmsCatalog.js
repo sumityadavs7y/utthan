@@ -117,7 +117,7 @@ const CATALOG = {
       { name: 'goalAmount', label: 'Goal amount (INR)', type: 'number' },
       { name: 'raisedAmount', label: 'Raised amount (INR)', type: 'number' },
       { name: 'sortOrder', label: 'Sort order', type: 'number' },
-      { name: 'timeline', label: 'Timeline JSON', type: 'textarea' },
+      { name: 'timeline', label: 'Timeline', type: 'timeline' },
       { name: 'image', label: 'Cover photo', type: 'file', mapsTo: 'imageId' },
       { name: 'photos', label: 'Gallery photos', type: 'files', mapsTo: 'photoPaths' }
     ]
@@ -339,8 +339,17 @@ function serializeRecord(type, record) {
 
   if (type === 'campaign' || type === 'post') {
     if (type === 'campaign') {
-      values.timeline = JSON.stringify(parseTimeline(plain.timeline), null, 2);
       values.imagePreview = mediaUrl(plain.imageId);
+      values.timelineItems = parseTimeline(plain.timeline).map((item) => {
+        const ids = parsePhotoList(item.photoIds).map(Number).filter(Boolean);
+        return {
+          date: item.date || '',
+          title: item.title || '',
+          detail: item.detail || '',
+          photosItems: ids.map((id) => ({ id, url: mediaUrl(id) }))
+        };
+      });
+      delete values.timeline;
     }
     let ids = parsePhotoList(plain.photoPaths).map(Number).filter(Boolean);
     if (type === 'post' && !ids.length && plain.imageId) ids = [Number(plain.imageId)];

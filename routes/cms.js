@@ -37,6 +37,28 @@ function asList(value) {
   return Array.isArray(value) ? value : [value];
 }
 
+async function collectTimelineItems(body, files) {
+  if (body.timelineCount == null || body.timelineCount === '') return null;
+  const count = Number(body.timelineCount);
+  if (!Number.isFinite(count) || count < 0) return [];
+  const items = [];
+  for (let i = 0; i < count; i += 1) {
+    if (body[`timeline_${i}_remove`] === '1') continue;
+    const date = String(body[`timeline_${i}_date`] || '').trim();
+    const title = String(body[`timeline_${i}_title`] || '').trim();
+    const detail = String(body[`timeline_${i}_detail`] || '').trim();
+    const photoIds = asList(body[`timeline_${i}_photoKeep`]).map(Number).filter(Boolean);
+    const uploaded = filesByField(files, `timeline_${i}_photos`);
+    for (const file of uploaded) {
+      const asset = await createMediaFromUpload(file);
+      if (asset) photoIds.push(asset.id);
+    }
+    if (!date && !title && !detail && !photoIds.length) continue;
+    items.push({ date, title, detail, photoIds });
+  }
+  return items;
+}
+
 function permissionDenied(req, res) {
   if (wantsJson(req)) {
     return res.status(403).json({ ok: false, error: 'You do not have permission to do that.' });
@@ -64,7 +86,7 @@ async function buildPayload(type, spec, body, files, existing) {
   const fields = fieldsFor(type, existing) || spec.fields;
 
   for (const field of fields) {
-    if (field.type === 'file' || field.type === 'files') continue;
+    if (field.type === 'file' || field.type === 'files' || field.type === 'timeline') continue;
     if (EXTRA_FIELDS.some((item) => item.name === field.name)) {
       extra[field.name] = String(body[field.name] || '').trim();
       continue;
@@ -94,14 +116,8 @@ async function buildPayload(type, spec, body, files, existing) {
     if (payload.slug) {
       payload.slug = await uniqueCampaignSlug(payload.slug, existing && existing.id);
     }
-    if (payload.timeline) {
-      try {
-        const parsed = JSON.parse(payload.timeline);
-        payload.timeline = JSON.stringify(Array.isArray(parsed) ? parsed : []);
-      } catch {
-        throw new Error('Timeline must be valid JSON.');
-      }
-    }
+    const timelineItems = await collectTimelineItems(body, files);
+    if (timelineItems) payload.timeline = JSON.stringify(timelineItems);
   }
 
   if (type === 'post' && !payload.category) payload.category = 'Charity';

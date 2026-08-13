@@ -19,7 +19,7 @@ const { verifyCsrf } = require('../middleware/auth');
 const {
   formatCurrencyINR,
   campaignProgress,
-  parseTimeline,
+  decorateTimelineItems,
   photoUrls,
   campaignDateLabel
 } = require('../utils/helpers');
@@ -56,7 +56,7 @@ function decorateCampaign(campaign) {
   plain.progress = campaignProgress(plain.raisedAmount, plain.goalAmount);
   plain.goalFormatted = formatCurrencyINR(plain.goalAmount);
   plain.raisedFormatted = formatCurrencyINR(plain.raisedAmount);
-  plain.timelineItems = parseTimeline(plain.timeline);
+  plain.timelineItems = decorateTimelineItems(plain.timeline, mediaUrl);
   plain.photos = photoUrls(plain.photoPaths, mediaUrl);
   plain.imageUrl = resolveImageUrl(plain);
   plain.dateLabel = campaignDateLabel(plain);
