@@ -126,14 +126,23 @@ jobs:
             COMPOSE=(sudo docker compose)
           fi
 
-          # Reclaim disk BEFORE building. A full root volume is what wedges this
-          # deploy, and the old post-build "image prune -f" freed neither the
-          # BuildKit cache nor unused tagged images. No --volumes: that would
-          # delete postgres_data / uploads_data.
+          # rsync has already replaced the live nginx config with the repo's HTTP
+          # one, so restore the intended config and get the stack serving from
+          # the images already on the host BEFORE anything that can fail. A host
+          # that is too full to build must still end up serving the site.
+          if [[ -f deploy/nginx/.ssl-enabled ]]; then
+            ./deploy/enable-ssl.sh --nginx-only || echo "WARNING: nginx SSL restore failed"
+          fi
+          timeout 300 "${COMPOSE[@]}" -p utthan up -d --no-build --remove-orphans \
+            || echo "WARNING: could not start from existing images"
+
+          # Reclaim disk before building. No --volumes: that would delete
+          # postgres_data / uploads_data.
           echo "==> Disk before prune"
           df -h /
-          "${DOCKER[@]}" system prune -af || true
-          "${DOCKER[@]}" builder prune -af || true
+          # Dangling images only, and keep the build cache: with the volume this
+          # tight, a warm cache is what makes an incremental rebuild affordable.
+          "${DOCKER[@]}" image prune -f || true
           # Docker's own prune is not enough: `docker system df` does not count
           # container json log files, and apt/journal caches live outside Docker
           # entirely. Reclaim those too -- logs and caches only, never app data.
@@ -148,22 +157,28 @@ jobs:
             -exec truncate -s 0 {} \; || true
           sudo truncate -s 0 /var/log/utthan-watchdog.log || true
 
-          echo "==> Disk after prune"
-          df -h /
-
-          # Surface the real space consumers so this is diagnosable next time.
-          echo "==> Largest host directories"
-          sudo du -xhd1 / 2>/dev/null | sort -rh | head -12 || true
-          echo "==> Largest /var directories"
-          sudo du -xhd1 /var 2>/dev/null | sort -rh | head -8 || true
-
           # Threshold from the measured footprint: the app image is ~308MB, so
           # 1GB leaves >3x headroom for transient build layers and the base pull.
           AVAIL_MB="$(df -Pm / | awk 'NR==2 {print $4}')"
           if [[ "${AVAIL_MB}" -lt 1024 ]]; then
+            echo "==> Still ${AVAIL_MB}MB free; escalating to a full prune"
+            "${DOCKER[@]}" system prune -af || true
+            "${DOCKER[@]}" builder prune -af || true
+            AVAIL_MB="$(df -Pm / | awk 'NR==2 {print $4}')"
+          fi
+
+          echo "==> Disk after prune"
+          df -h /
+
+          if [[ "${AVAIL_MB}" -lt 1024 ]]; then
             echo "Only ${AVAIL_MB}MB free on / after prune; the build needs ~1GB."
-            echo "Grow the EBS root volume or clear host data before retrying."
+            echo "Nothing further is reclaimable: grow the EBS root volume."
+            echo "The stack above is still serving the previously built image."
             "${DOCKER[@]}" system df || true
+            echo "==> Largest host directories"
+            sudo du -xhd1 / 2>/dev/null | sort -rh | head -12 || true
+            sudo du -xhd1 /var 2>/dev/null | sort -rh | head -8 || true
+            "${COMPOSE[@]}" -p utthan ps || true
             exit 1
           fi
 
@@ -174,14 +189,6 @@ jobs:
             echo "compose up failed or timed out; continuing to health wait + logs"
             "${COMPOSE[@]}" -p utthan ps || true
             "${COMPOSE[@]}" -p utthan logs --tail=80 app || true
-          fi
-
-          # Keep HTTPS nginx config if SSL was previously enabled on this host.
-          # Must not abort the deploy: it used to exit non-zero here under
-          # `set -e`, skipping the health wait and the log dump below, which
-          # left the site down with no diagnostics in the run output.
-          if [[ -f deploy/nginx/.ssl-enabled ]]; then
-            ./deploy/enable-ssl.sh --nginx-only || echo "WARNING: nginx SSL restore failed"
           fi
 
           echo "Waiting for health..."
