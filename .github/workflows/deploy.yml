@@ -134,8 +134,28 @@ jobs:
           df -h /
           "${DOCKER[@]}" system prune -af || true
           "${DOCKER[@]}" builder prune -af || true
+          # Docker's own prune is not enough: `docker system df` does not count
+          # container json log files, and apt/journal caches live outside Docker
+          # entirely. Reclaim those too -- logs and caches only, never app data.
+          echo "==> Reclaiming host disk"
+          sudo apt-get clean || true
+          sudo journalctl --vacuum-size=100M || true
+          sudo find /var/log -type f \( -name '*.gz' -o -name '*.[0-9]' -o -name '*.old' \) \
+            -delete || true
+          # Truncate oversized container logs in place (the compose logging caps
+          # only bound logs written from now on).
+          sudo find /var/lib/docker/containers -name '*-json.log' -size +50M \
+            -exec truncate -s 0 {} \; || true
+          sudo truncate -s 0 /var/log/utthan-watchdog.log || true
+
           echo "==> Disk after prune"
           df -h /
+
+          # Surface the real space consumers so this is diagnosable next time.
+          echo "==> Largest host directories"
+          sudo du -xhd1 / 2>/dev/null | sort -rh | head -12 || true
+          echo "==> Largest /var directories"
+          sudo du -xhd1 /var 2>/dev/null | sort -rh | head -8 || true
 
           AVAIL_MB="$(df -Pm / | awk 'NR==2 {print $4}')"
           if [[ "${AVAIL_MB}" -lt 2048 ]]; then
