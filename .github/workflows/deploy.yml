@@ -157,9 +157,11 @@ jobs:
           echo "==> Largest /var directories"
           sudo du -xhd1 /var 2>/dev/null | sort -rh | head -8 || true
 
+          # Threshold from the measured footprint: the app image is ~308MB, so
+          # 1GB leaves >3x headroom for transient build layers and the base pull.
           AVAIL_MB="$(df -Pm / | awk 'NR==2 {print $4}')"
-          if [[ "${AVAIL_MB}" -lt 2048 ]]; then
-            echo "Only ${AVAIL_MB}MB free on / after prune; the image build needs ~2GB."
+          if [[ "${AVAIL_MB}" -lt 1024 ]]; then
+            echo "Only ${AVAIL_MB}MB free on / after prune; the build needs ~1GB."
             echo "Grow the EBS root volume or clear host data before retrying."
             "${DOCKER[@]}" system df || true
             exit 1

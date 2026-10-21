@@ -1,4 +1,9 @@
-FROM --platform=linux/amd64 node:21.4.0-bullseye-slim
+# node:21.4.0-bullseye-slim could no longer build: Node 21 is EOL and that
+# pinned bullseye image's apt index resolved curl/libcurl4 versions that have
+# since been dropped from the Debian security pool (404 on apt-get install).
+# A floating Node 22 LTS / bookworm tag is rebuilt with a fresh index, so the
+# same trap does not re-arm.
+FROM --platform=linux/amd64 node:22-bookworm-slim
 
 WORKDIR /app
 
@@ -8,7 +13,9 @@ RUN apt-get update \
   && gosu nobody true
 
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+# Drop the npm cache in the same layer; the root volume is tight.
+RUN npm ci --omit=dev --no-audit --no-fund \
+  && npm cache clean --force
 
 COPY . .
 
