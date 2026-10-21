@@ -37,11 +37,55 @@ if [[ "${NGINX_ONLY}" == "--nginx-only" ]]; then
   if [[ -f "${APP_DIR}/deploy/nginx/.ssl-domain" ]]; then
     DOMAIN="$(cat "${APP_DIR}/deploy/nginx/.ssl-domain")"
   fi
+
+  # rsync has just restored the HTTP default.conf; keep it as the fallback.
+  HTTP_CONF_BAK="${APP_DIR}/deploy/nginx/.default.http.conf"
+  cp "${APP_DIR}/deploy/nginx/default.conf" "${HTTP_CONF_BAK}"
+
+  # Preflight: the HTTPS config hard-requires the cert and dhparams. If either
+  # is missing nginx exits at startup, which takes the whole site offline --
+  # serving plain HTTP is far better than serving nothing.
+  SSL_READY=1
+  # nginx:alpine is already on the host, and --entrypoint skips its launcher.
+  if ! docker run --rm --entrypoint test \
+      -v "${PROJECT_NAME}_certbot_certs:/etc/letsencrypt" \
+      nginx:1.27-alpine -f "/etc/letsencrypt/live/${DOMAIN}/fullchain.pem"; then
+    echo "WARNING: no certificate for ${DOMAIN} in ${PROJECT_NAME}_certbot_certs"
+    SSL_READY=0
+  fi
+  if [[ ! -f "${APP_DIR}/deploy/nginx/ssl/ssl-dhparams.pem" ]]; then
+    # nginx:alpine ships no openssl CLI, so use alpine like the issuance path.
+    echo "WARNING: deploy/nginx/ssl/ssl-dhparams.pem missing; regenerating"
+    mkdir -p "${APP_DIR}/deploy/nginx/ssl"
+    if ! docker run --rm -v "${APP_DIR}/deploy/nginx/ssl:/out" alpine:3.20 \
+        sh -c 'apk add --no-cache openssl >/dev/null && openssl dhparam -out /out/ssl-dhparams.pem 2048'; then
+      echo "WARNING: could not generate dhparams"
+      SSL_READY=0
+    fi
+  fi
+
+  if [[ "${SSL_READY}" != "1" ]]; then
+    echo "==> Keeping HTTP config; run ./deploy/enable-ssl.sh to (re)issue certs"
+    ${COMPOSE} up -d --force-recreate nginx || true
+    exit 0
+  fi
+
   apply_ssl_nginx
   # Recreate so bind-mounted default.conf picks up a replaced inode.
-  ${COMPOSE} up -d --force-recreate nginx
-  ${COMPOSE} exec -T nginx nginx -t
-  echo "==> Nginx HTTPS config restored for ${DOMAIN}"
+  ${COMPOSE} up -d --force-recreate nginx || true
+  if ${COMPOSE} exec -T nginx nginx -t; then
+    echo "==> Nginx HTTPS config restored for ${DOMAIN}"
+    exit 0
+  fi
+
+  # Never leave nginx down over a bad HTTPS config.
+  echo "ERROR: nginx rejected the HTTPS config; reverting to HTTP so the site stays up"
+  ${COMPOSE} logs --tail=50 nginx || true
+  cp "${HTTP_CONF_BAK}" "${APP_DIR}/deploy/nginx/default.conf"
+  # Leave .ssl-enabled in place: the preflight above now fails safe, so the
+  # next deploy can retry HTTPS instead of silently staying on HTTP forever.
+  ${COMPOSE} up -d --force-recreate nginx || true
+  ${COMPOSE} exec -T nginx nginx -t || true
   exit 0
 fi
 

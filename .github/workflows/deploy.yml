@@ -177,8 +177,11 @@ jobs:
           fi
 
           # Keep HTTPS nginx config if SSL was previously enabled on this host.
+          # Must not abort the deploy: it used to exit non-zero here under
+          # `set -e`, skipping the health wait and the log dump below, which
+          # left the site down with no diagnostics in the run output.
           if [[ -f deploy/nginx/.ssl-enabled ]]; then
-            ./deploy/enable-ssl.sh --nginx-only
+            ./deploy/enable-ssl.sh --nginx-only || echo "WARNING: nginx SSL restore failed"
           fi
 
           echo "Waiting for health..."
@@ -194,7 +197,12 @@ jobs:
 
           echo "Deploy did not become healthy in time"
           "${COMPOSE[@]}" -p utthan ps || true
+          echo "==> app logs"
           "${COMPOSE[@]}" -p utthan logs --tail=120 app || true
+          echo "==> nginx logs"
+          "${COMPOSE[@]}" -p utthan logs --tail=60 nginx || true
+          echo "==> db logs"
+          "${COMPOSE[@]}" -p utthan logs --tail=30 db || true
           echo "==> Host resources"
           df -h /
           free -m
