@@ -1,9 +1,18 @@
 name: utthan
 
+# Cap every service's json-file log. Unbounded container logs on a
+# restart: unless-stopped stack will fill the EC2 root volume.
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   db:
     image: postgres:16-alpine
     restart: unless-stopped
+    logging: *default-logging
     env_file:
       - .env
     environment:
@@ -24,6 +33,7 @@ services:
   app:
     build: .
     restart: unless-stopped
+    logging: *default-logging
     env_file:
       - .env
     environment:
@@ -56,6 +66,7 @@ services:
   nginx:
     image: nginx:1.27-alpine
     restart: unless-stopped
+    logging: *default-logging
     ports:
       - "80:80"
       - "443:443"
@@ -65,8 +76,12 @@ services:
       - certbot_www:/var/www/certbot:ro
       - certbot_certs:/etc/letsencrypt:ro
     depends_on:
+      # service_started, not service_healthy: the app's 90s start_period made
+      # "compose up" block on this gate, so a sick app took the whole stack
+      # down with it. nginx now comes up and serves 502s until the app recovers
+      # (the container is running, so Docker DNS can still resolve "app").
       app:
-        condition: service_healthy
+        condition: service_started
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1/health"]
       interval: 30s

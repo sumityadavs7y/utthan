@@ -8,13 +8,15 @@ on:
 
 concurrency:
   group: deploy-production
-  cancel-in-progress: false
+  # A wedged deploy must never block later pushes: supersede it instead of queueing.
+  cancel-in-progress: true
 
 jobs:
   deploy:
     name: Deploy production
     runs-on: ubuntu-latest
     environment: production
+    timeout-minutes: 25
     env:
       APP_DIR: ${{ vars.EC2_APP_DIR }}
       DB_NAME: ${{ vars.DB_NAME }}
@@ -124,9 +126,30 @@ jobs:
             COMPOSE=(sudo docker compose)
           fi
 
+          # Reclaim disk BEFORE building. A full root volume is what wedges this
+          # deploy, and the old post-build "image prune -f" freed neither the
+          # BuildKit cache nor unused tagged images. No --volumes: that would
+          # delete postgres_data / uploads_data.
+          echo "==> Disk before prune"
+          df -h /
+          "${DOCKER[@]}" system prune -af || true
+          "${DOCKER[@]}" builder prune -af || true
+          echo "==> Disk after prune"
+          df -h /
+
+          AVAIL_MB="$(df -Pm / | awk 'NR==2 {print $4}')"
+          if [[ "${AVAIL_MB}" -lt 2048 ]]; then
+            echo "Only ${AVAIL_MB}MB free on / after prune; the image build needs ~2GB."
+            echo "Grow the EBS root volume or clear host data before retrying."
+            "${DOCKER[@]}" system df || true
+            exit 1
+          fi
+
           "${COMPOSE[@]}" -p utthan pull db nginx || true
-          if ! "${COMPOSE[@]}" -p utthan up -d --build --remove-orphans; then
-            echo "compose up reported a failure; continuing to health wait + logs"
+          # Bounded: compose blocks on depends_on health gates, so an unhealthy
+          # app used to hang this step (and the whole deploy queue) indefinitely.
+          if ! timeout 900 "${COMPOSE[@]}" -p utthan up -d --build --remove-orphans; then
+            echo "compose up failed or timed out; continuing to health wait + logs"
             "${COMPOSE[@]}" -p utthan ps || true
             "${COMPOSE[@]}" -p utthan logs --tail=80 app || true
           fi
@@ -135,8 +158,6 @@ jobs:
           if [[ -f deploy/nginx/.ssl-enabled ]]; then
             ./deploy/enable-ssl.sh --nginx-only
           fi
-
-          "${DOCKER[@]}" image prune -f
 
           echo "Waiting for health..."
           for i in $(seq 1 36); do
@@ -152,5 +173,8 @@ jobs:
           echo "Deploy did not become healthy in time"
           "${COMPOSE[@]}" -p utthan ps || true
           "${COMPOSE[@]}" -p utthan logs --tail=120 app || true
+          echo "==> Host resources"
+          df -h /
+          free -m
           exit 1
           REMOTE
