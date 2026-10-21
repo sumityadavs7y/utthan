@@ -52,6 +52,26 @@ if [[ "${NGINX_ONLY}" == "--nginx-only" ]]; then
       nginx:1.27-alpine -f "/etc/letsencrypt/live/${DOMAIN}/fullchain.pem"; then
     echo "WARNING: no certificate for ${DOMAIN} in ${PROJECT_NAME}_certbot_certs"
     SSL_READY=0
+
+    # HTTPS was enabled here before, so the certs went missing (a recreated
+    # certbot_certs volume loses them while .ssl-enabled survives, since rsync
+    # excludes it). Re-issue rather than silently serving HTTP forever.
+    # Throttled: Let's Encrypt rate-limits failed validations, and this runs on
+    # every deploy.
+    ATTEMPT_STAMP="${APP_DIR}/deploy/nginx/.ssl-last-attempt"
+    NOW="$(date +%s)"
+    PREV="$(cat "${ATTEMPT_STAMP}" 2>/dev/null || echo 0)"
+    if (( NOW - PREV > 21600 )); then
+      echo "==> Re-issuing certificate for ${DOMAIN} (last attempt $(( (NOW - PREV) / 3600 ))h ago)"
+      echo "${NOW}" > "${ATTEMPT_STAMP}"
+      # The full path issues the cert and applies the HTTPS config itself.
+      if "$0"; then
+        exit 0
+      fi
+      echo "WARNING: certificate issuance failed; staying on HTTP"
+    else
+      echo "==> Skipping issuance: attempted less than 6h ago"
+    fi
   fi
   if [[ ! -f "${APP_DIR}/deploy/nginx/ssl/ssl-dhparams.pem" ]]; then
     # nginx:alpine ships no openssl CLI, so use alpine like the issuance path.
@@ -66,6 +86,9 @@ if [[ "${NGINX_ONLY}" == "--nginx-only" ]]; then
 
   if [[ "${SSL_READY}" != "1" ]]; then
     echo "==> Keeping HTTP config; run ./deploy/enable-ssl.sh to (re)issue certs"
+    # A failed issuance attempt above may have left the HTTPS config in place,
+    # which nginx cannot load without certs. Always restore the HTTP one here.
+    cp "${HTTP_CONF_BAK}" "${APP_DIR}/deploy/nginx/default.conf"
     ${COMPOSE} up -d --force-recreate nginx || true
     exit 0
   fi

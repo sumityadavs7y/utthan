@@ -79,7 +79,8 @@ jobs:
             --exclude 'database/' \
             --exclude '.cursor/' \
             --exclude 'deploy/certbot/' \
-            --exclude 'deploy/nginx/.ssl-enabled' \
+            --exclude 'deploy/nginx/.ssl-*' \
+            --exclude 'deploy/nginx/.default.http.conf' \
             --exclude 'deploy/nginx/ssl/ssl-dhparams.pem' \
             ./ "utthan-ec2:${APP_DIR}/"
 
